@@ -8,4 +8,6 @@ all goes to ~/.config, obviously
 
 ## Fish
 ~/.config/
+
 `bash init.sh`
+
