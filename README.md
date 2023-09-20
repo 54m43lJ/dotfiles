@@ -2,19 +2,23 @@
 
 ## Neovim
 
-all goes to ~/.config, obviously
+all goes to `~/.config/`, obviously
 
 ## Foot
 
-~/.config/
+`~/.config/`
 
 ## Fish
 
-~/.config/
+`~/.config/`
 
 ```sh
 bash init.sh
 ```
+
+## Hyprland
+
+`~/.config/`
 
 ## CN support
 
