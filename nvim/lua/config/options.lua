@@ -4,3 +4,4 @@
 vim.opt.shiftwidth = 4
 vim.opt.smarttab = true
 vim.opt.softtabstop = 0
+vim.opt.wrap = true

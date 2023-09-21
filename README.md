@@ -16,9 +16,14 @@ all goes to `~/.config/`, obviously
 bash init.sh
 ```
 
-## Hyprland
+## Hyprland & Hyprpaper
 
 `~/.config/`
+
+## SDDM
+
+`sugar-dark` goes to `/usr/share/sddm/themes/`
+`sddm.conf` goes to `/etc/sddm.conf.d/`
 
 ## CN support
 
