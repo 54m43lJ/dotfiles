@@ -24,8 +24,7 @@ import QtGraphicalEffects 1.0
 Item {
     id: sessionButton
     height: root.font.pointSize
-    width: parent.width / 2
-    anchors.horizontalCenter: parent.horizontalCenter
+    width: parent.width * 0.5
 
     property var selectedSession: selectSession.currentIndex
     property string textConstantSession
@@ -35,10 +34,15 @@ Item {
 
         hoverEnabled: true
         anchors.left: parent.left
+        anchors.leftMargin: parent.width * 0.5
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
 
         model: sessionModel
         currentIndex: model.lastIndex
         textRole: "name"
+
+        padding: root.font.pointSize * 0.4
 
         delegate: ItemDelegate {
             width: parent.width
@@ -52,6 +56,7 @@ Item {
             }
             highlighted: parent.highlightedIndex === index
             background: Rectangle {
+                radius: config.RoundCorners
                 color: selectSession.highlightedIndex === index ? root.palette.highlight : "transparent"
             }
         }
@@ -66,26 +71,26 @@ Item {
             color: root.palette.text
             verticalAlignment: Text.AlignVCenter
             anchors.left: parent.left
-            anchors.leftMargin: 3
-            font.pointSize: root.font.pointSize * 0.8
+            anchors.leftMargin: root.font.pointSize * 2
+            font.pointSize: root.font.pointSize * 0.9
         }
 
         background: Rectangle {
+            radius: config.RoundCorners
             color: "transparent"
             border.width: parent.visualFocus ? 1 : 0
             border.color: "transparent"
             height: parent.visualFocus ? 2 : 0
-            width: displayedItem.implicitWidth
-            anchors.top: parent.bottom
-            anchors.left: parent.left
-            anchors.leftMargin: 3
+            width: displayedItem.implicitWidth * 1.2
+            anchors.horizontalCenter: displayedItem.horizontalCenter
         }
 
         popup: Popup {
             id: popupHandler
-            y: parent.height - 1
-            rightMargin: config.ForceRightToLeft == "true" ? root.padding + sessionButton.width / 2 : undefined
-            width: sessionButton.width
+            x: displayedItem.anchors.leftMargin - displayedItem.implicitWidth * 0.1
+            y: parent.height - contentItem.implicitHeight - parent.height - 10
+            rightMargin: config.ForceRightToLeft == "true" ? root.padding + sessionButton.width * 0.6 : undefined
+            width: sessionButton.width * 0.8
             implicitHeight: contentItem.implicitHeight
             padding: 10
 
@@ -98,7 +103,7 @@ Item {
             }
 
             background: Rectangle {
-                radius: config.RoundCorners / 2
+                radius: config.RoundCorners
                 color: "#444"
                 layer.enabled: true
                 layer.effect: DropShadow {
@@ -127,7 +132,7 @@ Item {
                 }
                 PropertyChanges {
                     target: selectSession.background
-                    border.color: Qt.darker(root.palette.highlight, 1.1)
+                    color: Qt.darker(root.palette.window, 1.1)
                 }
             },
             State {
@@ -139,7 +144,7 @@ Item {
                 }
                 PropertyChanges {
                     target: selectSession.background
-                    border.color: Qt.lighter(root.palette.highlight, 1.1)
+                    color: root.palette.window
                 }
             },
             State {
@@ -151,7 +156,7 @@ Item {
                 }
                 PropertyChanges {
                     target: selectSession.background
-                    border.color: root.palette.highlight
+                    color: root.palette.window
                 }
             }
         ]
@@ -159,7 +164,7 @@ Item {
         transitions: [
             Transition {
                 PropertyAnimation {
-                    properties: "color, border.color"
+                    properties: "color"
                     duration: 150
                 }
             }

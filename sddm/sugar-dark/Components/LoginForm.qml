@@ -55,4 +55,9 @@ ColumnLayout {
         exposedLogin: input.exposeLogin
     }
 
+    // SESSION SELECT
+    SessionButton {
+        id: sessionSelect
+        textConstantSession: textConstants.session
+    }
 }

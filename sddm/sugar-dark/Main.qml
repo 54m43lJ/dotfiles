@@ -44,22 +44,22 @@ Pane {
     focus: true
 
     property bool leftleft: config.HaveFormBackground == "true" &&
-                            config.PartialBlur == "false" &&
+                            config.PartialBlur == "true" &&
                             config.FormPosition == "left" &&
                             config.BackgroundImageAlignment == "left"
 
     property bool leftcenter: config.HaveFormBackground == "true" &&
-                              config.PartialBlur == "false" &&
+                              config.PartialBlur == "true" &&
                               config.FormPosition == "left" &&
                               config.BackgroundImageAlignment == "center"
 
     property bool rightright: config.HaveFormBackground == "true" &&
-                              config.PartialBlur == "false" &&
+                              config.PartialBlur == "true" &&
                               config.FormPosition == "right" &&
                               config.BackgroundImageAlignment == "right"
 
     property bool rightcenter: config.HaveFormBackground == "true" &&
-                               config.PartialBlur == "false" &&
+                               config.PartialBlur == "true" &&
                                config.FormPosition == "right" &&
                                config.BackgroundImageAlignment == "center"
 
@@ -75,7 +75,7 @@ Pane {
             anchors.fill: form
             anchors.centerIn: form
             color: "#444"
-            opacity: config.PartialBlur == "true" ? 0.3 : 1
+            opacity: config.PartialBlur == "true" ? 0.6 : 1
             z: 1
         }
 
@@ -83,7 +83,7 @@ Pane {
             id: form
 
             height: virtualKeyboard.state == "visible" ? parent.height - virtualKeyboard.implicitHeight : parent.height
-            width: parent.width / 2.5
+            width: parent.width * 0.4
             anchors.horizontalCenter: config.FormPosition == "center" ? parent.horizontalCenter : undefined
             anchors.left: config.FormPosition == "left" ? parent.left : undefined
             anchors.right: config.FormPosition == "right" ? parent.right : undefined

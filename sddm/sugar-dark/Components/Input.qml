@@ -546,12 +546,6 @@ Column {
         }
     }
 
-    // SESSION SELECT
-    SessionButton {
-        id: sessionSelect
-        textConstantSession: textConstants.session
-    }
-
     Connections {
         target: sddm
         onLoginSucceeded: {}
