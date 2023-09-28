@@ -48,7 +48,7 @@ Column {
 
             model: userModel
             currentIndex: model.lastIndex
-            textRole: "name"
+            textRole: ""
             hoverEnabled: true
             onActivated: {
                 username.text = currentText
@@ -67,6 +67,7 @@ Column {
                 }
                 highlighted: parent.highlightedIndex === index
                 background: Rectangle {
+		    radius: config.RoundCorners / 2
                     color: selectUser.highlightedIndex === index ? root.palette.highlight : "transparent"
                 }
             }
@@ -91,7 +92,7 @@ Column {
             }
 
             popup: Popup {
-                y: parent.height - username.height / 3
+                y: parent.height - username.height / 3 + 10
                 rightMargin: config.ForceRightToLeft == "true" ? root.padding + usernameField.width / 2 : undefined
                 width: usernameField.width
                 implicitHeight: contentItem.implicitHeight
@@ -106,7 +107,7 @@ Column {
                 }
 
                 background: Rectangle {
-                    radius: config.RoundCorners / 2
+                    radius: config.RoundCorners
                     color: "#444"
                     layer.enabled: true
                     layer.effect: DropShadow {

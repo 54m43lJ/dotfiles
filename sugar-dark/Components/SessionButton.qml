@@ -56,7 +56,7 @@ Item {
             }
             highlighted: parent.highlightedIndex === index
             background: Rectangle {
-                radius: config.RoundCorners
+                radius: config.RoundCorners * 0.5
                 color: selectSession.highlightedIndex === index ? root.palette.highlight : "transparent"
             }
         }
