@@ -48,7 +48,8 @@ Column {
 
             model: userModel
             currentIndex: model.lastIndex
-            textRole: ""
+            textRole: "name"
+            displayText: ""
             hoverEnabled: true
             onActivated: {
                 username.text = currentText
@@ -58,7 +59,7 @@ Column {
                 width: parent.width
                 anchors.horizontalCenter: parent.horizontalCenter
                 contentItem: Text {
-                    text: model.realName != "" ? model.realName : model.name
+		    text: model.realName != "" ? model.realName : model.name
                     font.pointSize: root.font.pointSize * 0.8
                     font.capitalization: Font.Capitalize
                     color: selectUser.highlightedIndex === index ? "#444" : root.palette.highlight

@@ -3,6 +3,7 @@
     MainColor="white"
     AccentColor="#ca33ac"
     PartialBlur="true"
-    FormPosition="left"
+    FormPosition="right"
     #ScaleImageCropped="false"
     BackgroundImageAlignment="left"
+    RoundCorners=30
