@@ -13,7 +13,7 @@ all goes to `~/.config/`, obviously
 `~/.config/`
 
 ```sh
-bash init.sh
+fish init.sh
 ```
 
 ## Hyprland & Hyprpaper
