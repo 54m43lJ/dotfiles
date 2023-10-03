@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -n $(which pactl) ]; then
+	if [ "yes" == $(pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}') ]; then
+		echo 0
+		exit
+	else
+		pactl get-sink-volume @DEFAULT_SINK@ | awk -F '[^0-9]+' 'NR==1{print $3}'
+	fi
+else
+	amixer -D pulse sget Master | awk -F '[^0-9]+' '/Left:/{print $3}'
+fi

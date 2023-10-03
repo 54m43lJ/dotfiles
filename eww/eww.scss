@@ -1,0 +1,78 @@
+* {
+  all: unset; //Unsets everything so you can style everything from scratch
+}
+
+//Global Styles
+.bar {
+  background-color: #3a3a3a;
+  color: #b0b4bc;
+  //padding: 10px;
+  font: 125% "Roboto Mono Nerd Font";
+  border-radius: 15px;
+  border: 2px solid #444444;
+}
+
+// Styles on classes (see eww.yuck for more information)
+
+.left {
+  margin-left: 13px;
+}
+
+.right {
+  margin-right: 13px;
+}
+
+.sidestuff slider {
+  all: unset;
+  color: #ffd5cd;
+}
+
+.metric scale trough highlight {
+  all: unset;
+  background-color: #D35D6E;
+  color: #000000;
+  border-radius: 10px;
+}
+.metric scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-height: 3px;
+  min-width: 50px;
+  margin-left: 10px;
+  margin-right: 20px;
+}
+.metric scale trough highlight {
+  all: unset;
+  background-color: #D35D6E;
+  color: #000000;
+  border-radius: 10px;
+}
+.metric scale trough {
+  all: unset;
+  background-color: #4e4e4e;
+  border-radius: 50px;
+  min-height: 3px;
+  min-width: 50px;
+  margin-left: 10px;
+  margin-right: 20px;
+}
+.label-ram {
+  font-size: large;
+}
+.workspaces .workspace-entry {
+  color: #b0b4bc;
+  margin: 5px 1px;
+  padding: 0 8px;
+  border-radius: 12px;
+}
+
+.workspaces .current {
+  color: #D35D6E;
+  background-color: #f3f6f4;
+}
+
+.workspaces .workspace-entry:hover {
+  color: #f3f6f4;
+  background-color: #D35D6E;
+}
