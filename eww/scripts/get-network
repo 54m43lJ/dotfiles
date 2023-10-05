@@ -1,0 +1,13 @@
+#!/bin/bash
+nname=$(ip link | grep "state UP" | sed "s/.*: \(.*\): .*/\1/")
+naddr=$(ip addr show $nname | grep -E "inet6. *global" | sed "s/.*inet6 \(.*\)\/.*/\1/")
+if [ -z $naddr ]; then
+	naddr=$(ip addr show $nname | grep -E "inet.* global" | sed "s/.*inet \(.*\)\/.*/\1/")
+fi
+if [ -n $1 ] && [ "addr" == "$1" ]; then
+	echo $naddr
+elif [ "device" == "$1" ]; then
+	echo $nname
+else
+	echo "${nname}+${naddr}"
+fi

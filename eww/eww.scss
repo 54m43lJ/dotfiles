@@ -6,8 +6,7 @@
 .bar {
   background-color: #3a3a3a;
   color: #b0b4bc;
-  //padding: 10px;
-  font: 125% "Roboto Mono Nerd Font";
+  font: 1.2em "NotoSansM Nerd Font Mono";
   border-radius: 15px;
   border: 2px solid #444444;
 }
@@ -20,6 +19,10 @@
 
 .right {
   margin-right: 13px;
+}
+
+.sidestuff >* >* {
+  margin-left: 10px;
 }
 
 .sidestuff slider {
@@ -39,32 +42,18 @@
   border-radius: 50px;
   min-height: 3px;
   min-width: 50px;
-  margin-left: 10px;
-  margin-right: 20px;
+  //margin-left: 15px;
 }
-.metric scale trough highlight {
-  all: unset;
-  background-color: #D35D6E;
-  color: #000000;
-  border-radius: 10px;
+
+.label {
+  margin-right: 5px;
 }
-.metric scale trough {
-  all: unset;
-  background-color: #4e4e4e;
-  border-radius: 50px;
-  min-height: 3px;
-  min-width: 50px;
-  margin-left: 10px;
-  margin-right: 20px;
-}
-.label-ram {
-  font-size: large;
-}
+
 .workspaces .workspace-entry {
   color: #b0b4bc;
-  margin: 5px 1px;
+  margin: 7px 1px;
   padding: 0 8px;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .workspaces .current {
@@ -72,7 +61,24 @@
   background-color: #f3f6f4;
 }
 
-.workspaces .workspace-entry:hover {
+.workspaces .workspace:hover .workspace-entry {
   color: #f3f6f4;
   background-color: #D35D6E;
+  transition: 0.3s;
+}
+
+.xlarge {
+  font-size: 125%;
+}
+
+.large {
+  font-size: 100%;
+}
+
+.medium {
+  font-size: 80%;
+}
+
+.small {
+  font-size: 70%;
 }

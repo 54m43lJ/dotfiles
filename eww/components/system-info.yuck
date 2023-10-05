@@ -1,0 +1,63 @@
+(defwidget sidestuff []
+  (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
+    (network)
+    (metric :label ""
+            :value volume
+            :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+            :switch showvol
+            :switchname "showvol")
+
+    (metric :label "󰍛"
+            :value {EWW_RAM.used_mem_perc}
+            :onchange ""
+            :switch showmem
+            :switchname "showmem")
+    (box :orientation "h" :space-evenly false
+      time)
+    ))
+
+(defwidget network []
+  (eventbox
+    :onhover {"eww update netalt=true"}
+    :onhoverlost { "eww update netalt=false" }
+    (box :orientation "h" :space-evenly false
+      (box :class "label xlarge" "󰈀")
+      (label :class "medium"
+            :text {netalt ? 
+             captures(netinfo,"[0-9a-z]+\\+([0-9a-f\:\.]+)")[0][1]
+            : captures(netinfo,"([0-9a-z]+)\+.*")[0][1]}
+        ))))
+
+(defwidget metric [label value onchange switch switchname]
+  (eventbox
+    :onhover "eww update ${switchname}=true"
+    :onhoverlost "eww update ${switchname}=false"
+    (box :orientation "h"
+        :class "metric"
+        :space-evenly false
+      (box :class "label xlarge" label)
+      (revealer
+        :transition "slideleft"
+        :reveal switch
+        :duration "300ms"
+        (scale :min 0
+              :max 101
+              :active {onchange != ""}
+              :value value
+              :onchange onchange
+          ))))
+    )
+
+(defpoll volume :interval "1s"
+  "bash ~/.config/eww/scripts/getvol")
+
+(defpoll time :interval "10s"
+  "date '+%H:%M %b %d, %Y'")
+
+(defpoll netinfo :interval "3s"
+  "bash ~/.config/eww/scripts/get-network")
+
+(defvar netalt false)
+
+(defvar showmem false)
+(defvar showvol false)

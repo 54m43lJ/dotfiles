@@ -1,0 +1,7 @@
+(deflisten window :initial "..." "sh ~/.config/eww/scripts/get-window-title")
+(defwidget window_w []
+  (box :class "titlebar large"
+    (label :text "${window == "null" ? "" : window}"
+    )
+  )
+)
