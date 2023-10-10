@@ -12,6 +12,8 @@ all goes to `~/.config/`, obviously
 
 `~/.config/`
 
+For MacOS run `fish_add_path /opt/homebrew/bin/`
+
 ```sh
 fish init.sh
 ```
