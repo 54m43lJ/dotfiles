@@ -12,11 +12,11 @@ all goes to `~/.config/`, obviously
 
 `~/.config/`
 
-For MacOS run `fish_add_path /opt/homebrew/bin/`
-
 ```sh
 fish init.sh
 ```
+
+For MacOS run `fish_add_path /opt/homebrew/bin/`
 
 ## Hyprland & Hyprpaper
 
@@ -36,5 +36,11 @@ sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk adobe-source-han-sans-cn-fon
 ```
 
 ## EWW
+
+`~/.config/`
+
+Install `nerd-fonts` package.
+
+## nwg-bar
 
 `~/.config/`
