@@ -4,7 +4,8 @@ end
 alias vi=nvim
 alias D:='cd /mnt/MAIN/'
 alias venv='source venv/bin/activate.fish'
-if test -n $(which python)
+if test -x "$(command -v python)"
     alias newvenv='python -m venv .venv'
-else
+else if test -x "$(command -v python3)"
     alias newvenv='python3 -m venv .venv'
+end
