@@ -29,7 +29,7 @@ For MacOS run `fish_add_path /opt/homebrew/bin/`
 
 ## CN support
 
-put `fontconfig` under `~/.config/`
+copy `fontconfig` to `~/.config/`
 
 ```sh
 sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts ttf-dejavu
@@ -39,7 +39,7 @@ sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk adobe-source-han-sans-cn-fon
 
 `~/.config/`
 
-Install `nerd-fonts` package.
+Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 
 ## nwg-bar
 
