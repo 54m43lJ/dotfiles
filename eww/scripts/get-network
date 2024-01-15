@@ -3,7 +3,7 @@ if [[ $(ip link | grep -c "state UP") -ne 0 ]]; then
     nname=$(ip link | grep "state UP" | sed "s/.*: \(.*\): .*/\1/")
     #naddr=$(ip addr show $nname | grep -E "inet6 .* global" | awk '{print $2}'
     #if [[ -z $naddr ]]; then
-        naddr=$(ip addr show $nname | grep -E "inet .* global" | awk '{print $2}'
+        naddr=$(ip addr show $nname | grep -E "inet .* global" | awk '{print $2}')
     #fi
 else
     nname=disconnected
