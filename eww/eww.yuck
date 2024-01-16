@@ -26,8 +26,47 @@
     (sidestuff))
   )
 
-(defwindow bar
+(defwindow bar1
   :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "40px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  :namespace "eww"
+  (bar))
+
+(defwindow bar3
+  :monitor 1
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "40px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  :namespace "eww"
+  (bar))
+
+(defwindow bar4
+  :monitor 1
+  :windowtype "dock"
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "40px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  :namespace "eww"
+  (bar))
+
+(defwindow bar2
+  :monitor 1
   :windowtype "dock"
   :geometry (geometry :x "0%"
                       :y "10px"

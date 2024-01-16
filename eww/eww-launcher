@@ -1,0 +1,5 @@
+#! /bin/bash
+eww daemon
+for i in $(seq $(hyprctl monitors | grep -Ec "^Monitor")) ; do
+	eww open bar$i
+done

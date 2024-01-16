@@ -39,6 +39,8 @@ sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk adobe-source-han-sans-cn-fon
 
 `~/.config/`
 
+copy `eww-launcher` to `~/.local/bin`
+
 Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 
 ## nwg-bar
