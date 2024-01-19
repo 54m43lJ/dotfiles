@@ -1,17 +1,21 @@
 #!/bin/bash
 if [[ $(ip link | grep -c "state UP") -ne 0 ]]; then
     nname=$(ip link | grep "state UP" | sed "s/.*: \(.*\): .*/\1/")
-    #naddr=$(ip addr show $nname | grep -E "inet6 .* global" | awk '{print $2}'
-    #if [[ -z $naddr ]]; then
-        naddr=$(ip addr show $nname | grep -E "inet .* global" | awk '{print $2}')
-    #fi
+    naddr=$(ip addr show $nname \
+        | grep -E "inet6 .* global" \
+        | awk '{print $2}')
+    if [[ -z $naddr ]]; then
+        naddr=$(ip addr show $nname \
+            | grep -E "inet .* global" \
+            | awk '{print $2}')
+    fi
 else
     nname=disconnected
 fi
-if [ -n $1 ] && [ "addr" == "$1" ]; then
-	echo $naddr
+if [ -n $1 ] && [ "address" == "$1" ]; then
+    echo $naddr
 elif [ "device" == "$1" ]; then
-	echo $nname
+    echo $nname
 else
-	echo "${nname}+${naddr}"
+    echo "${nname}:${naddr}"
 fi
