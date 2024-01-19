@@ -2,25 +2,7 @@
   all: unset; //Unsets everything so you can style everything from scratch
 }
 
-//Global Styles
-.bar {
-  background-color: #3a3a3a;
-  color: #b0b4bc;
-  font: 1.2em "Noto SansM Nerd Font Mono";
-  border-radius: 15px;
-  border: 2px solid #444444;
-}
-
-// Styles on classes (see eww.yuck for more information)
-
-.left {
-  margin-left: 13px;
-}
-
-.right {
-  margin-right: 13px;
-}
-
+// General Styles
 .sidestuff slider {
   all: unset;
   color: #ffd5cd;
@@ -45,6 +27,35 @@
   margin-right: 10px;
 }
 
+.large {
+  font-size: 100%;
+}
+
+.medium {
+  font-size: 80%;
+}
+
+.small {
+  font-size: 70%;
+}
+
+tooltip, .bar {
+  background-color: #3a3a3a;
+  color: #b0b4bc;
+  border: 2px solid #444444;
+}
+
+tooltip {
+  font: 1em "Noto SansM Nerd Font Mono";
+  border-radius: 12px;
+}
+
+// Specific Styles
+.bar {
+  font: 1.2em "Noto SansM Nerd Font Mono";
+  border-radius: 15px;
+}
+
 .workspaces .workspace-entry {
   color: #b0b4bc;
   margin: 7px 1px;
@@ -63,18 +74,14 @@
   transition: 0.3s;
 }
 
+.left {
+  margin-left: 13px;
+}
+
+.right {
+  margin-right: 13px;
+}
+
 .xlarge {
   font-size: 125%;
-}
-
-.large {
-  font-size: 100%;
-}
-
-.medium {
-  font-size: 80%;
-}
-
-.small {
-  font-size: 70%;
 }

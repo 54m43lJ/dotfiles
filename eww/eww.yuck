@@ -24,8 +24,6 @@
 (defwidget rightbar [i]
   (box :orientation "h" :class "right" :halign "end" :spacing 0
     (sidestuff :i i)
-    (box :orientation "h" :space-evenly false
-      time)
     )
   )
 
