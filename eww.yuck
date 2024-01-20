@@ -1,0 +1,68 @@
+(include "./components/window-title.yuck")
+(include "./components/workspaces.yuck")
+(include "./components/system-info.yuck")
+(include "./components/music.yuck")
+
+(defwidget bar [i]
+  (centerbox :orientation "h" :class "bar"
+    (leftbar :i i)
+    (centerbar :i i)
+    (rightbar :i i))
+  )
+
+(defwidget leftbar [i]
+  (box :orientation "h" :class "left" :halign "start" :spacing 20
+    (workspaces)
+    (music))
+  )
+
+(defwidget centerbar [i]
+  (box :orientation "h" :class "center" :spacing 10
+    (window_w))
+  )
+
+(defwidget rightbar [i]
+  (box :orientation "h" :class "right" :halign "end" :spacing 0
+    (sidestuff :i i)
+    )
+  )
+
+(defwindow bar1
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "40px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  (bar :i 1))
+
+(defwindow bar2
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "40px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  (bar :i 2))
+
+(defwindow bar3
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "40px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  (bar :i 3))
+
+(defwindow bar4
+  :geometry (geometry :x "0%"
+                      :y "10px"
+                      :width "98%"
+                      :height "40px"
+                      :anchor "top center")
+  :stacking "fg"
+  :exclusive true
+  (bar :i 4))
