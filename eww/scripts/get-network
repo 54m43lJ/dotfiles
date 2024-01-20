@@ -17,5 +17,12 @@ elif [ "ipv4" == "$1" ]; then
 elif [ "device" == "$1" ]; then
     echo $nname
 else
-    echo -e "${nname}\n${i4addr}\n${i6addr}"
+    ninfo=$nname
+    if [ -n $i4addr ]; then
+        ninfo="${ninfo}\n${i4addr}"
+    fi
+    if [ -n $i6addr ]; then
+        ninfo="${ninfo}\n${i6addr}"
+    fi
+    echo -e $ninfo
 fi

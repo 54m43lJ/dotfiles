@@ -24,16 +24,27 @@
 )
 
 (defwidget battery []
-    (box :orientation "h" :space-evenly false :halign "center"
-        :class "battery label small"
+    (overlay
+    ;(box
+        :class "battery"
         :visible {bat_state == "none" ? false : true}
-        bat_per
+        (image :path "${bat_state == "none" ? "static/bat_pc.svg" : 
+            bat_per < 20 ? "static/bat_empty.svg" :
+            bat_per < 50 ? "static/bat_low.svg" :
+            bat_per < 90 ? "static/bat_high.svg" :
+            "static/bat_full.svg"}"
+            :image-height 32
+            :style "margin-right: 3px")
+        (label
+            :style "margin-right: 5px"
+            :text bat_per
+        )
     )
 )
 
 (defwidget network [i]
     (eventbox
-        ;:onhover {"eww open netinfo${i} --screen ${i - 1}"}
+        ;:onhover {"eww open netinfo --id netinfo${i} --arg i=${i - 1}"}
         ;:onhoverlost {"eww close netinfo${i}"}
         :onclick {"nm-connection-editor&"}
         :tooltip if_ad
@@ -43,67 +54,19 @@
     )
 )
 
-(defwindow netinfo1
+(defwindow netinfo [i]
+    :monitor i
    :geometry (geometry :x "50%"
        :y "20px"
        :width "90%"
        :height "30px"
-       ;:anchor "top center")
-    )
+       :anchor "top center")
    :stacking "fg"
    :reserve (struts :distance "40px" :side "top")
    :windowtype "dock"
    :wm-ignore false
         (box :orientation "h" :space-evenly false
-          (box :class "xlarge" if_ad)
-        )
-  )
-
-(defwindow netinfo2
-   :geometry (geometry :x "50%"
-       :y "20px"
-       :width "90%"
-       :height "30px"
-       ;:anchor "top center")
-    )
-   :stacking "fg"
-   :reserve (struts :distance "40px" :side "top")
-   :windowtype "dock"
-   :wm-ignore false
-        (box :orientation "h" :space-evenly false
-          (box :class "xlarge" if_ad)
-        )
-  )
-
-(defwindow netinfo3
-   :geometry (geometry :x "50%"
-       :y "20px"
-       :width "90%"
-       :height "30px"
-       ;:anchor "top center")
-    )
-   :stacking "fg"
-   :reserve (struts :distance "40px" :side "top")
-   :windowtype "dock"
-   :wm-ignore false
-        (box :orientation "h" :space-evenly false
-          (box :class "xlarge" if_ad)
-        )
-  )
-
-(defwindow netinfo4
-   :geometry (geometry :x "50%"
-       :y "20px"
-       :width "90%"
-       :height "30px"
-       ;:anchor "top center")
-    )
-   :stacking "fg"
-   :reserve (struts :distance "40px" :side "top")
-   :windowtype "dock"
-   :wm-ignore false
-        (box :orientation "h" :space-evenly false
-          (box :class "xlarge" if_ad)
+          (box :class "medium tooltip" if_ad)
         )
   )
 

@@ -27,7 +27,8 @@
     )
   )
 
-(defwindow bar1
+(defwindow bar [i]
+    :monitor i
   :geometry (geometry :x "0%"
                       :y "10px"
                       :width "98%"
@@ -35,34 +36,4 @@
                       :anchor "top center")
   :stacking "fg"
   :exclusive true
-  (bar :i 1))
-
-(defwindow bar2
-  :geometry (geometry :x "0%"
-                      :y "10px"
-                      :width "98%"
-                      :height "40px"
-                      :anchor "top center")
-  :stacking "fg"
-  :exclusive true
-  (bar :i 2))
-
-(defwindow bar3
-  :geometry (geometry :x "0%"
-                      :y "10px"
-                      :width "98%"
-                      :height "40px"
-                      :anchor "top center")
-  :stacking "fg"
-  :exclusive true
-  (bar :i 3))
-
-(defwindow bar4
-  :geometry (geometry :x "0%"
-                      :y "10px"
-                      :width "98%"
-                      :height "40px"
-                      :anchor "top center")
-  :stacking "fg"
-  :exclusive true
-  (bar :i 4))
+  (bar :i i))

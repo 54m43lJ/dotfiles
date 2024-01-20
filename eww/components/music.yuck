@@ -1,9 +1,13 @@
 (defwidget music []
-  (box :class "music medium"
-       :orientation "h"
-       :space-evenly false
-       :halign "center"
-    {music != "" ? "🎵 ${music}" : ""}))
+    (box :class "music medium"
+        :orientation "h"
+        :space-evenly false
+        :halign "center"
+        (label :text {music != "" ? "🎵 ${music}" : ""}
+            :tooltop {music != "" ? "🎵 ${music}" : ""}
+            :limit-width 20)
+    )
+)
 
 (deflisten music :initial ""
   "bash ~/.config/eww/scripts/get-music")

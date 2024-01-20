@@ -2,5 +2,5 @@
 eww daemon
 eww close-all
 for i in $(seq $(hyprctl monitors | grep -Ec "^Monitor")) ; do
-    eww open bar$i --screen $(($i-1))
+    eww open bar --id bar$i --arg i=$(($i-1))
 done
