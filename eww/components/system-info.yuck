@@ -24,16 +24,10 @@
 )
 
 (defwidget battery []
-    (overlay
+    (box :orientation "h" :space-evenly false :halign "center"
+        :class "battery label small"
         :visible {bat_state == "none" ? false : true}
-        (box :orientation "h" :space-evenly false :halign "center"
-            :class "label xlarge"
-            ""
-        )
-        (box :orientation "h" :space-evenly false :halign "center"
-            :class "label small"
-            bat_per
-        )
+        bat_per
     )
 )
 

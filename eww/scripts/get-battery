@@ -3,10 +3,10 @@ battery_path=/sys/class/power_supply/
 battery_list=(BAT0 macsmc-battery)
 status=none
 percent=0
-for bat in battery_list; do
+for bat in "${battery_list[@]}"; do
     if [[ -d $battery_path$bat ]]; then
-        status = $(cat $battery_path$bat/status)
-        percent = $(cat $battery_path$bat/capacity)
+        status=$(cat $battery_path$bat/status)
+        percent=$(cat $battery_path$bat/capacity)
         break
     fi
 done
