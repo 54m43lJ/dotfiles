@@ -1,32 +1,117 @@
-(defwidget sidestuff []
+(defwidget sidestuff [i]
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
-    (network)
+    (network :i i)
     (metric :label ""
-            :value volume
-            :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
-            :switch showvol
-            :switchname "showvol")
+        :value volume
+        :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+        :switch showvol
+        :switchname "showvol")
 
     (metric :label "󰍛"
-            :value {EWW_RAM.used_mem_perc}
-            :onchange ""
-            :switch showmem
-            :switchname "showmem")
-    (box :orientation "h" :space-evenly false
-      time)
-    ))
+        :value {EWW_RAM.used_mem_perc}
+        :onchange ""
+        :switch showmem
+        :switchname "showmem")
+    (battery)
+    (time)
+    )
+)
 
-(defwidget network []
-  (eventbox
-    :onhover {"eww update netalt=true"}
-    :onhoverlost { "eww update netalt=false" }
+(defwidget time []
     (box :orientation "h" :space-evenly false
-      (box :class "label xlarge" "󰈀")
-      (label :class "medium"
-            :text {netalt ? 
-             captures(netinfo,"[0-9a-z]+\\+([0-9a-f\:\.]+)")[0][1]
-            : captures(netinfo,"([0-9a-z]+)\+.*")[0][1]}
-        ))))
+        :tooltip date
+      clock)
+)
+
+(defwidget battery []
+    (overlay
+        :visible {bat_state == "none" ? false : true}
+        (box :orientation "h" :space-evenly false :halign "center"
+            :class "label xlarge"
+            ""
+        )
+        (box :orientation "h" :space-evenly false :halign "center"
+            :class "label small"
+            bat_per
+        )
+    )
+)
+
+(defwidget network [i]
+    (eventbox
+        ;:onhover {"eww open netinfo${i} --screen ${i - 1}"}
+        ;:onhoverlost {"eww close netinfo${i}"}
+        :onclick {"nm-connection-editor&"}
+        :tooltip if_ad
+        (box :orientation "h" :space-evenly false
+          (box :class "label xlarge" "󰈀")
+        )
+    )
+)
+
+(defwindow netinfo1
+   :geometry (geometry :x "50%"
+       :y "20px"
+       :width "90%"
+       :height "30px"
+       ;:anchor "top center")
+    )
+   :stacking "fg"
+   :reserve (struts :distance "40px" :side "top")
+   :windowtype "dock"
+   :wm-ignore false
+        (box :orientation "h" :space-evenly false
+          (box :class "xlarge" if_ad)
+        )
+  )
+
+(defwindow netinfo2
+   :geometry (geometry :x "50%"
+       :y "20px"
+       :width "90%"
+       :height "30px"
+       ;:anchor "top center")
+    )
+   :stacking "fg"
+   :reserve (struts :distance "40px" :side "top")
+   :windowtype "dock"
+   :wm-ignore false
+        (box :orientation "h" :space-evenly false
+          (box :class "xlarge" if_ad)
+        )
+  )
+
+(defwindow netinfo3
+   :geometry (geometry :x "50%"
+       :y "20px"
+       :width "90%"
+       :height "30px"
+       ;:anchor "top center")
+    )
+   :stacking "fg"
+   :reserve (struts :distance "40px" :side "top")
+   :windowtype "dock"
+   :wm-ignore false
+        (box :orientation "h" :space-evenly false
+          (box :class "xlarge" if_ad)
+        )
+  )
+
+(defwindow netinfo4
+   :geometry (geometry :x "50%"
+       :y "20px"
+       :width "90%"
+       :height "30px"
+       ;:anchor "top center")
+    )
+   :stacking "fg"
+   :reserve (struts :distance "40px" :side "top")
+   :windowtype "dock"
+   :wm-ignore false
+        (box :orientation "h" :space-evenly false
+          (box :class "xlarge" if_ad)
+        )
+  )
 
 (defwidget metric [label value onchange switch switchname]
   (eventbox
@@ -41,7 +126,7 @@
         :reveal switch
         :duration "300ms"
         (scale :min 0
-              :max 101
+              :max 100
               :active {onchange != ""}
               :value value
               :onchange onchange
@@ -51,13 +136,18 @@
 (defpoll volume :interval "1s"
   "bash ~/.config/eww/scripts/getvol")
 
-(defpoll time :interval "10s"
-  "date '+%H:%M %b %d, %Y'")
+(defpoll clock :interval "1s"
+  "date '+%H:%M:%S'")
+(defpoll date :interval "60s"
+    "date '+%a %b %d, %Y'")
 
-(defpoll netinfo :interval "3s"
+(defpoll if_ad :interval "3s"
   "bash ~/.config/eww/scripts/get-network")
 
-(defvar netalt false)
+(defpoll bat_state :interval "30s"
+    "bash ~/.config/eww/scripts/get-battery state")
+(defpoll bat_per :interval "30s"
+    "bash ~/.config/eww/scripts/get-battery percent")
 
 (defvar showmem false)
 (defvar showvol false)
