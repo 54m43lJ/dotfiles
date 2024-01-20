@@ -1,4 +1,0 @@
-#!/bin/sh
-hyprctl activewindow -j | jq --raw-output .title
-socat -u UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | stdbuf -o0 awk -F '>>|,' '/^activewindow>>/{if (length($3)>36) { print substr($3,0,33) "..." } else { print $3 } }'
-#socat -u UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | stdbuf -o0 awk -F '>>|,' '/^activewindow>>/{print $3}'

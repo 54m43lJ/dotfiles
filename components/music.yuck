@@ -1,9 +1,0 @@
-(defwidget music []
-  (box :class "music medium"
-       :orientation "h"
-       :space-evenly false
-       :halign "center"
-    {music != "" ? "🎵 ${music}" : ""}))
-
-(deflisten music :initial ""
-  "bash ~/.config/eww/scripts/get-music")
