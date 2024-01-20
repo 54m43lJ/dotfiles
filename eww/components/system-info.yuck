@@ -24,9 +24,16 @@
 )
 
 (defwidget battery []
-    (box :orientation "h" :space-evenly false
-        :class "label large"
-        "XDDD:${EWW_BATTERY.hidpp_battery_0.capacity}"
+    (overlay
+        :visible {bat_state == "none" ? false : true}
+        (box :orientation "h" :space-evenly false :halign "center"
+            :class "label xlarge"
+            ""
+        )
+        (box :orientation "h" :space-evenly false :halign "center"
+            :class "label small"
+            bat_per
+        )
     )
 )
 
@@ -136,6 +143,11 @@
 
 (defpoll if_ad :interval "3s"
   "bash ~/.config/eww/scripts/get-network")
+
+(defpoll bat_state :interval "30s"
+    "bash ~/.config/eww/scripts/get-battery state")
+(defpoll bat_per :interval "30s"
+    "bash ~/.config/eww/scripts/get-battery percent")
 
 (defvar showmem false)
 (defvar showvol false)
