@@ -24,11 +24,9 @@
 )
 
 (defwidget battery []
-    ;(overlay
     (box
         :class "label"
-        ;:visible {bat_state == "none" ? false : true}
-        :tooltip "${bat_state == "none" ? "" : bat_per}%"
+        :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
         (image :path "${bat_state == "none" ? "static/bat_plugged.svg" : 
             bat_state == "Charging" ?
             bat_per < 50 ?
