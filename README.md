@@ -12,9 +12,12 @@ all goes to `~/.config/`, obviously
 
 `~/.config/`
 
+disable greeting
 ```sh
 fish init.sh
 ```
+
+copy device specific config to `conf.d` folder
 
 For MacOS run `fish_add_path /opt/homebrew/bin/`
 
