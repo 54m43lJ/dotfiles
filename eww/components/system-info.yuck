@@ -24,20 +24,22 @@
 )
 
 (defwidget battery []
-    (overlay
-    ;(box
-        :class "battery"
-        :visible {bat_state == "none" ? false : true}
-        (image :path "${bat_state == "none" ? "static/bat_pc.svg" : 
-            bat_per < 20 ? "static/bat_empty.svg" :
-            bat_per < 50 ? "static/bat_low.svg" :
-            bat_per < 90 ? "static/bat_high.svg" :
+    ;(overlay
+    (box
+        :class "label"
+        ;:visible {bat_state == "none" ? false : true}
+        :tooltip "${bat_per}%"
+        (image :path "${bat_state == "none" ? "static/bat_plugged.svg" : 
+            bat_state == "Charging" ?
+            bat_per < 50 ?
+                "static/bat_charginglow.svg" : "static/bat_charging.svg" :
+            bat_per < 5 ? "static/bat_empty.svg" :
+            bat_per < 15 ? "static/bat_verylow.svg" :
+            bat_per < 40 ? "static/bat_low.svg" :
+            bat_per < 75 ? "static/bat_half.svg" :
+            bat_per < 95 ? "static/bat_high.svg" :
             "static/bat_full.svg"}"
-            :image-height 32
-            :style "margin-right: 3px")
-        (label
-            :style "margin-right: 5px"
-            :text bat_per
+            :image-width 24
         )
     )
 )
