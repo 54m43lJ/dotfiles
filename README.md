@@ -37,8 +37,9 @@ copy `fontconfig` to `~/.config/`
 ```sh
 sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk
 sudo pacman -S nerd-fonts # select roboto and/or noto package
-
 ```
+
+Don't forget to change the DPI property on HiDPI displays
 
 ## EWW
 
