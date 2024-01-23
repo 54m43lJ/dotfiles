@@ -30,12 +30,14 @@ For MacOS run `fish_add_path /opt/homebrew/bin/`
 `sugar-dark` goes to `/usr/share/sddm/themes/`
 `sddm.conf` goes to `/etc/sddm.conf.d/`
 
-## CN support
+## CN Font
 
 copy `fontconfig` to `~/.config/`
 
 ```sh
-sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts ttf-dejavu
+sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk
+sudo pacman -S nerd-fonts # select roboto and/or noto package
+
 ```
 
 ## EWW
