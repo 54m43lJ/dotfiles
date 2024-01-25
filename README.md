@@ -1,4 +1,5 @@
 # dotfiles
+For any additional config, best practice is always creating a symlink to the config file in the include folder, usually `conf.d`.
 ## Neovim
 all goes to `~/.config/`, obviously
 ## Foot
@@ -11,11 +12,13 @@ disable greeting
 fish init.sh
 ```
 
-create a symlink to additional config file in `conf.d`.
+Additional config file in `conf.d`.
 
 For MacOS run `fish_add_path /opt/homebrew/bin/`.
 ## Hyprland & Hyprpaper
 `~/.config/`
+
+Additional config in `conf.d`.
 ## SDDM
 `sugar-dark` goes to `/usr/share/sddm/themes/`.
 
@@ -28,7 +31,7 @@ sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk
 sudo pacman -S nerd-fonts # select roboto and/or noto package with ttf-nerd-fonts-symbols
 ```
 
-Additional tweaks can be included by creating a symlink in `conf.d`.
+Additional config in `conf.d`.
 
 Be mindful of naming conventions, I would call it `52-special.conf` or something.
 ## EWW
