@@ -1,5 +1,8 @@
 # dotfiles
-For any additional config, best practice is always creating a symlink to the config file in the include folder, usually `conf.d`.
+For any additional config, best practice is always creating a symlink to the config file in the include folder:
+`ln -s <path_to_file>`, optionally append custom file name as argument. 
+
+The folder is usually `conf.d`.
 ## Neovim
 all goes to `~/.config/`, obviously
 ## Foot
