@@ -12,13 +12,13 @@ disable greeting
 fish init.sh
 ```
 
-Additional config file in `conf.d`.
+Additional config file goes to `conf.d`.
 
 For MacOS run `fish_add_path /opt/homebrew/bin/`.
 ## Hyprland & Hyprpaper
 `~/.config/`
 
-Additional config in `conf.d`.
+Additional config goes to `conf.d`.
 ## SDDM
 `sugar-dark` goes to `/usr/share/sddm/themes/`.
 
@@ -31,7 +31,7 @@ sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk
 sudo pacman -S nerd-fonts # select roboto and/or noto package with ttf-nerd-fonts-symbols
 ```
 
-Additional config in `conf.d`.
+Additional config goes to `conf.d`.
 
 Be mindful of naming conventions, I would call it `52-special.conf` or something.
 ## EWW
