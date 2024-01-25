@@ -39,7 +39,7 @@ sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk
 sudo pacman -S nerd-fonts # select roboto and/or noto package with ttf-nerd-fonts-symbols
 ```
 
-Don't forget to change the DPI property on HiDPI displays
+Tweak the settings then run `fc-cache -r` to apply the config.
 
 ## EWW
 
