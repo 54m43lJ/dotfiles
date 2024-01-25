@@ -1,5 +1,6 @@
 * {
   all: unset; //Unsets everything so you can style everything from scratch
+    font-family: "NotoSansM Nerd Font Mono", monospace;
 }
 
 // General Styles
@@ -50,13 +51,14 @@ tooltip, .tooltip, .bar {
 }
 
 tooltip, .tooltip {
-  font: 1em "Noto SansM Nerd Font Mono";
+  font-size: 1em;
   border-radius: 12px;
 }
 
 // Specific Styles
 .bar {
-  font: 1.2em "Noto SansM Nerd Font Mono";
+  //font: 1.2em "NotoSansM Nerd Font Mono", monospace;
+  font-size: 1.2em;
   border-radius: 15px;
 }
 

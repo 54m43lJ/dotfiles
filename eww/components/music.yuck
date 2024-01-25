@@ -3,8 +3,9 @@
         :orientation "h"
         :space-evenly false
         :halign "center"
-        (label :text {music != "" ? "🎵 ${music}" : ""}
-            :tooltop {music != "" ? "🎵 ${music}" : ""}
+        :visible {music == "" ? false : true}
+        (label :text "🎵 ${music}"
+            :tooltip "🎵 ${music}"
             :limit-width 20)
     )
 )
