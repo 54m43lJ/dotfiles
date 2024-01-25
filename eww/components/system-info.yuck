@@ -5,13 +5,15 @@
         :value volume
         :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
         :switch showvol
-        :switchname "showvol")
+        :switchname "showvol"
+        :action "pactl set-sink-mute @DEFAULT_SINK@ toggle")
 
     (metric :label "󰍛"
         :value {EWW_RAM.used_mem_perc}
         :onchange ""
         :switch showmem
-        :switchname "showmem")
+        :switchname "showmem"
+        :action "")
     (battery)
     (time)
     )
@@ -70,25 +72,27 @@
         )
   )
 
-(defwidget metric [label value onchange switch switchname]
-  (eventbox
+(defwidget metric [label value onchange switch switchname action]
+    (eventbox
     :onhover "eww update ${switchname}=true"
     :onhoverlost "eww update ${switchname}=false"
-    (box :orientation "h"
+        (box :orientation "h"
         :class "metric"
         :space-evenly false
-      (box :class "label xlarge" label)
-      (revealer
-        :transition "slideleft"
-        :reveal switch
-        :duration "300ms"
-        (scale :min 0
-              :max 100
-              :active {onchange != ""}
-              :value value
-              :onchange onchange
-          ))))
-    )
+            (revealer
+            :transition "slideleft"
+            :reveal switch
+            :duration "300ms"
+                (scale :min 0
+                :max 100
+                :active {onchange != ""}
+                :value value
+                :onchange onchange
+            ))
+            (eventbox :onclick action
+                (box :class "label xlarge" label))
+        ))
+)
 
 (defpoll volume :interval "1s"
   "bash ~/.config/eww/scripts/getvol")
