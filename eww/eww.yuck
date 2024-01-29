@@ -31,7 +31,7 @@
     :monitor i
   :geometry (geometry :x "0%"
                       :y "10px"
-                      :width "98%"
+                      :width "99%"
                       :height "40px"
                       :anchor "top center")
   :stacking "fg"
