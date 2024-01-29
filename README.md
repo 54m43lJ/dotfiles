@@ -45,3 +45,6 @@ Copy `eww-launcher` to `~/.local/bin`.
 Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 ## nwg-bar
 `~/.config/`
+
+## dunst
+`~/.config`
