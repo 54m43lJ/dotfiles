@@ -55,7 +55,7 @@ tooltip, .tooltip {
     border-style: solid;
     border-color: #D8D7D8;
   border-radius: 8px;
-  background-color: #F1F0F2;
+  background-color: rgba($color: #F1F0F2, $alpha: 0.95);
 }
 
 // Specific Styles
@@ -72,6 +72,7 @@ tooltip, .tooltip {
   margin: 7px 1px;
   padding: 0 8px;
   border-radius: 10px;
+  transition: 0.3s;
 }
 
 .workspaces .current {
