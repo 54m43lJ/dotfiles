@@ -39,7 +39,7 @@
             bat_per < 75 ? "static/bat_half.svg" :
             bat_per < 95 ? "static/bat_high.svg" :
             "static/bat_full.svg"}"
-            :image-width 24
+            :image-width 16
         )
     )
 )
