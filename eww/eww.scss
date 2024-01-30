@@ -48,22 +48,23 @@ window {
   font-size: 70%;
 }
 
-tooltip, .tooltip, .bar {
-  background-color: #3E3A3E;
-  color: #B0B4BC;
-}
-
 tooltip, .tooltip {
   font-size: 1em;
+    color: #D36C94;
+    border-width: 0 2px 2px 0;
+    border-style: solid;
+    border-color: #D8D7D8;
   border-radius: 8px;
+  background-color: #F1F0F2;
 }
 
 // Specific Styles
 .bar {
   font-size: 1.2em;
-  border-radius: 15px;
-    margin:0 5px 5px 5px;
-    box-shadow: 3px 3px 2px rgba($color: #1A1A1A, $alpha: 0.7);
+  color: #B0B4BC;
+    margin:0 0px 5px 0px;
+    box-shadow: 2px 2px 2px rgba($color: #1A1A1A, $alpha: 0.8);
+    background-image: linear-gradient(#4E4E4E,#3E3A3E,#3E3A3E,#3E3A3E,#3E3A3E,#3E3A3E,#3E3A3E);
 }
 
 .workspaces .workspace-entry {
@@ -74,7 +75,7 @@ tooltip, .tooltip {
 }
 
 .workspaces .current {
-  color: #9076DA;
+  color: #D36C94;
   background-color: #F1F0F2;
 }
 
