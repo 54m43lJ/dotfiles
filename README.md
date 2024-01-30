@@ -48,3 +48,7 @@ Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 
 ## dunst
 `~/.config`
+
+## GRUB
+`sudo cp -r arch-linux /boot/grub/themes/`
+Edit `/etc/default/grub` to load the theme using `GRUB_THEME="/boot/grub/themes/arch-linux/theme.txt"`
