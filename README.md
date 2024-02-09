@@ -25,7 +25,7 @@ Additional config goes to `conf.d`.
 ## SDDM
 `sugar-dark` goes to `/usr/share/sddm/themes/`.
 
-`sddm.conf` goes to `/etc/sddm.conf.d/`.
+`theme.conf` goes to `/etc/sddm.conf.d/`. For HiDPI display also copy `dpi.conf`.
 ## CN Font
 copy `fontconfig` to `~/.config/`
 
