@@ -45,10 +45,12 @@ Copy `eww-launcher` to `~/.local/bin`.
 Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 ## nwg-bar
 `~/.config/`
-
 ## dunst
-`~/.config`
-
+`~/.config/`
 ## GRUB
 `sudo cp -r arch-linux /boot/grub/themes/`
 Edit `/etc/default/grub` to load the theme using `GRUB_THEME="/boot/grub/themes/arch-linux/theme.txt"`
+## Rofi
+`~/.config/`
+## LazyVim
+`~/.config/lvim/`
