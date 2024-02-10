@@ -1,7 +1,7 @@
 (defwidget sidestuff [i]
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
     (network :i i)
-    (metric :label ""
+    (metric :label {mute == "no" ? "" : "󰝟"}
         :value volume
         :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
         :switch showvol
@@ -96,6 +96,8 @@
 
 (defpoll volume :interval "1s"
   "bash ~/.config/eww/scripts/getvol")
+(defpoll mute :interval "1s"
+    "LANG=en_US.UTF-8 pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}'")
 
 (defpoll clock :interval "1s"
   "date '+%H:%M:%S'")
