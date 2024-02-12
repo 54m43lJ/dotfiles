@@ -25,7 +25,7 @@ Additional config goes to `conf.d`.
 ## SDDM
 `sugar-dark` goes to `/usr/share/sddm/themes/`.
 
-`sddm.conf` goes to `/etc/sddm.conf.d/`.
+`theme.conf` goes to `/etc/sddm.conf.d/`. For HiDPI display also copy `dpi.conf`.
 ## CN Font
 copy `fontconfig` to `~/.config/`
 
@@ -45,10 +45,12 @@ Copy `eww-launcher` to `~/.local/bin`.
 Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 ## nwg-bar
 `~/.config/`
-
 ## dunst
-`~/.config`
-
+`~/.config/`
 ## GRUB
 `sudo cp -r arch-linux /boot/grub/themes/`
 Edit `/etc/default/grub` to load the theme using `GRUB_THEME="/boot/grub/themes/arch-linux/theme.txt"`
+## Rofi
+`~/.config/`
+## LazyVim
+`~/.config/lvim/`
