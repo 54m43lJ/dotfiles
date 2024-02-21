@@ -21,6 +21,8 @@ For MacOS run `fish_add_path /opt/homebrew/bin/`.
 ## Hyprland & Hyprpaper
 `~/.config/`
 
+execute `./nvidia.sh` for system with nvidia graphics.
+
 Additional config goes to `conf.d`.
 ## SDDM
 `sugar-dark` goes to `/usr/share/sddm/themes/`.
