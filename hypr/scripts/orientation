@@ -1,0 +1,9 @@
+#!/bin/sh
+
+ori=$(hyprctl monitors | grep -m 1 transform | awk '{print $2}')
+
+if [ $ori -eq 0 ]; then
+    hyprctl --batch 'keyword monitor ,preferred,auto,auto,transform,1 ; dispatch layoutmsg orientationbottom'
+else
+    hyprctl --batch 'keyword monitor ,preferred,auto,auto,transform,0 ; dispatch layoutmsg orientationleft'
+fi

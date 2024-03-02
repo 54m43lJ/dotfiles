@@ -21,7 +21,11 @@ For MacOS run `fish_add_path /opt/homebrew/bin/`.
 ## Hyprland & Hyprpaper
 `~/.config/`
 
+execute `./nvidia.sh` for system with nvidia graphics.
+
 Additional config goes to `conf.d`.
+
+For the browser, it is configured to launch `brave-browser.desktop`, which you can override with your customized version in `~/.local/share/applications/`.
 ## SDDM
 `sugar-dark` goes to `/usr/share/sddm/themes/`.
 
