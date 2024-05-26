@@ -3,8 +3,10 @@ For any additional config, best practice is always creating a symlink to the con
 `ln -s <path_to_file>`, optionally append custom file name as argument. 
 
 The folder is usually `conf.d`.
+## Desktop Entries
+copy `applications` folder to `.local/share/`.
 ## Neovim
-all goes to `~/.config/`, obviously
+all goes to `~/.config/`, obviously.
 ## Foot
 `~/.config/`
 ## Fish
@@ -54,7 +56,7 @@ Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 ## GRUB
 `sudo cp -r arch-linux /boot/grub/themes/`
 Edit `/etc/default/grub` to load the theme using `GRUB_THEME="/boot/grub/themes/arch-linux/theme.txt"`
-## Rofi
-`~/.config/`
 ## LazyVim
-`~/.config/lvim/`
+`~/.config/`
+## Wofi
+`~/.config/`
