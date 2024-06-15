@@ -12,3 +12,6 @@ if test -x "$(command -v python)"
 else if test -x "$(command -v python3)"
     alias newvenv='python3 -m venv .venv'
 end
+if test -x "$(command -v cargo)"
+    set PATH ~/.cargo/bin/ $PATH
+end
