@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Version=1.1.15
+Name=QQ Music Client
+Comment=QQ Music Client for Linux
+Exec=/home/john2/Applications/qqmusic-1.1.5.AppImage --no-sandbox --disable-gpu
+StartupNotify=false
+Terminal=false

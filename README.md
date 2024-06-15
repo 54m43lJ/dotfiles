@@ -1,8 +1,10 @@
 # dotfiles
+Before everything else run `./install.sh`.
+
 For any additional config, best practice is always creating a symlink to the config file in the include folder:
 `ln -s <path_to_file>`, optionally append custom file name as argument. 
 
-The folder is usually `conf.d`.
+Such folder is usually `conf.d/`.
 ## Desktop Entries
 copy `applications` folder to `.local/share/`.
 ## Neovim
@@ -40,7 +42,7 @@ sudo pacman -S ttf-roboto noto-fonts noto-fonts-cjk
 sudo pacman -S nerd-fonts # select roboto and/or noto package with ttf-nerd-fonts-symbols
 ```
 
-Additional config goes to `conf.d`.
+Additional config goes to `conf.d/`.
 
 Be mindful of naming conventions, I would call it `52-special.conf` or something.
 ## EWW
