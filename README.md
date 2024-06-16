@@ -57,7 +57,18 @@ Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 `~/.config/`
 ## GRUB
 `sudo cp -r arch-linux /boot/grub/themes/`
-Edit `/etc/default/grub` to load the theme using `GRUB_THEME="/boot/grub/themes/arch-linux/theme.txt"`
+Edit `/etc/default/grub`
+```
+...
+GRUB_TIMEOUT=30
+...
+GRUB_THEME="/boot/grub/themes/arch-linux/theme.txt"
+...
+GRUB_SAVEDEFAULT=true
+...
+GRUB_DISABLE_OS_PROBER=false
+```
+Run `sudo grub-mkconfig -o /boot/grub/grub.cfg`
 ## LazyVim
 `~/.config/`
 ## Wofi
