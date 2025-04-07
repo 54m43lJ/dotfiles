@@ -7,7 +7,6 @@ if [ $(id -u) -eq 0 ]; then echo "DO NOT RUN THIS SCRIPT AS root. Exiting..."; e
 base='sbctl
 neovim
 networkmanager
-sudo
 git
 base-devel
 pipewire
