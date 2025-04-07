@@ -60,6 +60,7 @@ Install `socat`, `jq`, `nerd-fonts/ttf-noto-nerd` package on Arch Linux.
 Edit `/etc/default/grub`
 ```
 ...
+GRUB_DEFAULT=saved
 GRUB_TIMEOUT=30
 ...
 GRUB_THEME="/boot/grub/themes/arch-linux/theme.txt"
