@@ -100,43 +100,63 @@ if [ $base_ins = y -o $base_ins = Y ]; then
     pac_ins $base
     xdg-user-dirs-update
     pac_ins $software
-    read -p "Enter path to your Clash for Windows install (press Enter to skip):" -n 1 clash
-    if [ -n $clash ]; then tar -C ~/Applications -xf $clash; fi
-    read -p "Switch to another terminal, launch Hyprland, start Clash for Windows service, then come back and press any key."
-    eww_ins
     echo "Writing personalizations..."
     cd $work_dir
     mkdir -p ~/.local/share
+    # desktop entries
     cp -r ./applications ~/.local/share/
+    # fish
     cp -r fish ~/.config/
     mkdir ~/.config/fish/conf.d
     fish ~/.config/fish/init.sh
     echo "Include optional settings by manually linking the customized files"
     echo "e.g. ln -s ~/.config/fish/custom.fish ~/.config/fish/conf.d"
+    # foot
     cp -r foot ~/.config/
+    # hyprland
     cp -r hypr ~/.config/
     mkdir ~/.config/hypr/conf.d
+    # SDDM
     sudo cp -r ./sddm/sugar-dark /usr/share/sddm/themes/
     sudo cp ./sddm/theme.conf /etc/sddm.conf.d/
     sudo systemctl enable sddm
     read -p "Are you using an HiDPI display? (Y/N)" -n 1 hidpi
     if [ $hidpi = y -o $hidpi = Y ]; then sudo cp ./sddm/dpi.conf /etc/sddm.conf.d/; fi
+    # fontconfig
     cp -r ./fontconfig ~/.config/
     mkdir ~/.config/fontconfig/conf.d
     fc-cache
+    # eww
     cp -r ./eww ~/.config/
     cp ./eww/eww-launcher ~/.local/bin
+    # nwg-bar
     cp -r ./nwg-bar ~/.config/
+    # dunst
     cp -r ./dunst ~/.config/
+    #wofi
     cp -r ./wofi ~/.config/
+    # nemo
+    gsettings set org.cinnamon.desktop.default-applications.terminal exec foot
+    # ssh-agent
+    systemctl --user enable gcr-ssh-agent --now
+    # electron flags
+    cp ./electron-apps/user-flags.conf ~/.config/obsidian/
+    cp ./electron-apps/codium-flags.conf ~/.config/
+    cp ./electron-apps/electron-flags.conf ~/.config/
+    # grub
     sudo cp -r ./arch-linux /boot/grub/themes/
     sudo sed -i -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
     sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\1saved/g' /etc/default/grub
-    sudo sed -i -E 's/^(GRUB_GFXMODE=).*$/\1280*720/g' /etc/default/grub
+    sudo sed -i -E 's/^(GRUB_GFXMODE=).*$/\1280x720/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_THEME=).*$/\1"\/boot\/grub\/themes\/arch-linux\/theme\.txt"/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
+    # clash
+    read -p "Enter path to your Clash for Windows package (press Enter to skip):" clash
+    if [ -n $clash ]; then tar -C ~/Applications -xf $clash; fi
+    read -p "Switch to another terminal, launch Hyprland, start Clash for Windows service, then come back and press any key."
+    eww_ins
 fi
 
 read -p "Are you using Nvidia? (Y/N)" -n 1 nv_ins
@@ -147,18 +167,12 @@ if [ $nv_ins = y -o $nv_ins = Y ]; then
 fi
 
 echo
-read -p "Do you wish to install yay? (Y/N)" -n 1 yay_ins
+read -p "Do you wish to install yay and other packages from AUR? (Y/N)" -n 1 yay_ins
 if [ $yay_ins = y -o $yay_ins = Y ]; then
     echo
     git clone https://aur.archlinux.org/yay.git ~/Applications/yay
     cd ~/Applications/yay
     makepkg -si
-fi
-
-echo
-read -p "Install packages from AUR? (Y/N)" -n 1 aur_ins
-if [ $aur_ins = y -o $aur_ins = Y ]; then
-    echo
     yay -Sq $aur
 fi
 
