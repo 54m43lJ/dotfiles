@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Version=0.20.39
 Name=Clash for Windows
 Comment=Clash for Windows startup script
-Exec=$HOME/Applications/cfw/cfw --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
+Exec=/home/john/Applications/cfw/cfw --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
 StartupNotify=false
 Terminal=false
+MimeType=application/yaml;
