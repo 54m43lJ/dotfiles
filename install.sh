@@ -6,7 +6,6 @@ if [ $(id -u) -eq 0 ]; then echo "DO NOT RUN THIS SCRIPT AS root. Exiting..."; e
 # Arch packages
 base='sbctl
 neovim
-networkmanager
 git
 base-devel
 pipewire
@@ -28,6 +27,7 @@ qt6-wayland
 socat
 jq
 hyprland
+hyprpolkitagent
 foot
 fish
 noto-fonts-emoji
@@ -71,95 +71,119 @@ aur_dev='vscodium-bin vscodium-bin-marketplace vscodium-bin-features'
 failed=""
 pac_ins() {
     for i in $@; do
-	sudo pacman --noconfirm -Sq $i
+	sudo pacman --noconfirm --needed --noprogressbar -Sq $i
 	if [ $? -eq 1 ]; then
 	     failed="${failed} ${i}"
 	fi
     done
 }
 
-work_dir=$(pwd)
-# install script
-read -P "Install basic software? (Y/N)" -n 1 base_ins
-if [ $base_ins = y -o $base_ins = Y ]; then
-    echo "Setting up system software..."
-    pac_ins $base
-    xdg-users-dirs-update
-    pac_ins $software
+eww_ins() {
     echo "Setting up eww..."
     pac_ins $eww
+    RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup rustup install stable
     rustup default stable
     mkdir ~/Applications
-    git clone https://github.com/elkowar/eww.git ~/Applications
+    git clone https://github.com/elkowar/eww.git ~/Applications/eww
     cd ~/Applications/eww
     cargo build --release --no-default-features --features=wayland
     mkdir -p ~/.local/bin
     cp ./target/release/eww ~/.local/bin/
-    read -P "Enter path to your Clash for Windows install:" -n 1 clash
-    tar -C ~/Applications -xf $clash
+}
+
+work_dir=$(pwd)
+# install script
+read -p "Install basic software? (Y/N)" -n 1 base_ins
+if [ $base_ins = y -o $base_ins = Y ]; then
+    echo
+    echo "Setting up system software..."
+    pac_ins $base
+    xdg-user-dirs-update
+    pac_ins $software
+    read -p "Enter path to your Clash for Windows install (press Enter to skip):" -n 1 clash
+    if [ -n $clash ]; then tar -C ~/Applications -xf $clash; fi
+    read -p "Switch to another terminal, launch Hyprland, start Clash for Windows service, then come back and press any key."
+    eww_ins
     echo "Writing personalizations..."
     cd $work_dir
     mkdir -p ~/.local/share
     cp -r ./applications ~/.local/share/
     cp -r fish ~/.config/
+    mkdir ~/.config/fish/conf.d
     fish ~/.config/fish/init.sh
     echo "Include optional settings by manually linking the customized files"
     echo "e.g. ln -s ~/.config/fish/custom.fish ~/.config/fish/conf.d"
     cp -r foot ~/.config/
     cp -r hypr ~/.config/
+    mkdir ~/.config/hypr/conf.d
     sudo cp -r ./sddm/sugar-dark /usr/share/sddm/themes/
     sudo cp ./sddm/theme.conf /etc/sddm.conf.d/
-    read -P "Are you using an HiDPI display? (Y/N)" -n 1 hidpi
+    sudo systemctl enable sddm
+    read -p "Are you using an HiDPI display? (Y/N)" -n 1 hidpi
     if [ $hidpi = y -o $hidpi = Y ]; then sudo cp ./sddm/dpi.conf /etc/sddm.conf.d/; fi
     cp -r ./fontconfig ~/.config/
+    mkdir ~/.config/fontconfig/conf.d
+    fc-cache
     cp -r ./eww ~/.config/
     cp ./eww/eww-launcher ~/.local/bin
-    cp ./nwg-bar ~/.config/
+    cp -r ./nwg-bar ~/.config/
     cp -r ./dunst ~/.config/
     cp -r ./wofi ~/.config/
     sudo cp -r ./arch-linux /boot/grub/themes/
-    sudo sed -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
-    sudo sed -E 's/^(GRUB_DEFAULT=).*$/\1saved/g' /etc/default/grub
-    sudo sed -E 's/^#(GRUB_THEME=).*$/\1"\/boot\/grub\/themes\/arch-linux\/theme\.txt"/g' /etc/default/grub
-    sudo sed -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
-    sudo sed -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
+    sudo sed -i -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
+    sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\1saved/g' /etc/default/grub
+    sudo sed -i -E 's/^(GRUB_GFXMODE=).*$/\1280*720/g' /etc/default/grub
+    sudo sed -i -E 's/^#(GRUB_THEME=).*$/\1"\/boot\/grub\/themes\/arch-linux\/theme\.txt"/g' /etc/default/grub
+    sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
+    sudo sed -i -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
 fi
 
-read -P "Are you using Nvidia? (Y/N)" -n 1 nv_ins
-if [ nv_ins = y -o nv_ins = Y ]; then
+read -p "Are you using Nvidia? (Y/N)" -n 1 nv_ins
+if [ $nv_ins = y -o $nv_ins = Y ]; then
+    echo
     pac_ins $nvidia
     sudo ~/.config/hypr/nvidia.sh
 fi
 
-echo "Please configure Clash before this step:"
-read -P "Do you wish to install yay? (Y/N)" -n 1 yay_ins
-if [ yay_ins = y -o yay_ins = Y ]; then
-    git clone https://aur.archlinux.com/yay.git ~/Applications
+echo
+read -p "Do you wish to install yay? (Y/N)" -n 1 yay_ins
+if [ $yay_ins = y -o $yay_ins = Y ]; then
+    echo
+    git clone https://aur.archlinux.org/yay.git ~/Applications/yay
     cd ~/Applications/yay
     makepkg -si
 fi
 
-read -P "Install packages from AUR? (Y/N)" -n 1 aur_ins
-if [ aur_ins = y -o aur_ins = Y ]; then
+echo
+read -p "Install packages from AUR? (Y/N)" -n 1 aur_ins
+if [ $aur_ins = y -o $aur_ins = Y ]; then
+    echo
     yay -Sq $aur
 fi
 
-read -P "Install developer environment? (Y/N)" -n 1 dev_ins
-if [ aur_ins = y -o aur_ins = Y ]; then
+echo
+read -p "Install developer environment? (Y/N)" -n 1 dev_ins
+if [ $dev_ins = y -o $dev_ins = Y ]; then
+    echo
     pac_ins $dev
     yay -Sq $aur_dev
     git clone https://github.com/NvChad/starter ~/.config/nvim
 fi
 
-read -P "Intall Breeze theme? (Y/N)" -n 1 brz_inst
-if [ brz_ins = y -o brz_ins = Y ]; then
+echo
+read -p "Intall Breeze theme? (Y/N)" -n 1 brz_ins
+if [ $brz_ins = y -o $brz_ins = Y ]; then
+    echo
     pac_ins $themes
     gsettings set org.gnome.desktop.interface gtk-theme Breeze
 fi
 
 # final breakdown
+echo
 if [ -n "$failed" ]; then
-    printf "\n"
+    echo
     for i in $failed; do echo "Failed to install [${i}]"; done
+else
+    echo "Successfully installed."
 fi
