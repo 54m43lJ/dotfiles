@@ -1,0 +1,11 @@
+[Unit]
+Description=Eww Startup Service
+After=graphical-session.target
+
+[Service]
+Type=forking
+ExecStart=eww-launcher
+Restart=always
+
+[Install]
+WantedBy=graphical-session.target

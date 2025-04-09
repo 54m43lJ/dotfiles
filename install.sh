@@ -2,6 +2,7 @@
 
 # Preliminary check
 if [ $(id -u) -eq 0 ]; then echo "DO NOT RUN THIS SCRIPT AS root. Exiting..."; exit; fi
+work_dir=$(pwd)
 
 # Arch packages
 base='sbctl
@@ -87,11 +88,14 @@ eww_ins() {
     git clone https://github.com/elkowar/eww.git ~/Applications/eww
     cd ~/Applications/eww
     cargo build --release --no-default-features --features=wayland
+    sudo cp ./target/release/eww /usr/local/bin/
+    cd $work_dir
     mkdir -p ~/.local/bin
-    cp ./target/release/eww ~/.local/bin/
+    cp -r ./eww ~/.config/
+    sudo cp ./eww/eww-launcher /usr/local/bin/
+    cp ./eww/eww.service ~/.config/systemd/user/
 }
 
-work_dir=$(pwd)
 # install script
 read -p "Install basic software? (Y/N)" -n 1 base_ins
 if [ $base_ins = y -o $base_ins = Y ]; then
@@ -126,9 +130,6 @@ if [ $base_ins = y -o $base_ins = Y ]; then
     cp -r ./fontconfig ~/.config/
     mkdir ~/.config/fontconfig/conf.d
     fc-cache
-    # eww
-    cp -r ./eww ~/.config/
-    cp ./eww/eww-launcher ~/.local/bin
     # nwg-bar
     cp -r ./nwg-bar ~/.config/
     # dunst
