@@ -5,4 +5,4 @@ Comment=QQ Music Client for Linux
 Exec="\$HOME/Applications/qqmusic-1.1.5.AppImage --no-sandbox --disable-gpu"
 StartupNotify=false
 Terminal=false
-MimeType=audio/mp4;
+MimeType=
