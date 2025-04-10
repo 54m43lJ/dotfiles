@@ -122,10 +122,13 @@ if [ $base_ins = y -o $base_ins = Y ]; then
     mkdir ~/.config/hypr/conf.d
     # SDDM
     sudo cp -r ./sddm/sugar-dark /usr/share/sddm/themes/
+    sudo mkdir /etc/sddm.conf.d/
     sudo cp ./sddm/theme.conf /etc/sddm.conf.d/
     sudo systemctl enable sddm
     read -p "Are you using an HiDPI display? (Y/N)" -n 1 hidpi
-    if [ $hidpi = y -o $hidpi = Y ]; then sudo cp ./sddm/dpi.conf /etc/sddm.conf.d/; fi
+    if [ $hidpi = y -o $hidpi = Y ]; then
+      sudo cp ./sddm/dpi.conf /etc/sddm.conf.d/
+    fi
     # fontconfig
     cp -r ./fontconfig ~/.config/
     mkdir ~/.config/fontconfig/conf.d
