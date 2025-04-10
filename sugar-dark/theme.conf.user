@@ -1,9 +1,0 @@
-[General]
-    Background="graduation2.jpg"
-    MainColor="white"
-    AccentColor="#ca33ac"
-    PartialBlur="true"
-    FormPosition="right"
-    #ScaleImageCropped="false"
-    BackgroundImageAlignment="left"
-    RoundCorners=30
