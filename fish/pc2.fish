@@ -1,2 +1,2 @@
-alias D:="cd /media/MAIN/"
-alias E:="cd /media/KINGBANK/"
+alias D="cd /D"
+alias E="cd /E"

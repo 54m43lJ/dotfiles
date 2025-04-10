@@ -5,7 +5,6 @@ end
 zoxide init --cmd cd fish | source
 set PATH ~/.local/bin/ $PATH
 alias vi=nvim
-alias lv=lvim
 alias venv='source venv/bin/activate.fish'
 if test -x "$(command -v python)"
     alias newvenv='python -m venv .venv'
