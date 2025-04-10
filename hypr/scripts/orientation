@@ -1,17 +1,17 @@
 #!/bin/sh
 
-ori=$(hyprctl monitors | grep -m 1 transform | awk '{print $2}')
+dir=$(hyprctl monitors | grep -m 1 transform | awk '{print $2}')
 
 if [ -v HYPR_4K ]; then
-  if [ $ori -eq 0 ]; then
-      hyprctl --batch 'keyword monitor ,highrr,auto,2,transform,1 ; dispatch layoutmsg orientationbottom'
-  else
-      hyprctl --batch 'keyword monitor ,highrr,auto,2,transform,0 ; dispatch layoutmsg orientationleft'
-  fi
+    scale=2
 else
-  if [ $ori -eq 0 ]; then
-      hyprctl --batch 'keyword monitor ,highrr,auto,auto,transform,1 ; dispatch layoutmsg orientationbottom'
-  else
-      hyprctl --batch 'keyword monitor ,highrr,auto,auto,transform,0 ; dispatch layoutmsg orientationleft'
-  fi
+    scale=auto
 fi
+if [ $dir -eq 0 ]; then
+    dir=1
+    ori=orientationbottom
+else
+    dir=0
+    ori=orientationleft
+fi
+hyprctl --batch "keyword monitor ,highrr,auto,$scale,transform,$dir ; dispatch layoutmsg $ori"
