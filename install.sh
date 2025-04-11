@@ -190,6 +190,11 @@ if [ $dev_ins = y -o $dev_ins = Y ]; then
     echo
     pac_ins $dev
     yay -Sq $aur_dev
+    # VSCodium
+    cd $work_dir
+    grep -v '//' ~/.vscode-oss/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
+    cp argv.json ~/.vscode-oss/argv.json
+    # neovim
     git clone https://github.com/LazyVim/starter ~/.config/nvim
     cd $work_dir
     cp ./nvim/alabaster.lua ~/.config/nvim/lua/plugins/
