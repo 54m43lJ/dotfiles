@@ -2,7 +2,7 @@
 Type=Application
 Name=Clash for Windows
 Comment=Clash for Windows startup script
-Exec=/home/john/Applications/cfw/cfw --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
+Exec=$HOME/Applications/cfw/cfw --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
 StartupNotify=false
 Terminal=false
 MimeType=
