@@ -12,6 +12,7 @@ base='sbctl
 neovim
 git
 base-devel
+unzip
 pipewire
 wireplumber
 pipewire-audio
@@ -141,8 +142,11 @@ if [ $base_ins = y -o $base_ins = Y ]; then
     cp -r ./nwg-bar ~/.config/
     # dunst
     cp -r ./dunst ~/.config/
-    #wofi
+    # wofi
     cp -r ./wofi ~/.config/
+    # pipewire
+    sudo mkdir /usr/share/pipewire/pipewire.conf.d
+    sudo cp ./pipewire/samplerate.conf /usr/share/pipewire/pipewire.conf.d/
     # nemo
     gsettings set org.cinnamon.desktop.default-applications.terminal exec foot
     # ssh-agent
@@ -154,10 +158,10 @@ if [ $base_ins = y -o $base_ins = Y ]; then
     # grub
     sudo cp -r ./arch-linux /boot/grub/themes/
     sudo sed -i -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
-    sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\1saved/g' /etc/default/grub
-    sudo sed -i -E 's/^(GRUB_GFXMODE=).*$/\1280x720/g' /etc/default/grub
+    sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\10/g' /etc/default/grub
+    sudo sed -i -E 's/^(GRUB_GFXMODE=).*$/\11280x720/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_THEME=).*$/\1"\/boot\/grub\/themes\/arch-linux\/theme\.txt"/g' /etc/default/grub
-    sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
+    #sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
     # clash
@@ -167,6 +171,7 @@ if [ $base_ins = y -o $base_ins = Y ]; then
     eww_ins
 fi
 
+echo
 read -p "Are you using Nvidia? (Y/N)" -n 1 nv_ins
 if [ $nv_ins = y -o $nv_ins = Y ]; then
     echo
@@ -195,11 +200,12 @@ if [ $dev_ins = y -o $dev_ins = Y ]; then
     grep -v '//' ~/.vscode-oss/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
     cp argv.json ~/.vscode-oss/argv.json
     # neovim
-    git clone https://github.com/LazyVim/starter ~/.config/nvim
+    LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
     cd $work_dir
     cp ./nvim/alabaster.lua ~/.config/nvim/lua/plugins/
     cat ./nvim/keymaps.lua >>~/.config/nvim/lua/config/keymaps.lua
     cat ./nvim/options.lua >>~/.config/nvim/lua/config/options.lua
+    cat ./nvim/lazy.lua >>~/.config/nvim/lua/config/lazy.lua
 fi
 
 echo

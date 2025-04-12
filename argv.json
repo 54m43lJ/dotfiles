@@ -1,0 +1,5 @@
+{
+  "enable-crash-reporter": false,
+  "crash-reporter-id": "71cb6c0d-6239-4e6b-b190-fcc238904354",
+  "password-store": "gnome-keyring"
+}
