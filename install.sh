@@ -83,6 +83,17 @@ pac_ins() {
     fi
   done
 }
+yay_ins() {
+  for i in $@; do
+    yay -Sq \
+    --answerclean None --answerdiff None \
+    --noconfirm --norebuild --noredownload \
+    $i
+    if [ $? -eq 1 ]; then
+      failed="${failed} ${i}"
+    fi
+  done
+}
 
 eww_ins() {
   echo "Setting up eww..."
@@ -110,9 +121,11 @@ if [ $base_ins = y -o $base_ins = Y ]; then
   xdg-user-dirs-update
   pac_ins $software
   echo "Writing personalizations..."
+  # pacman
+  sudo sed -i 's/#Color/Color/' /etc/pacman.conf
+  # desktop entries
   cd $work_dir
   mkdir -p ~/.local/share
-  # desktop entries
   cp -r ./applications ~/.local/share/
   sed -i "s|\$HOME|$HOME|g" ~/.local/share/applications/cfw.desktop
   sed -i "s|\$HOME|$HOME|g" ~/.local/share/applications/qqmusic.desktop
@@ -188,7 +201,7 @@ if [ $yay_ins = y -o $yay_ins = Y ]; then
   git clone https://aur.archlinux.org/yay.git ~/Applications/yay
   cd ~/Applications/yay
   makepkg -si
-  yay -Sq $aur
+  yay_ins $aur
 fi
 
 echo
@@ -196,11 +209,12 @@ read -p "Install developer environment? (Y/N)" -n 1 dev_ins
 if [ $dev_ins = y -o $dev_ins = Y ]; then
   echo
   pac_ins $dev
-  yay -Sq $aur_dev
+  yay_ins $aur_dev
   # VSCodium
   cd $work_dir
   grep -v '//' ~/.vscode-oss/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
   cp argv.json ~/.vscode-oss/argv.json
+  rm -f argv.json
   # neovim
   #LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
   git clone https://github.com/LazyVim/starter ~/.config/nvim
