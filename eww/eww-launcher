@@ -1,5 +1,5 @@
 #!/bin/bash
-eww daemon --debug
+eww daemon
 sleep 1
 eww close-all
 for i in $(seq $(hyprctl monitors | grep -Ec "^Monitor")) ; do
