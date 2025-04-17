@@ -179,11 +179,11 @@ if [ $base_ins = y -o $base_ins = Y ]; then
   #sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
   sudo sed -i -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
   sudo grub-mkconfig -o /boot/grub/grub.cfg
+  # eww
+  eww_ins
   # clash
   read -p "Enter path to your Clash for Windows package (press Enter to skip):" clash
   if [ -n $clash ]; then tar -C ~/Applications -xf $clash; fi
-  read -p "Switch to another terminal, launch Hyprland, start Clash for Windows service, then come back and press any key."
-  eww_ins
 fi
 
 echo

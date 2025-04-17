@@ -5,7 +5,7 @@ After=graphical-session.target
 [Service]
 Type=exec
 ExecStart=eww daemon --no-daemonize
-Restart=always
+Restart=no
 
 [Install]
 WantedBy=graphical-session.target
