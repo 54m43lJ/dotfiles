@@ -3,9 +3,9 @@ Description=Eww Startup Service
 After=graphical-session.target
 
 [Service]
-Type=exec
-ExecStart=eww daemon --no-daemonize
-Restart=no
+Type=forking
+ExecStart=eww-launcher
+Restart=always
 
 [Install]
 WantedBy=graphical-session.target
