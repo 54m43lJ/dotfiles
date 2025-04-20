@@ -66,7 +66,7 @@ gvfs-smb
 keepassxc'
 nvidia='nvidia libva-nvidia-driver'
 eww='gtk3 gtk-layer-shell pango gdk-pixbuf2 cairo glib2 gcc-libs glibc rustup'
-dev='ripgrep python make gcc npm'
+dev='ripgrep python make gcc npm remmina freerdp'
 themes='qt6ct breeze breeze-gtk'
 # AUR packages
 aur='brave-bin nwg-bar nemo-compare hyprshot'
