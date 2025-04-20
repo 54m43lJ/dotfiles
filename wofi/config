@@ -1,5 +1,6 @@
 show=drun,run
 sort_order=default
+allow_images=true
 width=40%
 height=40%
 term=foot

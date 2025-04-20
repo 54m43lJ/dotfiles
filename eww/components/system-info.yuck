@@ -26,21 +26,41 @@
 )
 
 (defwidget battery []
+  (box
     (box
-        :class "label"
-        :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
-        (image :path "${bat_state == "none" ? "static/bat_plugged.svg" : 
-            bat_state == "Charging" ?
-            bat_per < 50 ?
-                "static/bat_charginglow.svg" : "static/bat_charging.svg" :
-            bat_per < 5 ? "static/bat_empty.svg" :
-            bat_per < 15 ? "static/bat_verylow.svg" :
-            bat_per < 40 ? "static/bat_low.svg" :
-            bat_per < 75 ? "static/bat_half.svg" :
-            bat_per < 95 ? "static/bat_high.svg" :
-            "static/bat_full.svg"}"
-            :image-width 16
-        )
+      :class "label"
+      :visible { bat_state != "none" && bat_per < 5 ? false : true }
+      :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
+      "${bat_state == "none" ? "" :
+        bat_state == "Charging" ?
+          bat_per < 15 ? "󰢜" :
+          bat_per < 25 ? "󰂆" :
+          bat_per < 35 ? "󰂇" :
+          bat_per < 45 ? "󰂈" :
+          bat_per < 55 ? "󰢝" :
+          bat_per < 65 ? "󰂉" :
+          bat_per < 75 ? "󰢞" :
+          bat_per < 85 ? "󰂊" :
+          bat_per < 95 ? "󰂋" :
+          "󰂅" :
+          bat_per < 15 ? "󰁺" :
+          bat_per < 25 ? "󰁻" :
+          bat_per < 35 ? "󰁼" :
+          bat_per < 45 ? "󰁽" :
+          bat_per < 55 ? "󰁾" :
+          bat_per < 65 ? "󰁿" :
+          bat_per < 75 ? "󰂀" :
+          bat_per < 85 ? "󰂁" :
+          bat_per < 95 ? "󰂂" :
+          "󰁹"
+        }"
+    )
+    (box
+      :class "label lowbat"
+      :visible { bat_state != "none" && bat_per < 5 ? true : false }
+      :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
+      "${bat_state == "Charging" ? "󰢟" : "󰂎"}"
+      )
     )
 )
 

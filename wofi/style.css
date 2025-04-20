@@ -16,7 +16,7 @@
 
 window {
   border: none;
-  background-color: transparent;
+  background: none;
 }
 
 #input {
@@ -34,6 +34,12 @@ window {
   border-bottom: 2px solid @lightbrown;
 }
 
+#img {
+  margin: 0 3px;
+  padding: 2px;
+  background-color: @white;
+  border-radius: 0.4em;
+}
 
 #text {
   padding: 5px;
@@ -56,9 +62,9 @@ window {
   transition: background-color 0.2s linear;
 }
 
-#entry:selected > * > * > * {
+#entry:selected > expander > * > * {
   // keeps that triangle happy;
-  color: @white;
+  color: @cream;
 }
 
 #entry #expander-box {
@@ -68,6 +74,7 @@ window {
 #entry #entry {
   background-color: @white;
   border: none;
+  margin: 5px;
 }
 
 #entry #entry #text {
