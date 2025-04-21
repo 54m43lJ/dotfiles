@@ -1,5 +1,11 @@
 (defwidget sidestuff [i]
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
+    (systray
+      :class "right"
+      :spacing 13
+      :icon-size 14
+      :prepend-new true
+      )
     (network :i i)
     (metric :label {mute == "no" ? "" : "󰝟"}
         :value volume
