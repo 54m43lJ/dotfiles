@@ -1,14 +1,18 @@
 (defwidget music []
-    (box :class "music medium"
-        :orientation "h"
-        :space-evenly false
-        :halign "center"
-        :visible {music == "" ? false : true}
-        (label :text "🎵 ${music}"
-            :tooltip "🎵 ${music}"
-            :limit-width 20)
-    )
+  (box :class "medium"
+    :orientation "h"
+    :space-evenly false
+    :halign "start"
+    :visible {music_status == "Playing" ? true : false}
+      (label :text {music == "" ? "" : "🎵 ${music}"}
+        :tooltip {music == "" ? "" : "🎵 ${music}"}
+        :truncate true
+        )
+  )
 )
 
+(deflisten music_status
+  "playerctl -F status")
+
 (deflisten music :initial ""
-  "bash ~/.config/eww/scripts/get-music")
+  "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")

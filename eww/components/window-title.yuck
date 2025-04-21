@@ -1,9 +1,11 @@
 (deflisten window :initial "" "sh ~/.config/eww/scripts/get-window-title")
 (defwidget window_w []
-  (box :class "titlebar large"
+  (box
+    :class "titlebar large"
+    :halign "center"
     (label :text "${window == "null" ? "" : window}"
-        :tooltip "${window == "null" ? "" : window}"
-        :limit-width 32
+      :tooltip "${window == "null" ? "" : window}"
+      :truncate true
     )
   )
 )

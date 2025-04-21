@@ -11,7 +11,7 @@
   )
 
 (defwidget leftbar [i]
-  (box :orientation "h" :class "left" :halign "start" :spacing 20
+  (box :orientation "h" :class "left" :halign "start" :spacing 10
     (workspaces)
     (music))
   )

@@ -2,33 +2,32 @@
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
     (systray
       :class "right"
-      :spacing 13
-      :icon-size 14
+      :spacing 10
+      :icon-size 16
       :prepend-new true
       )
     (network :i i)
     (metric :label {mute == "no" ? "" : "󰝟"}
-        :value volume
-        :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
-        :switch showvol
-        :switchname "showvol"
-        :action "pactl set-sink-mute @DEFAULT_SINK@ toggle")
-
+      :value volume
+      :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+      :switch showvol
+      :switchname "showvol"
+      :action "pactl set-sink-mute @DEFAULT_SINK@ toggle")
     (metric :label "󰍛"
-        :value {EWW_RAM.used_mem_perc}
-        :onchange ""
-        :switch showmem
-        :switchname "showmem"
-        :action "")
+      :value {EWW_RAM.used_mem_perc}
+      :onchange ""
+      :switch showmem
+      :switchname "showmem"
+      :action "")
     (battery)
     (time)
     )
 )
 
 (defwidget time []
-    (box :orientation "h" :space-evenly false
-        :tooltip date
-      clock)
+  (box :orientation "h" :space-evenly false
+    :tooltip date
+    clock)
 )
 
 (defwidget battery []
@@ -38,28 +37,28 @@
       :visible { bat_state != "none" && bat_per < 5 ? false : true }
       :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
       "${bat_state == "none" ? "" :
-        bat_state == "Charging" ?
-          bat_per < 15 ? "󰢜" :
-          bat_per < 25 ? "󰂆" :
-          bat_per < 35 ? "󰂇" :
-          bat_per < 45 ? "󰂈" :
-          bat_per < 55 ? "󰢝" :
-          bat_per < 65 ? "󰂉" :
-          bat_per < 75 ? "󰢞" :
-          bat_per < 85 ? "󰂊" :
-          bat_per < 95 ? "󰂋" :
-          "󰂅" :
-          bat_per < 15 ? "󰁺" :
-          bat_per < 25 ? "󰁻" :
-          bat_per < 35 ? "󰁼" :
-          bat_per < 45 ? "󰁽" :
-          bat_per < 55 ? "󰁾" :
-          bat_per < 65 ? "󰁿" :
-          bat_per < 75 ? "󰂀" :
-          bat_per < 85 ? "󰂁" :
-          bat_per < 95 ? "󰂂" :
-          "󰁹"
-        }"
+      bat_state == "Charging" ?
+        bat_per < 15 ? "󰢜" :
+        bat_per < 25 ? "󰂆" :
+        bat_per < 35 ? "󰂇" :
+        bat_per < 45 ? "󰂈" :
+        bat_per < 55 ? "󰢝" :
+        bat_per < 65 ? "󰂉" :
+        bat_per < 75 ? "󰢞" :
+        bat_per < 85 ? "󰂊" :
+        bat_per < 95 ? "󰂋" :
+        "󰂅" :
+        bat_per < 15 ? "󰁺" :
+        bat_per < 25 ? "󰁻" :
+        bat_per < 35 ? "󰁼" :
+        bat_per < 45 ? "󰁽" :
+        bat_per < 55 ? "󰁾" :
+        bat_per < 65 ? "󰁿" :
+        bat_per < 75 ? "󰂀" :
+        bat_per < 85 ? "󰂁" :
+        bat_per < 95 ? "󰂂" :
+        "󰁹"
+      }"
     )
     (box
       :class "label lowbat"
