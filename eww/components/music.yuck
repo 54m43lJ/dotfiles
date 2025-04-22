@@ -1,18 +1,34 @@
 (defwidget music []
-  (box :class "medium"
-    :orientation "h"
-    :space-evenly false
-    :halign "start"
-    :visible {music_status == "Playing" ? true : false}
-      (label :text {music == "" ? "" : "🎵 ${music}"}
-        :tooltip {music == "" ? "" : "🎵 ${music}"}
+  (box
+      :orientation "h"
+      :space-evenly false
+      :halign "start"
+      :spacing 20
+    (box :class "medium"
+      :spacing 16
+      (button :visible {music_status == "Stopped" ? false : true}
+        :onclick "playerctl previous"
+        (label :text "󰒮"))
+      (button
+        :onclick "playerctl play-pause"
+        (label :text {music_status == "Playing" ? "󰏤" : "󰐊"}))
+      (button :visible {music_status == "Stopped" ? false : true}
+        :onclick "playerctl stop"
+        (label :text "󰓛"))
+      (button :visible {music_status == "Stopped" ? false : true}
+        :onclick "playerctl next"
+        (label :text "󰒭"))
+      )
+    (box :class "medium"
+      :visible {music_status == "Playing" ? true : false}
+      (label :text "${music}"
+        :tooltip "${music}"
         :truncate true
         )
+    )
   )
 )
 
-(deflisten music_status
-  "playerctl -F status")
-
+(deflisten music_status "playerctl -F status")
 (deflisten music :initial ""
   "playerctl --follow metadata --format '{{ artist }} - {{ title }}' || true")

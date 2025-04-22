@@ -23,8 +23,7 @@
 
 (defwidget rightbar [i]
   (box :orientation "h" :class "right" :halign "end" :space-evenly false :spacing 13
-    (sidestuff :i i)
-    )
+    (sidestuff))
   )
 
 (defwindow w_bar [i]

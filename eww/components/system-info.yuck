@@ -1,4 +1,4 @@
-(defwidget sidestuff [i]
+(defwidget sidestuff []
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
     (systray
       :class "right"
@@ -6,7 +6,7 @@
       :icon-size 16
       :prepend-new true
       )
-    (network :i i)
+    (network)
     (metric :label {mute == "no" ? "" : "󰝟"}
       :value volume
       :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
@@ -69,10 +69,8 @@
     )
 )
 
-(defwidget network [i]
+(defwidget network []
     (eventbox
-        ;:onhover {"eww open netinfo --id netinfo${i} --arg i=${i - 1}"}
-        ;:onhoverlost {"eww close netinfo${i}"}
         :onclick {"nm-connection-editor&"}
         :tooltip if_ad
         (box :orientation "h" :space-evenly false
@@ -81,7 +79,7 @@
     )
 )
 
-(defwindow netinfo [i]
+(defwindow netinfo []
     :monitor i
    :geometry (geometry :x "50%"
        :y "20px"

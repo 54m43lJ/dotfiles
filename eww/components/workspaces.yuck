@@ -3,7 +3,6 @@
 (defwidget workspaces []
   (eventbox :onscroll "bash ~/.config/eww/scripts/change-active-workspace {} ${current_workspace}" :class "workspaces-widget"
     (box :class "workspaces"
-      :spacing 0
       :space-evenly false
       (label :text "${workspaces}${current_workspace}" :visible false)
       (for workspace in workspaces
