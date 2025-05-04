@@ -220,9 +220,9 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     #LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
     git clone https://github.com/LazyVim/starter ~/.config/nvim
     cd $work_dir
-    cp -r ./nvim/plugins ~/.config/nvim/lua/
-    cat ./nvim/keymaps.lua >>~/.config/nvim/lua/config/keymaps.lua
-    cat ./nvim/options.lua >>~/.config/nvim/lua/config/options.lua
+    cp -r ./nvim/lua/plugins/ ~/.config/nvim/lua/
+    cat ./nvim/lua/config/keymaps.lua >>~/.config/nvim/lua/config/keymaps.lua
+    cat ./nvim/lua/config/options.lua >>~/.config/nvim/lua/config/options.lua
     sed -i 's/colorscheme = {[^}]*}/colorscheme = { "alabaster" }/' ~/.config/nvim/lua/config/lazy.lua
   fi
 

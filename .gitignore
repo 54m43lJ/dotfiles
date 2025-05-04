@@ -3,3 +3,4 @@ fish/conf.d/*
 hypr/conf.d/*
 .DS_Store
 argv.json
+nvim/lua/plugins/example.lua
