@@ -14,3 +14,4 @@ end
 if test -x "$(command -v cargo)"
     set PATH ~/.cargo/bin/ $PATH
 end
+alias pu='sudo pacman -Syu'
