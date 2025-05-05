@@ -6,7 +6,6 @@ return {
       vim.g.loaded_netrwPlugin = 1
     end,
     opts = {
-      hijack_cursor = true,
     },
     keys = {
       { "<leader>fe", function ()
