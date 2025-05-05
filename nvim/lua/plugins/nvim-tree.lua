@@ -5,15 +5,17 @@ return {
       vim.g.loaded_netrw = 1
       vim.g.loaded_netrwPlugin = 1
     end,
-    opts = {},
+    opts = {
+      hijack_cursor = true,
+    },
     keys = {
       { "<leader>fe", function ()
         local api = require('nvim-tree.api')
-        api.tree.toggle({ path = LazyVim.root() })
+        api.tree.toggle({ path = LazyVim.root(), find_file = true })
       end, desc = "Explorer (root dir)" },
       { "<leader>fE", function ()
         local api = require('nvim-tree.api')
-        api.tree.toggle({ path = LazyVim.root() })
+        api.tree.toggle({ path = vim.uv.cwd() })
       end, desc = "Explorer (cwd)" },
       { "<leader>e", "<leader>fe", desc = "Explorer (root dir)", remap=true },
       { "<leader>E", "<leader>fE", desc = "Explorer (cwd)", remap=true },
