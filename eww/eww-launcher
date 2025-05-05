@@ -1,5 +1,5 @@
 #!/bin/bash
-eww close-all
+if pidof eww; then eww close-all; else eww daemon; fi
 for i in $(seq $(hyprctl monitors | grep -Ec "^Monitor")) ; do
     eww open w_bar --id w_bar$i --arg i=$(($i-1))
 done
