@@ -110,6 +110,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     mkdir -p ~/.local/bin
     cp -r ./eww ~/.config/
     sudo cp ./eww/eww-launcher /usr/local/bin/
+    chmod u+x ~/.config/eww/scripts/*
     #cp ./eww/eww.service ~/.config/systemd/user/
   }
 
