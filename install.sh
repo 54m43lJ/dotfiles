@@ -176,10 +176,10 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     # grub
     sudo cp -r ./arch-linux /boot/grub/themes/
     sudo sed -i -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
-    sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\10/g' /etc/default/grub
+    # sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\10/g' /etc/default/grub
     sudo sed -i -E 's/^(GRUB_GFXMODE=).*$/\11280x720/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_THEME=).*$/\1"\/boot\/grub\/themes\/arch-linux\/theme\.txt"/g' /etc/default/grub
-    #sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
+    sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
     # eww
