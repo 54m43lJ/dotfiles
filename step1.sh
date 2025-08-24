@@ -57,6 +57,8 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
   fcitx5-chinese-addons
   fcitx5-breeze
   hyprpaper
+  hypridle
+  hyprshot
   zoxide
   fzf'
   software='obsidian
@@ -75,7 +77,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
   dev='ripgrep python make gcc npm remmina freerdp sshfs'
   themes='qt6ct breeze breeze-gtk'
   # AUR packages
-  aur='brave-bin nwg-bar nemo-compare hyprshot'
+  aur='brave-bin nwg-bar nemo-compare'
   aur_dev='vscodium-bin vscodium-bin-marketplace vscodium-bin-features'
   # etc
 
@@ -95,7 +97,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     echo; echo "Running pacman..."
     # configure pacman
     sudo sed -i 's/#Color/Color/' /etc/pacman.conf
-    echo $mirror > /etc/pacman.d/mirrorlist
+    sudo echo $mirror > /etc/pacman.d/mirrorlist
     # install pkgs
     pac_ins $base
     pac_ins $software
