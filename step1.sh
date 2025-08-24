@@ -1,4 +1,7 @@
 #!/bin/env bash
+# Step 1
+# install everything that does not need clash
+# install clash
 
 # Preliminary check
 if [ $(id -u) -eq 0 ]; then
@@ -7,6 +10,7 @@ if [ $(id -u) -eq 0 ]; then
 fi
 work_dir=$(pwd)
 
+mirror='https://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch'
 failed=""
 if grep 'NAME="Arch Linux"' /etc/os-release; then
   # Arch packages
@@ -84,47 +88,19 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
       fi
     done
   }
-  yay_ins() {
-    for i in $@; do
-      yay -Sq \
-      --answerclean None --answerdiff None \
-      --noconfirm --norebuild --noredownload \
-      $i
-      if [ $? -eq 1 ]; then
-        failed="${failed} ${i}"
-      fi
-    done
-  }
-
-  eww_ins() {
-    echo "Setting up eww..."
-    pac_ins $eww
-    RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup rustup install stable
-    rustup default stable
-    mkdir ~/Applications
-    git clone https://github.com/elkowar/eww.git ~/Applications/eww
-    cd ~/Applications/eww
-    cargo build --release --no-default-features --features=wayland
-    sudo cp ./target/release/eww /usr/local/bin/
-    cd $work_dir
-    mkdir -p ~/.local/bin
-    cp -r ./eww ~/.config/
-    sudo cp ./eww/eww-launcher /usr/local/bin/
-    chmod u+x ~/.config/eww/scripts/*
-    #cp ./eww/eww.service ~/.config/systemd/user/
-  }
 
   # install script
-  read -p "Install basic software? (Y/N)" -n 1 base_ins
+  read -p "Install all dependencies? (Y/N)" -n 1 base_ins
   if [ $base_ins = y -o $base_ins = Y ]; then
-    echo
-    echo "Setting up system software..."
-    pac_ins $base
-    xdg-user-dirs-update
-    pac_ins $software
-    echo "Writing personalizations..."
-    # pacman
+    echo; echo "Running pacman..."
+    # configure pacman
     sudo sed -i 's/#Color/Color/' /etc/pacman.conf
+    echo $mirror > /etc/pacman.d/mirrorlist
+    # install pkgs
+    pac_ins $base
+    pac_ins $software
+    echo "Writing configurations..."
+    xdg-user-dirs-update
     # desktop entries
     cd $work_dir
     mkdir -p ~/.local/share
@@ -142,13 +118,22 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     # hyprland
     cp -r hypr ~/.config/
     mkdir ~/.config/hypr/conf.d
+    ln -sr ~/.config/hypr/windowrule.conf ~/.config/hypr/conf.d/windowrule.conf
     # SDDM
     sudo cp -r ./sddm/sugar-dark /usr/share/sddm/themes/
     sudo mkdir /etc/sddm.conf.d/
     sudo cp ./sddm/theme.conf /etc/sddm.conf.d/
     sudo systemctl enable sddm
+    # Device-specific options
+    read -p "Are you on a laptop? (Y/N)" -n 1 laptop
+    if [ $laptop = y -o $laptop = Y ]; then
+      ln -sr ~/.config/hypr/macbook.conf ~/.config/hypr/conf.d/macbook.conf
+    else
+      ln -sr ~/.config/hypr/pc.conf ~/.config/hypr/conf.d/pc.conf
+    fi
     read -p "Are you using an HiDPI display? (Y/N)" -n 1 hidpi
     if [ $hidpi = y -o $hidpi = Y ]; then
+      ln -sr ~/.config/hypr/4k.conf ~/.config/hypr/conf.d/4k.conf
       sudo cp ./sddm/dpi.conf /etc/sddm.conf.d/
     fi
     # fontconfig
@@ -176,17 +161,15 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     # grub
     sudo cp -r ./arch-linux /boot/grub/themes/
     sudo sed -i -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
-    # sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\10/g' /etc/default/grub
+    sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\1saved/g' /etc/default/grub
     sudo sed -i -E 's/^(GRUB_GFXMODE=).*$/\11280x720/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_THEME=).*$/\1"\/boot\/grub\/themes\/arch-linux\/theme\.txt"/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
-    # eww
-    eww_ins
     # clash
-    read -p "Enter path to your Clash for Windows package (press Enter to skip):" clash
-    if [ -n $clash ]; then tar -C ~/Applications -xf $clash; fi
+    read -p "Enter path to your Clash for Windows package (enter nothing to skip):" clash
+    if [[ -n $clash ]]; then tar -C ~/Applications -xf $clash; fi
   fi
 
   echo
@@ -195,37 +178,6 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     echo
     pac_ins $nvidia
     sudo ~/.config/hypr/nvidia.sh
-  fi
-
-  echo
-  read -p "Do you wish to install yay and other packages from AUR? (Y/N)" -n 1 yay_ins
-  if [ $yay_ins = y -o $yay_ins = Y ]; then
-    echo
-    git clone https://aur.archlinux.org/yay.git ~/Applications/yay
-    cd ~/Applications/yay
-    makepkg -si
-    yay_ins $aur
-  fi
-
-  echo
-  read -p "Install developer environment? (Y/N)" -n 1 dev_ins
-  if [ $dev_ins = y -o $dev_ins = Y ]; then
-    echo
-    pac_ins $dev
-    yay_ins $aur_dev
-    # VSCodium
-    cd $work_dir
-    grep -v '//' ~/.vscode-oss/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
-    cp argv.json ~/.vscode-oss/argv.json
-    rm -f argv.json
-    # neovim
-    #LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
-    git clone https://github.com/LazyVim/starter ~/.config/nvim
-    cd $work_dir
-    cp -r ./nvim/lua/plugins/ ~/.config/nvim/lua/
-    cat ./nvim/lua/config/keymaps.lua >>~/.config/nvim/lua/config/keymaps.lua
-    cat ./nvim/lua/config/options.lua >>~/.config/nvim/lua/config/options.lua
-    sed -i 's/colorscheme = {[^}]*}/colorscheme = { "alabaster" }/' ~/.config/nvim/lua/config/lazy.lua
   fi
 
   echo
