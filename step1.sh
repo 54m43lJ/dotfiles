@@ -59,6 +59,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
   hyprpaper
   hypridle
   hyprshot
+  hyprlock
   zoxide
   fzf'
   software='obsidian
