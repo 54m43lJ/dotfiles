@@ -72,6 +72,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
   meld
   gvfs-smb
   keepassxc'
+  openrgb='openrgb i2c-tools'
   nvidia='nvidia libva-nvidia-driver'
   eww='gtk3 gtk-layer-shell pango gdk-pixbuf2 cairo glib2 gcc-libs glibc rustup'
   dev='ripgrep python make gcc npm remmina freerdp sshfs'
@@ -94,10 +95,11 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
   # install script
   read -p "Install all dependencies? (Y/N)" -n 1 base_ins
   if [ $base_ins = y -o $base_ins = Y ]; then
-    echo; echo "Running pacman..."
+    echo
+    echo "Running pacman..."
     # configure pacman
     sudo sed -i 's/#Color/Color/' /etc/pacman.conf
-    sudo echo $mirror > /etc/pacman.d/mirrorlist
+    sudo echo $mirror >/etc/pacman.d/mirrorlist
     # install pkgs
     pac_ins $base
     pac_ins $software
@@ -137,6 +139,18 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     if [ $hidpi = y -o $hidpi = Y ]; then
       ln -sr ~/.config/hypr/4k.conf ~/.config/hypr/conf.d/4k.conf
       sudo cp ./sddm/dpi.conf /etc/sddm.conf.d/
+    fi
+    read -p "Configure RGB? (Y/N)" -n 1 rgb
+    if [ $rgb = y -o $rgb = Y ]; then
+      pac_ins $openrgb
+      sudo touch /etc/modules-load.d/i2c.conf
+      sudo sh -c 'echo "i2c-dev" >> /etc/modules-load.d/i2c.conf'
+      read -p "Please confirm you are using an AMD CPU: (Y/N)" -n 1 rgb_amd
+      if [[ $rgb_amd = y || $rgb_amd = Y ]]; then
+        sudo sh -c 'echo "i2c-piix4" >> /etc/modules-load.d/i2c.conf'
+      else
+        sudo sh -c 'echo "i2c-i801" >> /etc/modules-load.d/i2c.conf'
+      fi
     fi
     # fontconfig
     cp -r ./fontconfig ~/.config/
