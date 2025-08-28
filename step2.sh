@@ -13,10 +13,10 @@ work_dir=$(pwd)
 
 failed=""
   eww='gtk3 gtk-layer-shell pango gdk-pixbuf2 cairo glib2 gcc-libs glibc rustup'
-  dev='ripgrep python make gcc npm remmina freerdp sshfs'
+  dev='ripgrep python make gcc npm remmina freerdp sshfs code'
   # AUR packages
   aur='brave-bin nwg-bar nemo-compare hyprshot'
-  aur_dev='vscodium-bin vscodium-bin-marketplace vscodium-bin-features'
+  aur_dev='code-features code-marketplpace'
   # etc
 
   # macro for installation
@@ -74,7 +74,7 @@ failed=""
     echo
     pac_ins $dev
     yay_ins $aur_dev
-    # VSCodium
+    # VSCode
     cd $work_dir
     grep -v '//' ~/.vscode-oss/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
     cp argv.json ~/.vscode-oss/argv.json
