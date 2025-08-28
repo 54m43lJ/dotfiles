@@ -76,8 +76,8 @@ failed=""
     yay_ins $aur_dev
     # VSCode
     cd $work_dir
-    grep -v '//' ~/.vscode-oss/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
-    cp argv.json ~/.vscode-oss/argv.json
+    grep -v '//' ~/.vscode/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
+    cp argv.json ~/.vscode/argv.json
     rm -f argv.json
     # neovim
     #LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
