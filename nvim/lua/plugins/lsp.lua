@@ -1,4 +1,4 @@
-require('lspconfig').pylsp.setup{
+require('lspconfig').pylsp.setup({
   settings = {
     pylsp = {
       plugins = {
@@ -8,7 +8,8 @@ require('lspconfig').pylsp.setup{
       }
     }
   }
-}
+})
+
 require('lspconfig').ruff.setup({
   init_options = {
     settings = {
