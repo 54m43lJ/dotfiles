@@ -16,7 +16,7 @@ failed=""
   dev='ripgrep python make gcc npm remmina freerdp sshfs code'
   # AUR packages
   aur='brave-bin nwg-bar nemo-compare hyprshot'
-  aur_dev='code-features code-marketplpace'
+  aur_dev='code-features code-marketplace'
   # etc
 
   # macro for installation
@@ -64,7 +64,7 @@ failed=""
     echo
     git clone https://aur.archlinux.org/yay.git ~/Applications/yay
     cd ~/Applications/yay
-    makepkg -si
+    makepkg -si --noconfirm
     yay_ins $aur
   fi
 
