@@ -166,10 +166,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     # ssh-agent
     systemctl --user enable gcr-ssh-agent --now
     # electron flags
-    cp ./electron-apps/user-flags.conf ~/.config/obsidian/
-    cp ./electron-apps/codium-flags.conf ~/.config/
-    cp ./electron-apps/electron-flags.conf ~/.config/
-    cp ./electron-apps/brave-flags.conf ~/.config/
+    cp -r ./electron-apps/* ~/.config/
     # grub
     sudo cp -r ./arch-linux /boot/grub/themes/
     sudo sed -i -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
