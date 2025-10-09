@@ -1,14 +1,20 @@
 #!/bin/env bash
 # Step 1
-# install everything that does not need clash
+# install everything that does not need proxy
 # install clash
 
 # Preliminary check
 if [ $(id -u) -eq 0 ]; then
   echo "DO NOT RUN THIS SCRIPT AS root. Exiting..."
-  exit
+  exit 1
 fi
-work_dir=$(pwd)
+
+if [[ -z $WD ]]; then
+  echo "Do not run the script manually.
+If you insist, set \$WD to the proper working directory.
+Exiting..."
+  exit 1
+fi
 
 mirror='https://mirrors.ustc.edu.cn/archlinux/$repo/os/$arch'
 failed=""
@@ -82,15 +88,22 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
   # macro for installation
   pac_ins() {
     for i in $@; do
-      sudo pacman --noconfirm --needed --noprogressbar -Sq $i
+      sudo pacman \
+        --noconfirm \
+        --needed \
+        --noprogressbar \
+        -Sq $i >/dev/null
       if [ $? -eq 1 ]; then
-        failed="${failed} ${i}"
+        failed=yes
+        echo "Failed to install $i"
+      else
+        echo "$i installed."
       fi
     done
   }
 
   # install script
-  read -p "Install all dependencies? (Y/N)" -n 1 base_ins
+  read -p "Install all dependencies? (Y/N)" -n 1 base_ins && echo
   if [ $base_ins = y -o $base_ins = Y ]; then
     echo
     echo "Running pacman..."
@@ -103,7 +116,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     echo "Writing configurations..."
     xdg-user-dirs-update
     # desktop entries
-    cd $work_dir
+    cd $WD
     mkdir -p ~/.local/share
     cp -r ./applications ~/.local/share/
     sed -i "s|\$HOME|$HOME|g" ~/.local/share/applications/cfw.desktop
@@ -126,23 +139,23 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     sudo cp ./sddm/theme.conf /etc/sddm.conf.d/
     sudo systemctl enable sddm
     # Device-specific options
-    read -p "Are you on a laptop? (Y/N)" -n 1 laptop
+    read -p "Are you on a laptop? (Y/N)" -n 1 laptop && echo
     if [ $laptop = y -o $laptop = Y ]; then
       ln -sr ~/.config/hypr/macbook.conf ~/.config/hypr/conf.d/macbook.conf
     else
       ln -sr ~/.config/hypr/pc.conf ~/.config/hypr/conf.d/pc.conf
     fi
-    read -p "Are you using an HiDPI display? (Y/N)" -n 1 hidpi
+    read -p "Are you using an HiDPI display? (Y/N)" -n 1 hidpi && echo
     if [ $hidpi = y -o $hidpi = Y ]; then
       ln -sr ~/.config/hypr/4k.conf ~/.config/hypr/conf.d/4k.conf
       sudo cp ./sddm/dpi.conf /etc/sddm.conf.d/
     fi
-    read -p "Configure RGB? (Y/N)" -n 1 rgb
+    read -p "Configure RGB? (Y/N)" -n 1 rgb && echo
     if [ $rgb = y -o $rgb = Y ]; then
       pac_ins $openrgb
       sudo touch /etc/modules-load.d/i2c.conf
       sudo sh -c 'echo "i2c-dev" >> /etc/modules-load.d/i2c.conf'
-      read -p "Please confirm you are using an AMD CPU: (Y/N)" -n 1 rgb_amd
+      read -p "Please confirm you are using an AMD CPU: (Y/N)" -n 1 rgb_amd && echo
       if [[ $rgb_amd = y || $rgb_amd = Y ]]; then
         sudo sh -c 'echo "i2c-piix4" >> /etc/modules-load.d/i2c.conf'
       else
@@ -167,6 +180,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     # ssh-agent
     systemctl --user enable gcr-ssh-agent --now
     # electron flags
+    cp ./electron-apps
     cp ./electron-apps/user-flags.conf ~/.config/obsidian/
     cp ./electron-apps/codium-flags.conf ~/.config/
     cp ./electron-apps/electron-flags.conf ~/.config/
@@ -180,13 +194,10 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     sudo sed -i -E 's/^#(GRUB_SAVEDEFAULT=true).*$/\1/g' /etc/default/grub
     sudo sed -i -E 's/^#(GRUB_DISABLE_OS_PROBER=false).*$/\1/g' /etc/default/grub
     sudo grub-mkconfig -o /boot/grub/grub.cfg
-    # clash
-    read -p "Enter path to your Clash for Windows package (enter nothing to skip):" clash
-    if [[ -n $clash ]]; then tar -C ~/Applications -xf $clash; fi
   fi
 
   echo
-  read -p "Are you using Nvidia? (Y/N)" -n 1 nv_ins
+  read -p "Are you using Nvidia? (Y/N)" -n 1 nv_ins && echo
   if [ $nv_ins = y -o $nv_ins = Y ]; then
     echo
     pac_ins $nvidia
@@ -194,7 +205,7 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
   fi
 
   echo
-  read -p "Intall Breeze theme? (Y/N)" -n 1 brz_ins
+  read -p "Intall Breeze theme? (Y/N)" -n 1 brz_ins && echo
   if [ $brz_ins = y -o $brz_ins = Y ]; then
     echo
     pac_ins $themes
@@ -208,8 +219,8 @@ fi
 # final breakdown
 echo
 if [ -n "$failed" ]; then
-  echo
-  for i in $failed; do echo "Failed to install [${i}]"; done
+  exit 1
 else
   echo "Successfully installed."
+  touch ~/.step1
 fi

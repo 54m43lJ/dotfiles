@@ -1,0 +1,4 @@
+#!/bin/bash
+
+brightnessctl -r
+brightnessctl -r -d 'smc::kbd_backlight'

@@ -9,7 +9,17 @@ if [ $(id -u) -eq 0 ]; then
   echo "DO NOT RUN THIS SCRIPT AS root. Exiting..."
   exit
 fi
-work_dir=$(pwd)
+if [[ ! -f ~/.step1 ]]; then
+  echo "Step 1 is not complete. Please finish step1.sh first."
+  exit
+fi
+
+if [[ -z $WD ]]; then
+  echo "Do not run the script manually.
+If you insist, set \$WD to the proper working directory.
+exiting..."
+  exit 1
+fi
 
 failed=""
   eww='gtk3 gtk-layer-shell pango gdk-pixbuf2 cairo glib2 gcc-libs glibc rustup'
@@ -22,7 +32,11 @@ failed=""
   # macro for installation
   pac_ins() {
     for i in $@; do
-      sudo pacman --noconfirm --needed --noprogressbar -Sq $i
+      sudo pacman \
+        --noconfirm \
+        --needed \
+        --noprogressbar \
+        -Sq $i >/dev/null
       if [ $? -eq 1 ]; then
         failed="${failed} ${i}"
       fi
@@ -30,17 +44,22 @@ failed=""
   }
   yay_ins() {
     for i in $@; do
-      yay -Sq \
-      --answerclean None --answerdiff None \
-      --noconfirm --norebuild --noredownload \
-      $i
+      yay \
+        -Sq $i \
+        --answerclean None \
+        --answerdiff None \
+        --noconfirm \
+        --noprogressbar \
+        --norebuild \
+        --noredownload \
+        >/dev/null
       if [ $? -eq 1 ]; then
         failed="${failed} ${i}"
       fi
     done
   }
 
-  read -p "Install eww? (Y/N)" -n 1 eww_ins
+  read -p "Install eww? (Y/N)" -n 1 eww_ins && echo
   if [ $eww_ins = y -o $eww_ins = Y ]; then
     echo "Setting up eww..."
     pac_ins $eww
@@ -51,7 +70,7 @@ failed=""
     cd ~/Applications/eww
     cargo build --release --no-default-features --features=wayland
     sudo cp ./target/release/eww /usr/local/bin/
-    cd $work_dir
+    cd $WD
     mkdir -p ~/.local/bin
     cp -r ./eww ~/.config/
     sudo cp ./eww/eww-launcher /usr/local/bin/
@@ -59,30 +78,30 @@ failed=""
   fi
 
   echo
-  read -p "Install yay and other packages from AUR? (Y/N)" -n 1 yay_ins
+  read -p "Install yay and other packages from AUR? (Y/N)" -n 1 yay_ins && echo
   if [ $yay_ins = y -o $yay_ins = Y ]; then
     echo
     git clone https://aur.archlinux.org/yay.git ~/Applications/yay
     cd ~/Applications/yay
-    makepkg -si
+    makepkg -si --noconfirm
     yay_ins $aur
   fi
 
   echo
-  read -p "Install developer environment? (Y/N)" -n 1 dev_ins
+  read -p "Install developer environment? (Y/N)" -n 1 dev_ins && echo
   if [ $dev_ins = y -o $dev_ins = Y ]; then
     echo
     pac_ins $dev
     yay_ins $aur_dev
     # VSCode
-    cd $work_dir
+    cd $WD
     grep -v '//' ~/.vscode/argv.json | jq '."password-store" = "gnome-keyring"' >argv.json
     cp argv.json ~/.vscode/argv.json
     rm -f argv.json
     # neovim
     #LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.com/LunarVim/LunarVim/release-1.4/neovim-0.9/utils/installer/install.sh)
     git clone https://github.com/LazyVim/starter ~/.config/nvim
-    cd $work_dir
+    cd $WD
     cp -r ./nvim/lua/plugins/ ~/.config/nvim/lua/
     cat ./nvim/lua/config/keymaps.lua >>~/.config/nvim/lua/config/keymaps.lua
     cat ./nvim/lua/config/options.lua >>~/.config/nvim/lua/config/options.lua
@@ -96,4 +115,5 @@ if [ -n "$failed" ]; then
   for i in $failed; do echo "Failed to install [${i}]"; done
 else
   echo "Successfully installed."
+  touch ~/.finished
 fi

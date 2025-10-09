@@ -4,6 +4,16 @@
    "exec": "hyprctl dispatch exit",
    "icon": "/usr/share/nwg-bar/images/system-log-out.svg"
  },
+  {
+    "label": "Lock",
+    "exec": "loginctl lock-session",
+   "icon": "/usr/share/nwg-bar/images/system-lock-screen.svg"
+  },
+  {
+    "label": "Suspend",
+    "exec": "systemctl suspend",
+   "icon": "/usr/share/nwg-bar/images/system-suspend.svg"
+  },
  {
    "label": "Reboot",
    "exec": "systemctl reboot",
