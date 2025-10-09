@@ -32,40 +32,34 @@
 
 (defwidget battery []
   (box
-    (box
-      :class "label"
-      :visible { bat_state == "none" ? false : true }
-      :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
-      "${bat_state == "Charging" ?
-        bat_per < 15 ? "󰢜" :
-        bat_per < 25 ? "󰂆" :
-        bat_per < 35 ? "󰂇" :
-        bat_per < 45 ? "󰂈" :
-        bat_per < 55 ? "󰢝" :
-        bat_per < 65 ? "󰂉" :
-        bat_per < 75 ? "󰢞" :
-        bat_per < 85 ? "󰂊" :
-        bat_per < 95 ? "󰂋" :
-        "󰂅" :
-        bat_per < 15 ? "󰁺" :
-        bat_per < 25 ? "󰁻" :
-        bat_per < 35 ? "󰁼" :
-        bat_per < 45 ? "󰁽" :
-        bat_per < 55 ? "󰁾" :
-        bat_per < 65 ? "󰁿" :
-        bat_per < 75 ? "󰂀" :
-        bat_per < 85 ? "󰂁" :
-        bat_per < 95 ? "󰂂" :
-        "󰁹"
-      }"
-    )
-    (box
-      :class "label lowbat"
-      :visible { bat_state != "none" && bat_per < 5 ? true : false }
-      :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
-      "${bat_state == "Charging" ? "󰢟" : "󰂎"}"
-      )
-    )
+    :class "${bat_per < 15 ? "lowbat" : ""} ${bat_state == "Charging" ? "xlarge" : ""} label"
+    :visible { bat_state == "none" ? false : true }
+    :tooltip {bat_state == "none" ? "N/A" : "${bat_per}%"}
+    "${bat_state == "Charging" ?
+      bat_per < 5 ? "󰢟" :
+      bat_per < 15 ? "󰢜" :
+      bat_per < 25 ? "󰂆" :
+      bat_per < 35 ? "󰂇" :
+      bat_per < 45 ? "󰂈" :
+      bat_per < 55 ? "󰢝" :
+      bat_per < 65 ? "󰂉" :
+      bat_per < 75 ? "󰢞" :
+      bat_per < 85 ? "󰂊" :
+      bat_per < 95 ? "󰂋" :
+      "󰂅" :
+      bat_per < 5 ? "󰂎" :
+      bat_per < 15 ? "󰁺" :
+      bat_per < 25 ? "󰁻" :
+      bat_per < 35 ? "󰁼" :
+      bat_per < 45 ? "󰁽" :
+      bat_per < 55 ? "󰁾" :
+      bat_per < 65 ? "󰁿" :
+      bat_per < 75 ? "󰂀" :
+      bat_per < 85 ? "󰂁" :
+      bat_per < 95 ? "󰂂" :
+      "󰁹"
+    }"
+  )
 )
 
 (defwidget network []
