@@ -7,11 +7,11 @@
 # Preliminary check
 if [ $(id -u) -eq 0 ]; then
   echo "DO NOT RUN THIS SCRIPT AS root. Exiting..."
-  exit
+  exit 1
 fi
 if [[ ! -f ~/.step1 ]]; then
   echo "Step 1 is not complete. Please finish step1.sh first."
-  exit
+  exit 1
 fi
 
 if [[ -z $WD ]]; then
@@ -38,7 +38,10 @@ failed=""
         --noprogressbar \
         -Sq $i >/dev/null
       if [ $? -eq 1 ]; then
-        failed="${failed} ${i}"
+        failed=yes
+        echo "Failed to install $i"
+      else
+        echo "$i installed."
       fi
     done
   }
@@ -54,7 +57,10 @@ failed=""
         --noredownload \
         >/dev/null
       if [ $? -eq 1 ]; then
-        failed="${failed} ${i}"
+        failed=yes
+        echo "Failed to install $i"
+      else
+        echo "$i installed."
       fi
     done
   }
