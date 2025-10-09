@@ -168,6 +168,8 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     fc-cache
     # nwg-bar
     cp -r ./nwg-bar ~/.config/
+    sudo mkdir -p /usr/local/share/nwg-bar/
+    sudo cp ./nwg-bar/suspend.sh /usr/local/share/nwg-bar/
     # dunst
     cp -r ./dunst ~/.config/
     # wofi
