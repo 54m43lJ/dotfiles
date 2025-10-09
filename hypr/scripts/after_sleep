@@ -1,0 +1,10 @@
+#!/bin/bash
+
+lid_state() {
+  sudo bash -c 'cat /proc/acpi/wakeup | grep -E LID0.+\*disabled'
+}
+
+if lid_state; then
+  sudo bash -c 'echo LID0 >/proc/acpi/wakeup'
+fi
+hyprctl dispatch dpms on

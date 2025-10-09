@@ -113,8 +113,10 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     # install pkgs
     pac_ins $base
     pac_ins $software
+    # basic config
     echo "Writing configurations..."
     xdg-user-dirs-update
+    sudo cp ./src/suspend.sh /usr/local/bin/
     # desktop entries
     cd $WD
     mkdir -p ~/.local/share
@@ -169,7 +171,6 @@ if grep 'NAME="Arch Linux"' /etc/os-release; then
     # nwg-bar
     cp -r ./nwg-bar ~/.config/
     sudo mkdir -p /usr/local/share/nwg-bar/
-    sudo cp ./nwg-bar/suspend.sh /usr/local/share/nwg-bar/
     # dunst
     cp -r ./dunst ~/.config/
     # wofi
