@@ -45,6 +45,9 @@ fi
 # --- base configuration ---
 source "$WD/deploy.sh"
 
+# --- zsh + oh-my-zsh ---
+source "$WD/modules/zsh.sh"
+
 # --- yay + AUR packages ---
 if confirm "Install yay (AUR helper) and AUR packages?"; then
     mkdir -p ~/Applications
