@@ -107,6 +107,8 @@ export PATH="$HOME/.local/bin:$PATH"
 # --- Ported from fish config ---
 
 eval "$(zoxide init zsh)"
+alias cd=z
+alias cdi=zi
 
 alias vi=nvim
 alias vim=nvim
