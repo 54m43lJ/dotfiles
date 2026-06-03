@@ -1,0 +1,198 @@
+-- ~/.config/hypr/hyprland.lua
+-- Hyprland v0.55+ Lua configuration
+
+local mainMod       = "SUPER"
+local defaultBrowser = "gtk-launch brave-browser"
+local hypr_dir       = os.getenv("HOME") .. "/.config/hypr"
+
+package.path = package.path .. ";" .. hypr_dir .. "/?.lua"
+
+-- ============================================
+-- Device-specific flags (set by deploy modules)
+-- ============================================
+local flags = require("flags")
+
+-- ============================================
+-- Monitor
+-- ============================================
+hl.monitor({
+    refresh_rate = "highrr",
+    reserved     = { top = -5 },
+})
+
+-- ============================================
+-- Window rules (always active)
+-- ============================================
+require("windowrule")
+
+-- Noborder for floating windows
+hl.window_rule({
+    name  = "noborder-float",
+    match = { float = true },
+    border_size = 0,
+})
+
+-- ============================================
+-- Optional device modules (controlled by flags)
+-- ============================================
+if flags.laptop then require("laptop") end
+if flags.pc     then require("pc")     end
+if flags.hidpi  then require("hidpi")  end
+
+-- ============================================
+-- Look and feel
+-- ============================================
+hl.config({
+    general = {
+        gaps_in     = 2,
+        gaps_out    = { 5, 6, 8, 6 },
+        border_size = 3,
+        col = {
+            active_border = {
+                colors = { "rgba(FFF7E4ff)", "rgba(231F1Fff)", "rgba(231F1Fff)" },
+                angle  = 45,
+            },
+            inactive_border = "rgba(231F1Faa)",
+        },
+        layout = "master",
+    },
+})
+
+-- Curves & animations
+hl.curve("myBezier", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
+
+hl.animation({ leaf = "windows",      enabled = true, speed = 7,  bezier = "myBezier" })
+hl.animation({ leaf = "windowsOut",   enabled = true, speed = 7,  bezier = "default",  style = "popin 80%" })
+hl.animation({ leaf = "border",       enabled = true, speed = 10, bezier = "default" })
+hl.animation({ leaf = "borderangle",  enabled = false })
+hl.animation({ leaf = "fade",         enabled = true, speed = 7,  bezier = "default" })
+hl.animation({ leaf = "workspaces",   enabled = true, speed = 6,  bezier = "default" })
+
+-- Layouts
+hl.config({
+    dwindle = {
+        pseudotile     = true,
+        preserve_split = true,
+    },
+})
+
+hl.config({
+    master = {
+        new_status = "slave",
+    },
+})
+
+hl.config({
+    misc = {
+        disable_splash_rendering = true,
+        focus_on_activate        = true,
+    },
+})
+
+-- ============================================
+-- Input
+-- ============================================
+hl.config({
+    input = {
+        kb_layout           = "us",
+        kb_variant          = "",
+        kb_model            = "",
+        kb_options          = "",
+        kb_rules            = "",
+        numlock_by_default  = true,
+        follow_mouse        = 2,
+        mouse_refocus       = false,
+        sensitivity         = 0.1,
+        accel_profile       = "flat",
+        float_switch_override_focus = 0,
+        touchpad = {
+            disable_while_typing = true,
+            natural_scroll       = false,
+        },
+    },
+})
+
+-- ============================================
+-- Keybinds
+-- ============================================
+
+-- System
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hyprctl kill"))
+hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("nwg-bar -t hypr.json"))
+hl.bind(mainMod .. " + SHIFT + Q",  hl.dsp.exit())
+hl.bind(mainMod .. " + P",          hl.dsp.exec_cmd(hypr_dir .. "/scripts/orientation"))
+
+-- Utilities & controls
+hl.bind(mainMod .. " + SPACE",      hl.dsp.exec_cmd("wofi"))
+hl.bind("ALT + SHIFT + 3",          hl.dsp.exec_cmd("hyprshot -m output -o ~/Desktop/"))
+hl.bind("ALT + SHIFT + 4",          hl.dsp.exec_cmd("hyprshot -m region -o ~/Desktop/"))
+
+-- Media keys
+hl.bind("XF86AudioPlay",            hl.dsp.exec_cmd("playerctl play-pause"),                                     { locked = true })
+hl.bind("XF86AudioPrev",            hl.dsp.exec_cmd("playerctl previous"),                                       { locked = true })
+hl.bind("XF86AudioNext",            hl.dsp.exec_cmd("playerctl next"),                                           { locked = true })
+hl.bind("XF86AudioMute",            hl.dsp.exec_cmd("pactl set-sink-mute `pactl get-default-sink` toggle"),      { locked = true })
+hl.bind("XF86AudioLowerVolume",     hl.dsp.exec_cmd("pactl set-sink-volume `pactl get-default-sink` -5%"),       { locked = true })
+hl.bind("XF86AudioRaiseVolume",     hl.dsp.exec_cmd("pactl set-sink-volume `pactl get-default-sink` +5%"),       { locked = true })
+
+-- Applications
+hl.bind(mainMod .. " + C",   hl.dsp.exec_cmd("foot"))
+hl.bind(mainMod .. " + E",   hl.dsp.exec_cmd("nemo"))
+hl.bind(mainMod .. " + B",   hl.dsp.exec_cmd(defaultBrowser))
+hl.bind(mainMod .. " + L",   hl.dsp.exec_cmd("gtk-launch obsidian"))
+hl.bind("CTRL + ALT + K",    hl.dsp.exec_cmd("gtk-launch org.keepassxc.KeePassXC"))
+
+-- Layout
+hl.bind(mainMod .. " + M", hl.dsp.layout("swapwithmaster"))
+
+-- Window management
+hl.bind(mainMod .. " + V",            hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + W",            hl.dsp.window.kill())
+hl.bind(mainMod .. " + mouse:274",    hl.dsp.window.kill())
+hl.bind(mainMod .. " + left",         hl.dsp.focus({ direction = "l" }))
+hl.bind(mainMod .. " + right",        hl.dsp.focus({ direction = "r" }))
+hl.bind(mainMod .. " + up",           hl.dsp.focus({ direction = "u" }))
+hl.bind(mainMod .. " + down",         hl.dsp.focus({ direction = "d" }))
+hl.bind(mainMod .. " + mouse:272",    hl.dsp.window.drag(),   { mouse = true })
+hl.bind(mainMod .. " + mouse:273",    hl.dsp.window.resize(), { mouse = true })
+hl.bind(mainMod .. " + GRAVE",        hl.dsp.focus({ direction = "next" }))
+hl.bind(mainMod .. " + RETURN",       hl.dsp.window.fullscreen())
+
+-- Workspaces
+for i = 1, 10 do
+    local key = i % 10
+    hl.bind(mainMod .. " + " .. key,           hl.dsp.focus({ workspace = i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key,   hl.dsp.window.move({ workspace = i }))
+end
+hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "e+1" }))
+hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "+1" }))
+hl.bind(mainMod .. " + SHIFT + left",     hl.dsp.window.move({ workspace = "-1" }))
+hl.bind(mainMod .. " + N",                hl.dsp.focus({ workspace = "empty" }))
+hl.bind(mainMod .. " + SHIFT + N",        hl.dsp.window.move({ workspace = "empty" }))
+
+-- ============================================
+-- Autostart
+-- ============================================
+hl.on("hyprland.start", function()
+    hl.exec_cmd("systemctl --user start hyprpolkitagent")
+    hl.exec_cmd("hyprpaper")
+    hl.exec_cmd("eww-launcher")
+    hl.exec_cmd("hypridle")
+    hl.exec_cmd("udiskie &")
+    hl.exec_cmd("blueman-applet &")
+    hl.exec_cmd("fcitx5 -d")
+    hl.exec_cmd("foot")
+    hl.exec_cmd("bash -c 'gtk-launch cfw && eww reload'")
+end)
+
+-- ============================================
+-- Environment
+-- ============================================
+hl.env("EDITOR", "nvim")
+hl.env("XCURSOR_SIZE", "24")
+hl.env("XMODIFIERS", "@im=fcitx")
+hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
+hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/gcr/ssh")

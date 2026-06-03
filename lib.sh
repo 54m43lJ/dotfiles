@@ -79,6 +79,12 @@ EOF
     npm config set registry https://registry.npmmirror.com 2>/dev/null || true
 }
 
+# Flip a flag in a Lua flags file
+set_flag() {
+    # set_flag <flag_name> <file>
+    sed -i "s/    ${1} = false/    ${1} = true/" "${2}"
+}
+
 # Guards
 is_root() { [[ $(id -u) -eq 0 ]] && err "Do not run as root." && exit 1; }
 is_arch() { grep -q 'NAME="Arch Linux"' /etc/os-release || { err "Arch Linux required."; exit 1; }; }

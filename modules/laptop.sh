@@ -1,9 +1,9 @@
 #!/bin/bash
 # Laptop/desktop device-specific Hyprland config
 if confirm "Are you on a laptop?"; then
-    ln -sr ~/.config/hypr/macbook.conf ~/.config/hypr/conf.d/macbook.conf
-    log "Laptop config linked."
+    set_flag laptop ~/.config/hypr/flags.lua
+    log "Laptop mode enabled."
 else
-    ln -sr ~/.config/hypr/pc.conf ~/.config/hypr/conf.d/pc.conf
-    log "Desktop config linked."
+    set_flag pc ~/.config/hypr/flags.lua
+    log "Desktop mode enabled."
 fi

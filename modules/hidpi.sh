@@ -1,7 +1,7 @@
 #!/bin/bash
 # HiDPI display scaling
 if confirm "Are you using a HiDPI display?"; then
-    ln -sr ~/.config/hypr/4k.conf ~/.config/hypr/conf.d/4k.conf
+    set_flag hidpi ~/.config/hypr/flags.lua
     sudo cp "$WD/sddm/dpi.conf" /etc/sddm.conf.d/
-    log "HiDPI config linked."
+    log "HiDPI mode enabled."
 fi
