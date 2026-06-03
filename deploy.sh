@@ -26,6 +26,9 @@ cp -r "$WD/foot" ~/.config/
 
 # --- hyprland ---
 cp -r "$WD/hypr" ~/.config/
+mkdir -p ~/.config/hypr/special
+cp -r "$WD/special/"* ~/.config/hypr/special/
+hyprctl reload
 
 # --- SDDM login manager ---
 sudo cp -r "$WD/sddm/sugar-dark" /usr/share/sddm/themes/

@@ -58,8 +58,7 @@ fi
 
 # --- optional modules ---
 confirm "Install Nvidia drivers?" && source "$WD/modules/nvidia.sh"
-confirm "Configure device-specific settings?" && source "$WD/modules/laptop.sh"
-confirm "Configure HiDPI display?" && source "$WD/modules/hidpi.sh"
+source "$WD/modules/laptop.sh"
 confirm "Configure RGB (OpenRGB)?" && source "$WD/modules/rgb.sh"
 confirm "Install Breeze theme?" && source "$WD/modules/breeze.sh"
 confirm "Install eww widget framework?" && source "$WD/modules/eww.sh"

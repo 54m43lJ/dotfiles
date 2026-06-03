@@ -1,5 +1,5 @@
--- ~/.config/hypr/pc.lua
--- Desktop PC specific settings — loaded when flags.pc = true
+-- ~/.config/hypr/special/pc_changsha.lua
+-- Desktop PC (Changsha) specific settings
 
 hl.config({
     decoration = {

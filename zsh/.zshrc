@@ -109,12 +109,11 @@ export PATH="$HOME/.local/bin:$PATH"
 eval "$(zoxide init zsh)"
 
 alias vi=nvim
+alias vim=nvim
 alias venv='source venv/bin/activate'
 if command -v python &>/dev/null; then
-    alias newvenv='python -m venv .venv'
+    alias newvenv='python -m venv venv'
 elif command -v python3 &>/dev/null; then
-    alias newvenv='python3 -m venv .venv'
+    alias newvenv='python3 -m venv venv'
 fi
 alias pu='sudo pacman -Syu'
-
-[ -d "$HOME/.cargo/bin" ] && export PATH="$HOME/.cargo/bin:$PATH"

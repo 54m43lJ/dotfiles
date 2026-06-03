@@ -6,17 +6,23 @@ local defaultBrowser = "gtk-launch brave-browser"
 local hypr_dir       = os.getenv("HOME") .. "/.config/hypr"
 
 package.path = package.path .. ";" .. hypr_dir .. "/?.lua"
+package.path = package.path .. ";" .. hypr_dir .. "/special/?.lua"
 
 -- ============================================
 -- Device-specific flags (set by deploy modules)
 -- ============================================
 local flags = require("flags")
 
+if flags.macbookpro  then require("macbookpro")  end
+if flags.pc_changsha then require("pc_changsha") end
+if flags.xiaomi_book then require("xiaomi_book") end
+
 -- ============================================
 -- Monitor
 -- ============================================
 hl.monitor({
-    refresh_rate = "highrr",
+    output  = "",
+    mode    = "highrr",
     reserved     = { top = -5 },
 })
 
@@ -31,13 +37,6 @@ hl.window_rule({
     match = { float = true },
     border_size = 0,
 })
-
--- ============================================
--- Optional device modules (controlled by flags)
--- ============================================
-if flags.laptop then require("laptop") end
-if flags.pc     then require("pc")     end
-if flags.hidpi  then require("hidpi")  end
 
 -- ============================================
 -- Look and feel
@@ -71,7 +70,6 @@ hl.animation({ leaf = "workspaces",   enabled = true, speed = 6,  bezier = "defa
 -- Layouts
 hl.config({
     dwindle = {
-        pseudotile     = true,
         preserve_split = true,
     },
 })
@@ -84,7 +82,7 @@ hl.config({
 
 hl.config({
     misc = {
-        disable_splash_rendering = true,
+        disable_hyprland_logo = true,
         focus_on_activate        = true,
     },
 })
@@ -147,15 +145,15 @@ hl.bind(mainMod .. " + M", hl.dsp.layout("swapwithmaster"))
 
 -- Window management
 hl.bind(mainMod .. " + V",            hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + W",            hl.dsp.window.kill())
-hl.bind(mainMod .. " + mouse:274",    hl.dsp.window.kill())
-hl.bind(mainMod .. " + left",         hl.dsp.focus({ direction = "l" }))
-hl.bind(mainMod .. " + right",        hl.dsp.focus({ direction = "r" }))
-hl.bind(mainMod .. " + up",           hl.dsp.focus({ direction = "u" }))
-hl.bind(mainMod .. " + down",         hl.dsp.focus({ direction = "d" }))
+hl.bind(mainMod .. " + W",            hl.dsp.window.close())
+hl.bind(mainMod .. " + mouse:274",    hl.dsp.window.close())
+hl.bind(mainMod .. " + left",         hl.dsp.focus({ direction = "left" }))
+hl.bind(mainMod .. " + right",        hl.dsp.focus({ direction = "right" }))
+hl.bind(mainMod .. " + up",           hl.dsp.focus({ direction = "up" }))
+hl.bind(mainMod .. " + down",         hl.dsp.focus({ direction = "down" }))
 hl.bind(mainMod .. " + mouse:272",    hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273",    hl.dsp.window.resize(), { mouse = true })
-hl.bind(mainMod .. " + GRAVE",        hl.dsp.focus({ direction = "next" }))
+hl.bind(mainMod .. " + GRAVE",        hl.dsp.window.cycle_next())
 hl.bind(mainMod .. " + RETURN",       hl.dsp.window.fullscreen())
 
 -- Workspaces

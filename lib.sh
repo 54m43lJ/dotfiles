@@ -82,7 +82,7 @@ EOF
 # Flip a flag in a Lua flags file
 set_flag() {
     # set_flag <flag_name> <file>
-    sed -i "s/    ${1} = false/    ${1} = true/" "${2}"
+    sed -i -E "s/(    ${1}.*= *)false/\1true/" "${2}"
 }
 
 # Guards
