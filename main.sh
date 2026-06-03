@@ -16,7 +16,10 @@ for arg in "$@"; do
 done
 
 # Idempotency check
-[[ -f ~/.finished ]] && { log "Installation already complete. Remove ~/.finished to re-run."; exit 0; }
+if [[ -f ~/.finished ]]; then
+    warn "Installation already marked as complete (~/.finished exists)."
+    confirm "Continue anyway?" || exit 0
+fi
 
 log "Arch Linux dotfiles deployment"
 log "=============================="
