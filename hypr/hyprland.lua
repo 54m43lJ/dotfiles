@@ -44,7 +44,7 @@ hl.window_rule({
 hl.config({
     general = {
         gaps_in     = 2,
-        gaps_out    = { 5, 6, 8, 6 },
+        gaps_out    = { top = 5, bottom = 8, left = 6, right = 6 },
         border_size = 3,
         col = {
             active_border = {
@@ -84,6 +84,26 @@ hl.config({
     misc = {
         disable_hyprland_logo = true,
         focus_on_activate        = true,
+    },
+})
+
+-- Decoration (overridden by device-specific configs)
+hl.config({
+    decoration = {
+        rounding         = 6,
+        inactive_opacity = 0.85,
+        blur = {
+            enabled = true,
+            size    = 4,
+            passes  = 1,
+        },
+        shadow = {
+            enabled        = true,
+            range          = 1,
+            offset         = { 2, 2 },
+            color          = "rgb(8E7753)",
+            color_inactive = "rgba(ffffff00)",
+        },
     },
 })
 
