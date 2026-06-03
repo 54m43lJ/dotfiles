@@ -1,5 +1,5 @@
 * {
-  all: unset; //Unsets everything so you can style everything from scratch
+  all: unset;
     font-family: "NotoSansM Nerd Font Mono", monospace;
 }
 
@@ -55,9 +55,9 @@ tooltip, .tooltip, menu {
   color: #89338E;
   border-width: 0 2px 2px 0;
   border-style: solid;
-  border-color: rgba($color: #D5C3B5, $alpha: 0.95);
+  border-color: rgba(213, 195, 181, 0.95);
   border-radius: 0 8px 8px 8px;
-  background-color: rgba($color: #FFFEFE, $alpha: 0.95);
+  background-color: rgba(255, 254, 254, 0.95);
 }
 
 menu {

@@ -22,6 +22,7 @@ BASE=(
     qt5-svg
     xdg-desktop-portal-hyprland
     xdg-desktop-portal-gtk
+    xdg-user-dirs
     qt5-wayland
     qt6-wayland
     socat
