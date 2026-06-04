@@ -63,6 +63,7 @@ setup_mirrors() {
     # pacman
     sudo sed -i 's/#Color/Color/' /etc/pacman.conf
     sudo bash -c "echo 'Server = https://mirrors.ustc.edu.cn/archlinux/\$repo/os/\$arch' > /etc/pacman.d/mirrorlist"
+    sudo bash -c "echo 'Server = https://mirrors.tuna.tsinghua.edu.cn/archlinux/\$repo/os/\$arch' >> /etc/pacman.d/mirrorlist"
     # rustup
     export RUSTUP_DIST_SERVER=https://mirrors.tuna.tsinghua.edu.cn/rustup
     # cargo
