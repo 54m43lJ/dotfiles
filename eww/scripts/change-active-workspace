@@ -1,21 +1,22 @@
-#! /bin/bash
-function clamp {
-	min=$1
-	max=$2
-	val=$3
-	python -c "print(max($min, min($val, $max)))"
-}
+#!/usr/bin/env bash
+# Usage: change-active-workspace <direction> <monitor>
+# Cycles workspace within the monitor's range (1-10 display)
 
-direction=$1
-current=$2
-if test "$direction" = "down"
-then
-	target=$(clamp 1 10 $(($current+1)))
-	echo "jumping to $target"
-	hyprctl dispatch workspace $target
-elif test "$direction" = "up"
-then
-	target=$(clamp 1 10 $(($current-1)))
-	echo "jumping to $target"
-	hyprctl dispatch workspace $target
-fi
+direction="$1"
+monitor="$2"
+[[ -z "$direction" || -z "$monitor" ]] && exit 1
+
+monitor_idx="$(hyprctl monitors -j | jq -r "map(.name) | index(\"$monitor\") // 0")"
+offset=$((monitor_idx * 10))
+
+# Current workspace on this monitor
+current="$(hyprctl monitors -j | jq -r ".[] | select(.name==\"$monitor\") | .activeWorkspace.id // $((offset + 1))")"
+display=$((current - offset))
+
+case "$direction" in
+    down) display=$((display + 1)); [[ $display -gt 10 ]] && display=1 ;;
+    up)   display=$((display - 1)); [[ $display -lt 1  ]] && display=10 ;;
+    *)    exit 1 ;;
+esac
+
+hyprctl dispatch "hl.dsp.focus({ workspace = \"$((offset + display))\" })"

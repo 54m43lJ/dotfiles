@@ -3,31 +3,31 @@
 (include "./components/system-info.yuck")
 (include "./components/music.yuck")
 
-(defwidget bar [i]
+(defwidget bar [monitor]
   (box :orientation "h" :class "bar"
-    (leftbar :i i)
-    (centerbar :i i)
-    (rightbar :i i))
+    (leftbar :monitor monitor)
+    (centerbar :monitor monitor)
+    (rightbar :monitor monitor))
   )
 
-(defwidget leftbar [i]
+(defwidget leftbar [monitor]
   (box :orientation "h" :class "left" :halign "start" :space-evenly false :spacing 13
-    (workspaces)
+    (workspaces :monitor monitor)
     (music))
   )
 
-(defwidget centerbar [i]
+(defwidget centerbar [monitor]
   (box :orientation "h" :class "center" :halign "center" :space-evenly false
     (window_w))
   )
 
-(defwidget rightbar [i]
+(defwidget rightbar [monitor]
   (box :orientation "h" :class "right" :halign "end" :space-evenly false :spacing 13
     (sidestuff))
   )
 
-(defwindow w_bar [i]
-    :monitor i
+(defwindow w_bar [monitor]
+    :monitor monitor
   :geometry (geometry :x "0%"
                       :y "0px"
                       :width "100%"
@@ -35,4 +35,4 @@
                       :anchor "top center")
   :stacking "fg"
   :exclusive true
-  (bar :i i))
+  (bar :monitor monitor))

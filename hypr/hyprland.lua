@@ -177,25 +177,27 @@ hl.bind(mainMod .. " + GRAVE",        hl.dsp.window.cycle_next())
 hl.bind(mainMod .. " + RETURN",              hl.dsp.window.fullscreen({ mode = "maximized" }))
 hl.bind(mainMod .. " + SHIFT + RETURN",    hl.dsp.window.fullscreen())
 
--- Workspaces
+-- Workspaces (per-monitor ranges via workspace rules + selectors)
+-- Monitor 0 → 1-10, Monitor 1 → 11-20, etc. (set by assign-workspaces script)
 for i = 1, 10 do
     local key = i % 10
-    hl.bind(mainMod .. " + " .. key,           hl.dsp.focus({ workspace = i }))
-    hl.bind(mainMod .. " + SHIFT + " .. key,   hl.dsp.window.move({ workspace = i }))
+    hl.bind(mainMod .. " + " .. key,           hl.dsp.focus({ workspace = "r~" .. i }))
+    hl.bind(mainMod .. " + SHIFT + " .. key,   hl.dsp.window.move({ workspace = "r~" .. i }))
 end
-hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "+1" }))
-hl.bind(mainMod .. " + SHIFT + left",     hl.dsp.window.move({ workspace = "-1" }))
-hl.bind(mainMod .. " + N",                hl.dsp.focus({ workspace = "empty" }))
-hl.bind(mainMod .. " + SHIFT + N",        hl.dsp.window.move({ workspace = "empty" }))
+hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "r+1" }))
+hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "r-1" }))
+hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "r+1" }))
+hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "r-1" }))
+hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "r+1" }))
+hl.bind(mainMod .. " + SHIFT + left",     hl.dsp.window.move({ workspace = "r-1" }))
+hl.bind(mainMod .. " + N",                hl.dsp.focus({ workspace = "emptym" }))
+hl.bind(mainMod .. " + SHIFT + N",        hl.dsp.window.move({ workspace = "emptym" }))
 
 -- ============================================
 -- Autostart
 -- ============================================
 hl.on("hyprland.start", function()
+    hl.exec_cmd("bash " .. hypr_dir .. "/scripts/assign-workspaces")
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("eww-launcher")
@@ -205,6 +207,10 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("fcitx5 -d")
     hl.exec_cmd("foot")
     hl.exec_cmd("bash -c 'gtk-launch cfw && eww reload'")
+end)
+
+hl.on("monitor.added", function()
+    hl.exec_cmd("bash " .. hypr_dir .. "/scripts/assign-workspaces")
 end)
 
 -- ============================================

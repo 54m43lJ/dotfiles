@@ -1,0 +1,12 @@
+#!/bin/bash
+# Assign workspace ranges to monitors by index
+# Monitor 0 → 1-10, Monitor 1 → 11-20, Monitor 2 → 21-30, etc.
+# Run at startup and on monitor_added
+
+hyprctl monitors -j | jq -r 'to_entries[] | "\(.key) \(.value.name)"' | while read -r idx name; do
+    base=$((idx * 10))
+    for i in $(seq 1 10); do
+        ws=$((base + i))
+        hyprctl eval "hl.workspace_rule({ workspace = \"$ws\", monitor = \"$name\", persistent = true })" 2>/dev/null
+    done
+done

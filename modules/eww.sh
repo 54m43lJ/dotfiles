@@ -14,7 +14,7 @@ sudo cp ~/Applications/eww/target/release/eww /usr/local/bin/
 
 mkdir -p ~/.local/bin
 cp -r "$WD/eww" ~/.config/
-sudo cp "$WD/eww/eww-launcher" /usr/local/bin/
+sudo ln -sf "$HOME/.config/eww/eww-launcher" /usr/local/bin/eww-launcher
 chmod u+x ~/.config/eww/scripts/*
 
 log "Eww installed and configured."

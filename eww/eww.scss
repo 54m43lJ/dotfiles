@@ -83,19 +83,20 @@ menuitem:hover {
   background-image: linear-gradient(25deg, #231F1F 97%, #8E7753);
 }
 
-.workspaces .workspace-entry {
+.workspace-entry label {
   margin: 5px 1px;
   padding: 0 8px;
   border-radius: 10px;
   transition: 0.3s;
+  color: #D5C3B5;
 }
 
-.workspaces .current {
+.current label {
   color: #89338E;
   background-color: #FFFEFE;
 }
 
-.workspaces .workspace:hover .workspace-entry {
+.workspace-entry:hover label {
   color: #FFFEFE;
   background-color: #89338E;
   transition: 0.3s;
