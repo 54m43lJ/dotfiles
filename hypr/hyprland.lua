@@ -9,6 +9,15 @@ package.path = package.path .. ";" .. hypr_dir .. "/?.lua"
 package.path = package.path .. ";" .. hypr_dir .. "/special/?.lua"
 
 -- ============================================
+-- Monitor defaults (before device-specific overrides)
+-- ============================================
+hl.monitor({
+    output  = "",
+    mode    = "highrr",
+    reserved     = { top = -5 },
+})
+
+-- ============================================
 -- Device-specific flags (set by deploy modules)
 -- ============================================
 local flags = require("flags")
@@ -16,15 +25,6 @@ local flags = require("flags")
 if flags.macbookpro  then require("macbookpro")  end
 if flags.pc_changsha then require("pc_changsha") end
 if flags.xiaomi_book then require("xiaomi_book") end
-
--- ============================================
--- Monitor
--- ============================================
-hl.monitor({
-    output  = "",
-    mode    = "highrr",
-    reserved     = { top = -5 },
-})
 
 -- ============================================
 -- Window rules (always active)
