@@ -22,6 +22,7 @@ hl.monitor({
 local function apply_monitor_scales()
     for _, mon in ipairs(hl.get_monitors()) do
         local scale = (mon.height > 1080) and 2 or 1
+        if mon.height > 1080 then hl.env("HYPR_4K", "1") end
         hl.monitor({
             output   = mon.name,
             mode     = "preferred",
@@ -29,6 +30,20 @@ local function apply_monitor_scales()
             scale    = scale,
             reserved = { top = -5 },
         })
+    end
+end
+
+-- Per-monitor workspace ranges: monitor 1 → 1-10, monitor 2 → 11-20, etc.
+local function assign_workspaces()
+    for idx, mon in ipairs(hl.get_monitors()) do
+        local base = (idx - 1) * 10
+        for i = 1, 10 do
+            hl.workspace_rule({
+                workspace  = tostring(base + i),
+                monitor    = mon.name,
+                persistent = true,
+            })
+        end
     end
 end
 
@@ -193,7 +208,7 @@ hl.bind(mainMod .. " + RETURN",              hl.dsp.window.fullscreen({ mode = "
 hl.bind(mainMod .. " + SHIFT + RETURN",    hl.dsp.window.fullscreen())
 
 -- Workspaces (per-monitor ranges via workspace rules + selectors)
--- Monitor 0 → 1-10, Monitor 1 → 11-20, etc. (set by assign-workspaces script)
+-- Lua assign_workspaces() binds 1-10 to monitor 1, 11-20 to monitor 2, etc.
 for i = 1, 10 do
     local key = i % 10
     hl.bind(mainMod .. " + " .. key,           hl.dsp.focus({ workspace = "r~" .. i }))
@@ -213,7 +228,7 @@ hl.bind(mainMod .. " + SHIFT + N",        hl.dsp.window.move({ workspace = "empt
 -- ============================================
 hl.on("hyprland.start", function()
     apply_monitor_scales()
-    hl.exec_cmd("bash " .. hypr_dir .. "/scripts/assign-workspaces")
+    assign_workspaces()
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("eww-launcher")
@@ -227,7 +242,14 @@ end)
 
 hl.on("monitor.added", function()
     apply_monitor_scales()
-    hl.exec_cmd("bash " .. hypr_dir .. "/scripts/assign-workspaces")
+    assign_workspaces()
+    hl.exec_cmd("eww-launcher")
+end)
+
+hl.on("monitor.removed", function()
+    apply_monitor_scales()
+    assign_workspaces()
+    hl.exec_cmd("eww-launcher")
 end)
 
 -- ============================================

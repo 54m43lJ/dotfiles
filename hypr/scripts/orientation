@@ -2,7 +2,7 @@
 
 dir=$(hyprctl monitors | grep -m 1 transform | awk '{print $2}')
 
-if [ -v HYPR_4K ]; then
+if [ $HYPR_4K -eq 1 ]; then
     scale=2
 else
     scale=auto

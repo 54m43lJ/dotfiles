@@ -1,16 +1,6 @@
 -- ~/.config/hypr/special/macbookpro.lua
 -- MacBook Pro specific settings
 
-hl.monitor({
-    output = "eDP-1",
-    mode   = "preferred",
-    scale  = 2,
-})
-
-hl.env("HYPR_4K", "1")
-
-hl.workspace_rule({ workspace = "1", monitor = "eDP-1" })
-
 hl.device({
     name           = "bcm5974",
     sensitivity    = 0.12,
