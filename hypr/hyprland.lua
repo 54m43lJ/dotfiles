@@ -12,10 +12,25 @@ package.path = package.path .. ";" .. hypr_dir .. "/special/?.lua"
 -- Monitor defaults (before device-specific overrides)
 -- ============================================
 hl.monitor({
-    output  = "",
-    mode    = "highrr",
-    reserved     = { top = -5 },
+    output   = "",
+    mode     = "preferred",
+    position = "auto-right",
+    reserved = { top = -5 },
 })
+
+-- Per-monitor auto-scale: 1080p and below → 1x, above → 2x
+local function apply_monitor_scales()
+    for _, mon in ipairs(hl.get_monitors()) do
+        local scale = (mon.height > 1080) and 2 or 1
+        hl.monitor({
+            output   = mon.name,
+            mode     = "preferred",
+            position = "auto-right",
+            scale    = scale,
+            reserved = { top = -5 },
+        })
+    end
+end
 
 -- ============================================
 -- Device-specific flags (set by deploy modules)
@@ -197,6 +212,7 @@ hl.bind(mainMod .. " + SHIFT + N",        hl.dsp.window.move({ workspace = "empt
 -- Autostart
 -- ============================================
 hl.on("hyprland.start", function()
+    apply_monitor_scales()
     hl.exec_cmd("bash " .. hypr_dir .. "/scripts/assign-workspaces")
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("hyprpaper")
@@ -210,6 +226,7 @@ hl.on("hyprland.start", function()
 end)
 
 hl.on("monitor.added", function()
+    apply_monitor_scales()
     hl.exec_cmd("bash " .. hypr_dir .. "/scripts/assign-workspaces")
 end)
 
