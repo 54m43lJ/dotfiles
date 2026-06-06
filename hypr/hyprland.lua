@@ -244,6 +244,11 @@ hl.on("monitor.added", function()
     assign_workspaces()
 end)
 
+hl.on("monitor.removed", function()
+    apply_monitor_scales()
+    assign_workspaces()
+end)
+
 -- ============================================
 -- Environment
 -- ============================================
