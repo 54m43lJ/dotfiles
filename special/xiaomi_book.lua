@@ -1,5 +1,24 @@
 -- ~/.config/hypr/special/xiaomi_book.lua
--- Xiaomi Book specific settings
+-- Xiaomi Book specific settings (HiDPI display + touchpad gestures)
+
+-- Internal laptop display (3120x2080, HiDPI)
+hl.monitor({
+    output   = "eDP-1",
+    mode     = "preferred",
+    scale    = 2,
+    position = "0x0",
+})
+
+-- External 4K monitor (VG273U PRO, 27" 3840x2160)
+-- Positioned upper-right of laptop: x=right, y=bottom-aligned
+hl.monitor({
+    output     = "DP-4",
+    mode       = "3840x2160@60",
+    scale      = 2,
+    position   = "1560x-40",
+})
+
+hl.env("HYPR_4K", "1")
 
 -- Touchpad device config
 hl.device({

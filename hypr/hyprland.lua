@@ -22,7 +22,6 @@ hl.monitor({
 local function apply_monitor_scales()
     for _, mon in ipairs(hl.get_monitors()) do
         local scale = (mon.height > 1080) and 2 or 1
-        if mon.height > 1080 then hl.env("HYPR_4K", "1") end
         hl.monitor({
             output   = mon.name,
             mode     = "preferred",
@@ -243,13 +242,6 @@ end)
 hl.on("monitor.added", function()
     apply_monitor_scales()
     assign_workspaces()
-    hl.exec_cmd("eww-launcher")
-end)
-
-hl.on("monitor.removed", function()
-    apply_monitor_scales()
-    assign_workspaces()
-    hl.exec_cmd("eww-launcher")
 end)
 
 -- ============================================
