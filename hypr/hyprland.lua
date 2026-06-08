@@ -213,8 +213,8 @@ for i = 1, 10 do
     hl.bind(mainMod .. " + " .. key,           hl.dsp.focus({ workspace = "r~" .. i }))
     hl.bind(mainMod .. " + SHIFT + " .. key,   hl.dsp.window.move({ workspace = "r~" .. i }))
 end
-hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "m+1" }))
-hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "m-1" }))
+hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "m-1" }))
+hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "m+1" }))
 hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "m+1" }))
 hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "m-1" }))
 hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "m+1" }))
