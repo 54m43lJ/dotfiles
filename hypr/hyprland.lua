@@ -249,6 +249,10 @@ hl.on("monitor.removed", function()
     assign_workspaces()
 end)
 
+hl.on("config.reloaded", function()
+    apply_monitor_scales()
+end)
+
 -- ============================================
 -- Environment
 -- ============================================

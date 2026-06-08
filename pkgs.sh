@@ -53,6 +53,7 @@ BASE=(
     zoxide
     fzf
     brightnessctl
+    blueman
 )
 
 # --- pacman: desktop applications ---

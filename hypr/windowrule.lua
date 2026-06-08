@@ -2,9 +2,9 @@
 -- Window rules — always loaded by hyprland.lua
 
 -- Workspace assignments
-hl.window_rule({ name = "ws-codium",            match = { class = "^(codium)$" },                                    workspace = "empty" })
-hl.window_rule({ name = "ws-brave",             match = { class = "^([bB]rave-browser)$" },                          workspace = "empty" })
-hl.window_rule({ name = "ws-thunderbird",       match = { class = "^(thunderbird)$", title = ".*(Mozilla Thunderbird)$" }, workspace = "empty" })
+hl.window_rule({ name = "ws-codium",            match = { class = "^(codium)$" },                                    workspace = "emptym" })
+hl.window_rule({ name = "ws-brave",             match = { class = "^([bB]rave-browser)$" },                          workspace = "emptym" })
+hl.window_rule({ name = "ws-thunderbird",       match = { class = "^(thunderbird)$", title = ".*(Mozilla Thunderbird)$" }, workspace = "emptym" })
 hl.window_rule({ name = "ws-spotify",           match = { title = "^(Spotify|Spotify Premium)$" },                   workspace = "10" })
 hl.window_rule({ name = "ws-qqmusic",           match = { class = "^(qqmusic)$" },                                   workspace = "10" })
 hl.window_rule({ name = "ws-obsidian",          match = { class = "^(obsidian)$" },                                  workspace = "9" })
@@ -26,8 +26,8 @@ hl.window_rule({ name = "float-keepass",        match = { class = "^(org\\.keepa
 hl.window_rule({ name = "float-fcitx5-config",  match = { class = "^(org.fcitx.fcitx5-config-qt)$" },                float = true })
 
 -- Fullscreen rules
-hl.window_rule({ name = "fs-qt5ct",             match = { class = "^(qt5ct)$" },                                     fullscreen = true })
-hl.window_rule({ name = "fs-pavucontrol",       match = { class = "^(pavucontrol)$" },                               fullscreen = true })
+hl.window_rule({ name = "fs-qt5ct",             match = { class = "^(qt5ct)$" },                                     float = true })
+hl.window_rule({ name = "fs-pavucontrol",       match = { class = "^(pavucontrol)$" },                               float = true })
 
 -- xwayland workarounds
 hl.window_rule({ name = "xwayland-fixes",       match = { xwayland = true }, opaque = true, no_blur = true, no_dim = true })
