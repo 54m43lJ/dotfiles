@@ -40,7 +40,7 @@ local function assign_workspaces()
             hl.workspace_rule({
                 workspace  = tostring(base + i),
                 monitor    = mon.name,
-                persistent = true,
+                persistent = false,
             })
         end
     end
