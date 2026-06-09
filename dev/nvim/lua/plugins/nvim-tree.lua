@@ -20,8 +20,8 @@ return {
       { "<leader>E", "<leader>fE", desc = "Explorer (cwd)", remap=true },
       { "<C-[>", function ()
         local api = require('nvim-tree.api')
-        api.tree.change_root(vim.fn.fnamemodify(api.tree.get_root(), ":h"))
-      end, }
+        api.tree.change_root('..')
+      end, desc = "Go to parent directory" }
     }
   }
 }
