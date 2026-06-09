@@ -10,6 +10,11 @@ for arg in "$@"; do
         --help|-h)
             echo "Usage: ./main.sh [--yes|-y]"
             echo "  --yes, -y   Run non-interactively (accept all prompts)"
+            echo
+            echo "Modules (installed in order):"
+            echo "  system hypr fontconfig foot wofi dunst sddm pipewire"
+            echo "  applications grub electron-apps nwg-bar zsh eww"
+            echo "  nvidia rgb breeze dev laptop"
             exit 0
             ;;
     esac
@@ -34,38 +39,40 @@ setup_proxy
 # --- mirrors ---
 setup_mirrors
 
-# --- base packages ---
-source "$WD/pkgs.sh"
+# --- modules ---
+MODULES=(
+    system
+    hypr
+    fontconfig
+    foot
+    wofi
+    dunst
+    sddm
+    pipewire
+    applications
+    grub
+    electron-apps
+    nwg-bar
+    zsh
+    eww
+    nvidia
+    rgb
+    breeze
+    dev
+    laptop
+)
 
-if confirm "Install all base packages?"; then
-    pac_ins "${BASE[@]}"
-    pac_ins "${SOFTWARE[@]}"
-else
-    warn "Base packages skipped."
-    exit 1
-fi
-
-# --- base configuration ---
-source "$WD/deploy.sh"
-
-# --- zsh + oh-my-zsh ---
-source "$WD/modules/zsh.sh"
-
-# --- yay + AUR packages ---
-if confirm "Install yay (AUR helper) and AUR packages?"; then
-    mkdir -p ~/Applications
-    git clone https://aur.archlinux.org/yay.git ~/Applications/yay
-    (cd ~/Applications/yay && makepkg -si --noconfirm)
-    yay_ins "${AUR[@]}"
-fi
-
-# --- optional modules ---
-confirm "Install Nvidia drivers?" && source "$WD/modules/nvidia.sh"
-source "$WD/modules/laptop.sh"
-confirm "Configure RGB (OpenRGB)?" && source "$WD/modules/rgb.sh"
-confirm "Install Breeze theme?" && source "$WD/modules/breeze.sh"
-confirm "Install eww widget framework?" && source "$WD/modules/eww.sh"
-confirm "Install developer environment?" && source "$WD/modules/dev.sh"
+for mod in "${MODULES[@]}"; do
+    script="$WD/$mod/module.sh"
+    if [[ -f "$script" ]]; then
+        echo
+        log "[$mod]"
+        source "$script"
+        install_module
+    else
+        warn "Module '$mod' not found at $script, skipping."
+    fi
+done
 
 # --- final report ---
 echo

@@ -70,9 +70,13 @@ setup_mirrors() {
     mkdir -p ~/.cargo
     cat > ~/.cargo/config.toml <<'EOF'
 [source.crates-io]
-replace-with = 'tuna'
-[source.tuna]
-registry = "https://mirrors.tuna.tsinghua.edu.cn/git/crates.io-index.git"
+replace-with = 'mirror'
+
+[source.mirror]
+registry = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
+
+[registries.mirror]
+index = "sparse+https://mirrors.tuna.tsinghua.edu.cn/crates.io-index/"
 EOF
     # go
     export GOPROXY=https://goproxy.cn,direct
