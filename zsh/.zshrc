@@ -102,13 +102,8 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
 export PATH="$HOME/.local/bin:$PATH"
-
-# --- Ported from fish config ---
-
-eval "$(zoxide init zsh)"
-alias cd=z
-alias cdi=zi
 
 alias vi=nvim
 alias vim=nvim
@@ -119,3 +114,7 @@ elif command -v python3 &>/dev/null; then
     alias newvenv='python3 -m venv venv'
 fi
 alias pu='sudo pacman -Syu'
+
+eval "$(zoxide init zsh)"
+alias cd=z
+alias cdi=zi

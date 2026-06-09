@@ -5,3 +5,4 @@ hypr/conf.d/*
 argv.json
 nvim/lua/plugins/example.lua
 .luarc.json
+.claude/
