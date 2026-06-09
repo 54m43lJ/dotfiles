@@ -14,7 +14,7 @@ for arg in "$@"; do
             echo "Modules (installed in order):"
             echo "  system hypr fontconfig foot wofi dunst sddm pipewire"
             echo "  applications grub electron-apps nwg-bar zsh eww"
-            echo "  nvidia rgb breeze dev laptop"
+            echo "  nvidia rgb breeze dev per-device-conf"
             exit 0
             ;;
     esac
@@ -59,7 +59,7 @@ MODULES=(
     rgb
     breeze
     dev
-    laptop
+    per-device-conf
 )
 
 for mod in "${MODULES[@]}"; do
