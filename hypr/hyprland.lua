@@ -167,7 +167,7 @@ hl.config({
 -- System
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hyprctl kill"))
 hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("nwg-bar -t hypr.json"))
-hl.bind(mainMod .. " + SHIFT + Q",  hl.dsp.exit())
+hl.bind(mainMod .. " + SHIFT + Q",  hl.dsp.exec_cmd("hyprshutdown"))
 hl.bind(mainMod .. " + P",          hl.dsp.exec_cmd(hypr_dir .. "/scripts/orientation"))
 
 -- Utilities & controls

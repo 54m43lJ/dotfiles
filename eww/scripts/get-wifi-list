@@ -1,0 +1,23 @@
+#!/bin/bash
+# Outputs WiFi network list as JSON array for eww for-loop
+# Format: [{"ssid": "MyWiFi", "signal": 80, "security": "WPA2", "active": true}, ...]
+
+if ! command -v nmcli >/dev/null; then
+  echo '[]'
+  exit 0
+fi
+
+echo '['
+first=true
+nmcli -t -f SSID,SIGNAL,SECURITY,ACTIVE device wifi list 2>/dev/null | while IFS=: read -r ssid signal security active; do
+  # Skip empty/header lines
+  [ -z "$ssid" ] && continue
+  # Escape special characters for JSON
+  ssid_escaped=$(printf '%s' "$ssid" | sed 's/\\/\\\\/g; s/"/\\"/g')
+  active_bool=$([ "$active" = "yes" ] && echo "true" || echo "false")
+  $first && first=false || printf ','
+  printf '\n  {"ssid": "%s", "signal": %d, "security": "%s", "active": %s}' \
+    "$ssid_escaped" "${signal:-0}" "${security:-}" "$active_bool"
+done
+echo
+echo ']'

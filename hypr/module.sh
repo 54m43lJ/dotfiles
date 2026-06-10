@@ -9,6 +9,7 @@ install_module() {
         hyprland hyprpolkitagent hyprpaper hypridle hyprshot hyprlock
         xdg-desktop-portal-hyprland qt5-wayland qt6-wayland
         fcitx5-im fcitx5-chinese-addons fcitx5-breeze
+        hyprshutdown
     )
     pac_ins "${HYPR[@]}"
 

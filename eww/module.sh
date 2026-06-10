@@ -9,7 +9,7 @@ install_module() {
     log "Installing eww..."
 
     local EWW_DEPS=(
-        gtk3 gtk-layer-shell pango gdk-pixbuf2 cairo glib2 gcc-libs glibc rustup
+        gtk3 gtk-layer-shell pango gdk-pixbuf2 cairo glib2 gcc-libs glibc rustup hyprshutdown
     )
     pac_ins "${EWW_DEPS[@]}"
 

@@ -1,0 +1,5 @@
+#!/bin/bash
+# Outputs current time every second (single long-running process, no fork overhead)
+while sleep 1; do
+  date '+%H:%M'
+done

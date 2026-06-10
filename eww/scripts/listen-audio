@@ -1,0 +1,18 @@
+#!/bin/bash
+# Outputs audio state as JSON: {"vol": 50, "mute": "no"}
+# Uses pactl subscribe for event-driven updates
+
+output() {
+  local vol
+  local mute
+  if command -v pactl >/dev/null; then
+    vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | awk -F '[^0-9]+' 'NR==1{print $3}')
+    mute=$(LANG=en_US.UTF-8 pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | awk '{print $2}')
+  fi
+  printf '{"vol": %d, "mute": "%s"}\n' "${vol:-0}" "${mute:-no}"
+}
+
+output
+pactl subscribe 2>/dev/null | grep --line-buffered -i "sink" | while read -r _; do
+  output
+done

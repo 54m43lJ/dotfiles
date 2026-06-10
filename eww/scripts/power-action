@@ -1,0 +1,22 @@
+#!/bin/bash
+# power-action — triggers the requested power operation
+# Usage: power-action <lock|logout|reboot|shutdown>
+
+case "$1" in
+  lock)
+    loginctl lock-session
+    ;;
+  logout)
+    hyprshutdown
+    ;;
+  reboot)
+    systemctl reboot
+    ;;
+  shutdown)
+    systemctl poweroff
+    ;;
+  *)
+    echo "Usage: $0 <lock|logout|reboot|shutdown>"
+    exit 1
+    ;;
+esac

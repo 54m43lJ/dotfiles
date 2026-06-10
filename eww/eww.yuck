@@ -1,5 +1,6 @@
 (include "./components/window-title.yuck")
 (include "./components/workspaces.yuck")
+(include "./components/control-center.yuck")
 (include "./components/system-info.yuck")
 (include "./components/music.yuck")
 
