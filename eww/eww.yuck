@@ -24,7 +24,7 @@
 
 (defwidget rightbar [monitor]
   (box :orientation "h" :class "right" :halign "end" :space-evenly false :spacing 13
-    (sidestuff))
+    (sidestuff :monitor monitor))
   )
 
 (defwindow w_bar [monitor]

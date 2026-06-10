@@ -39,9 +39,9 @@
 
 ;; ── Trigger Widget (displayed in bar) ────────
 
-(defwidget cc_trigger []
+(defwidget cc_trigger [monitor]
   (eventbox
-    :onclick { show_cc ? "eww update show_cc=false" : "eww update show_cc=true" }
+    :onclick "bash ~/.config/eww/scripts/toggle-cc ${monitor}"
     (box :orientation "h" :class "cc-trigger" :space-evenly false :spacing 8
       (label :class "xlarge" :text "󰈀")
       (label :class "xlarge" :text {
@@ -249,8 +249,8 @@
   )
 )
 
-(defwindow w_control_center []
-  :monitor 0
+(defwindow w_control_center [monitor]
+  :monitor monitor
   :geometry (geometry :x "10px"
                       :y "42px"
                       :width "360px"
@@ -258,6 +258,5 @@
                       :anchor "top right")
   :stacking "fg"
   :focusable "none"
-  :visible show_cc
   (control_center)
 )

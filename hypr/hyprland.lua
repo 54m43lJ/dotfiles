@@ -218,8 +218,8 @@ hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "m-1" }))
 hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "m+1" }))
 hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "m+1" }))
 hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "m-1" }))
-hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "m+1" }))
-hl.bind(mainMod .. " + SHIFT + left",     hl.dsp.window.move({ workspace = "m-1" }))
+hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "r+1" }))
+hl.bind(mainMod .. " + SHIFT + left",     hl.dsp.window.move({ workspace = "r-1" }))
 hl.bind(mainMod .. " + N",                hl.dsp.focus({ workspace = "emptym" }))
 hl.bind(mainMod .. " + SHIFT + N",        hl.dsp.window.move({ workspace = "emptym" }))
 
@@ -252,6 +252,15 @@ end)
 
 hl.on("config.reloaded", function()
     apply_monitor_scales()
+    assign_workspaces()
+end)
+
+hl.on("workspace.created", function()
+    assign_workspaces()
+end)
+
+hl.on("workspace.removed", function()
+    assign_workspaces()
 end)
 
 -- ============================================

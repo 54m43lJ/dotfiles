@@ -1,4 +1,4 @@
-(defwidget sidestuff []
+(defwidget sidestuff [monitor]
   (box :class "sidestuff" :orientation "h" :space-evenly false :halign "end"
     (systray
       :class "right"
@@ -12,7 +12,7 @@
       :switch showmem
       :switchname "showmem"
       :action "")
-    (cc_trigger)
+    (cc_trigger :monitor monitor)
     )
 )
 

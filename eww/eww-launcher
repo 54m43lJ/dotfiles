@@ -13,6 +13,3 @@ hyprctl monitors -j | jq -r '.[].name' | while read -r monitor; do
     eww open w_bar --id "bar_${monitor}" --arg "monitor=$monitor"
     echo "Opened bar → $monitor"
 done
-
-eww open w_control_center
-echo "Opened control center"
