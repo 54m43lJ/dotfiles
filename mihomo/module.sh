@@ -56,6 +56,11 @@ install_module() {
     log "Installing binary to /usr/bin/mihomo..."
     sudo cp /tmp/mihomo /usr/bin/mihomo
 
+    # --- install clash-ui helper ---
+    log "Installing clash-ui helper..."
+    sudo cp "$WD/mihomo/clash-ui" /usr/bin/clash-ui
+    sudo chmod +x /usr/bin/clash-ui
+
     # --- deploy config ---
     log "Deploying config..."
     sudo mkdir -p /etc/mihomo
