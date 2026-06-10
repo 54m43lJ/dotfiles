@@ -1,5 +1,0 @@
-#!/bin/bash
-# Outputs current date every 60 seconds
-while sleep 60; do
-  date '+%a %b %d, %Y'
-done

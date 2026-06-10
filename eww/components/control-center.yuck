@@ -9,11 +9,6 @@
   "bash ~/.config/eww/scripts/listen-audio"
 )
 
-;; Clock: single long-running process, no fork-per-tick
-(deflisten clock :initial "00:00:00"
-  "bash ~/.config/eww/scripts/listen-clock"
-)
-
 ;; Battery: poll-based (changes slowly, no good event source)
 (defpoll bat_state :interval "30s"
   "bash ~/.config/eww/scripts/get-battery state"
@@ -78,7 +73,7 @@
             "󰁹"
         }
       )
-      (label :class "medium" :text clock)
+      (label :class "medium" :text { formattime(EWW_TIME, "%H:%M") })
     )
   )
 )
