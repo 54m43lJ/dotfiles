@@ -260,6 +260,7 @@ hl.on("workspace.created", function()
 end)
 
 hl.on("workspace.removed", function()
+    hl.dispatch(hl.dsp.focus({ workspace = "m-1" }))
     assign_workspaces()
 end)
 
