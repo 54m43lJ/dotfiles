@@ -1,3 +1,0 @@
-#!/bin/bash
-# Open mihomo web UI in default browser
-xdg-open http://localhost:8090/ui
