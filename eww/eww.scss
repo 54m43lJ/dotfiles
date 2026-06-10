@@ -123,21 +123,13 @@ menuitem:hover {
   background-color: #231F1F;
   color: #D5C3B5;
   border-radius: 20px;
-  padding: 10px 8px;
+  padding: 12px 4px;
   border: 1px solid rgba(213, 195, 181, 0.15);
 }
 
-.cc-datetime {
-  padding: 8px 14px 4px 14px;
-}
-
-.cc-datetime label {
-  color: #D5C3B5;
-}
-
 .cc-section {
-  padding: 8px 10px;
-  margin: 2px 6px;
+  padding: 0 10px;
+  margin: 2px;
   border-radius: 16px;
 }
 
@@ -148,7 +140,7 @@ menuitem:hover {
 
 .cc-section label {
   padding: 4px;
-  margin: 4px;
+  margin: 0;
 }
 
 .cc-section scale trough {

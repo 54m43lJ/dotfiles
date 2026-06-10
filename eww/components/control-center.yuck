@@ -172,7 +172,7 @@
 
 (defwidget cc_battery []
   (box :orientation "h" :class "cc-section" :space-evenly false
-    (label :class "xlarge" :text {
+    (label :class "medium" :text {
       bat_state == "Charging" ? "󰂄" :
       bat_per >= 90 ? "󰁹" :
       bat_per >= 50 ? "󰂀" :
@@ -233,7 +233,7 @@
 
 (defwidget control_center []
   (box :orientation "v" :class "control-center" :space-evenly false
-    (box :orientation "h" :class "cc-datetime" :space-evenly false
+    (box :orientation "h" :class "cc-section" :space-evenly false :halign "center"
       (label :class "large" :text { formattime(EWW_TIME, "%c") } :wrap true)
     )
     (cc_volume)
@@ -247,7 +247,7 @@
 (defwindow w_control_center [monitor]
   :monitor monitor
   :geometry (geometry :x "10px"
-                      :y "42px"
+                      :y "0px"
                       :width "360px"
                       :height "0px"
                       :anchor "top right")
