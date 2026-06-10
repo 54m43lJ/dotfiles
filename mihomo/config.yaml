@@ -1,0 +1,12 @@
+allow-lan: false
+
+external-controller: localhost:8090
+secret: "ssssssss" # `Authorization:Bearer ${secret}`
+# RESTful API CORS标头配置
+external-controller-cors:
+  allow-origins:
+    - "localhost"
+  allow-private-network: true
+# 配置 WEB UI 目录，使用 http://{{external-controller}}/ui 访问
+external-ui: /etc/mihomo/ui/
+external-ui-name: xd
