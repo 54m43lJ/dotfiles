@@ -18,6 +18,17 @@ hl.monitor({
     reserved = { top = -5 },
 })
 
+-- Toggle the first monitor's transform between 0 (normal) and 1 (90°)
+local function toggle_orientation()
+    local mons = hl.get_monitors()
+    if not mons[1] then return end
+    local new_transform = (mons[1].transform == 0) and 1 or 0
+    hl.monitor({
+        output    = mons[1].name,
+        transform = new_transform,
+    })
+end
+
 -- Per-monitor auto-scale: 1080p and below → 1x, above → 2x
 local function apply_monitor_scales()
     for _, mon in ipairs(hl.get_monitors()) do
@@ -168,7 +179,7 @@ hl.config({
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hyprctl kill"))
 hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("nwg-bar -t hypr.json"))
 hl.bind(mainMod .. " + SHIFT + Q",  hl.dsp.exec_cmd("hyprshutdown"))
-hl.bind(mainMod .. " + P",          hl.dsp.exec_cmd(hypr_dir .. "/scripts/orientation"))
+hl.bind(mainMod .. " + P",          toggle_orientation)
 
 -- Utilities & controls
 hl.bind(mainMod .. " + SPACE",      hl.dsp.exec_cmd("wofi"))
