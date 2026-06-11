@@ -1,0 +1,30 @@
+#!/bin/bash
+# Single source of truth: returns per-monitor workspace data
+# Output: [{midx, monitor, offset, workspaces: [{id, real, windows, active}]}]
+
+spaces() {
+    local monitors_json ws_json
+    monitors_json="$(hyprctl monitors -j)"
+    ws_json="$(hyprctl workspaces -j)"
+
+    echo "$monitors_json" | jq -c --argjson ws "$ws_json" '
+        [.[] | . as $m | {
+            midx:      ($m.id | tostring),
+            monitor:   $m.name,
+            offset:    ($m.id * 10),
+            active_ws: ($m.activeWorkspace.id // 0),
+            workspaces: (
+                [range(1;11)] | map({
+                    id:      (. | tostring),
+                    real:    ((. + $m.id * 10) | tostring),
+                    windows: ($ws | map(select(.id == (. + $m.id * 10))) | if length > 0 then .[0].windows else 0 end),
+                    active:  ((. + $m.id * 10) == ($m.activeWorkspace.id // -1))
+                })
+            )
+        }]
+    '
+}
+
+spaces
+socat -u "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" - |
+    while read -r _; do spaces; done

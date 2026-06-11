@@ -20,13 +20,14 @@ hl.monitor({
 
 -- Toggle the first monitor's transform between 0 (normal) and 1 (90°)
 local function toggle_orientation()
-    local mons = hl.get_monitors()
-    if not mons[1] then return end
-    local new_transform = (mons[1].transform == 0) and 1 or 0
+    local mon = hl.get_active_monitor()
+    if not mon then return end
+    local new_transform = (mon.transform == 0) and 1 or 0
     hl.monitor({
-        output    = mons[1].name,
+        output    = mon.name,
         transform = new_transform,
     })
+    hl.exec_cmd('eww-launcher')
 end
 
 -- Per-monitor auto-scale: 1080p and below → 1x, above → 2x
@@ -254,6 +255,7 @@ end)
 hl.on("monitor.added", function()
     apply_monitor_scales()
     assign_workspaces()
+    hl.exec_cmd("eww-launcher")
 end)
 
 hl.on("monitor.removed", function()
@@ -271,7 +273,6 @@ hl.on("workspace.created", function()
 end)
 
 hl.on("workspace.removed", function()
-    hl.dispatch(hl.dsp.focus({ workspace = "m-1" }))
     assign_workspaces()
 end)
 

@@ -43,6 +43,9 @@ install_module() {
 
     # --- nemo default terminal ---
     gsettings set org.cinnamon.desktop.default-applications.terminal exec foot
+    gsettings set org.cinnamon.desktop.default-applications.terminal exec-arg ''
+    gsettings set org.gnome.desktop.default-applications.terminal exec foot
+    gsettings set org.gnome.desktop.default-applications.terminal exec-arg ''
 
     log "Core system packages installed."
 }

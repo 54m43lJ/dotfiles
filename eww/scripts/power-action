@@ -10,10 +10,10 @@ case "$1" in
     hyprshutdown
     ;;
   reboot)
-    systemctl reboot
+    hyprshutdown --post-cmd 'reboot'
     ;;
   shutdown)
-    systemctl poweroff
+    hyprshutdown --post-cmd 'shutdown now'
     ;;
   *)
     echo "Usage: $0 <lock|logout|reboot|shutdown>"

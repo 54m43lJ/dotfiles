@@ -17,7 +17,7 @@ hl.window_rule({ name = "fs-mplayer",           match = { class = "^(MPlayer)$" 
 hl.window_rule({ name = "float-xdg-portal",     match = { class = "^(xdg-desktop-portal-gtk)$" },                    float = true })
 hl.window_rule({ name = "float-nemo",           match = { class = "^(nemo)$" },                                      float = true })
 hl.window_rule({ name = "float-calculator",     match = { class = "^(galculator|org\\.gnome\\.Calculator)$" },        float = true })
-hl.window_rule({ name = "float-clash",          match = { class = "^(clash_win|Clash for Windows)$" },              float = true })
+hl.window_rule({ name = "float-clash",          match = { class = "^(clash-verge)$" },              float = true })
 hl.window_rule({ name = "float-network",        match = { class = "^(nm-connection-editor)$" },                      float = true })
 hl.window_rule({ name = "float-openrgb",        match = { class = "^(org.openrgb.OpenRGB)$" },                       float = true })
 hl.window_rule({ name = "float-polkit",         match = { class = "polkit" },                                        float = true })
