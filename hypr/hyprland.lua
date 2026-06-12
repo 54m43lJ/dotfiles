@@ -27,7 +27,6 @@ local function toggle_orientation()
         output    = mon.name,
         transform = new_transform,
     })
-    hl.exec_cmd('eww-launcher')
 end
 
 -- Per-monitor auto-scale: 1080p and below → 1x, above → 2x
@@ -255,7 +254,6 @@ end)
 hl.on("monitor.added", function()
     apply_monitor_scales()
     assign_workspaces()
-    hl.exec_cmd("eww-launcher")
 end)
 
 hl.on("monitor.removed", function()
