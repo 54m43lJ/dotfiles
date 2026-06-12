@@ -209,11 +209,13 @@ export default function CCTrigger() {
         const root = self.get_root()
         if (root instanceof Gtk.Window) ccWindow.set_transient_for(root)
 
-        ccWindow.connect("notify::has-toplevel-focus", () => {
-          if (ccWindow.visible && !ccWindow.has_toplevel_focus) {
+        const focusCtrl = new Gtk.EventControllerFocus()
+        focusCtrl.connect("leave", () => {
+          if (ccWindow.visible) {
             ccWindow.close()
           }
         })
+        ccWindow.add_controller(focusCtrl)
 
         const click = new Gtk.GestureClick()
         click.connect("pressed", () => {
