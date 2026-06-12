@@ -200,38 +200,27 @@ export default function CCTrigger() {
     <box
       class="cc-trigger"
       $={(self: Gtk.Box) => {
-        let isOpen = false
-
         const ccWindow = new Gtk.Window()
         ccWindow.set_decorated(false)
         ccWindow.set_resizable(false)
+        ccWindow.set_hide_on_close(true)
         ccWindow.set_child(ControlCenter() as Gtk.Widget)
 
         const root = self.get_root()
         if (root instanceof Gtk.Window) ccWindow.set_transient_for(root)
 
-        const focusCtrl = new Gtk.EventControllerFocus()
-        focusCtrl.connect("leave", () => {
-          if (isOpen) {
-             ccWindow.close()
-             isOpen = false
-           }
-         })
-        ccWindow.add_controller(focusCtrl)
-
-        ccWindow.connect("close-request", () => {
-          isOpen = false
-          return false
+        ccWindow.connect("notify::has-toplevel-focus", () => {
+          if (ccWindow.visible && !ccWindow.has_toplevel_focus) {
+            ccWindow.close()
+          }
         })
 
         const click = new Gtk.GestureClick()
         click.connect("pressed", () => {
-          if (isOpen) {
+          if (ccWindow.visible) {
             ccWindow.close()
-            isOpen = false
           } else {
             ccWindow.present()
-            isOpen = true
           }
         })
         self.add_controller(click)
