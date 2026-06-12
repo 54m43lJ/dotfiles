@@ -7,23 +7,20 @@ import { execAsync } from "ags/process"
 export default function Workspaces({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
   const hypr = AstalHyprland.get_default()
 
-  const monitorBinding = createBinding(hypr, "monitors")((monitors) =>
+  const monitorBinding = createBinding(hypr, "monitors").as((monitors) =>
     monitors.find((m: AstalHyprland.Monitor) => m.name === gdkmonitor.connector) ?? null,
   )
-
   return (
     <With value={monitorBinding}>
-      {(monitor: AstalHyprland.Monitor | null) => {
+      {(monitor) => {
         if (!monitor) return <box />
 
-        const wsStates = createBinding(hypr, "workspaces")((all) => {
-          const activeId = monitor.activeWorkspace?.id ?? -1
+        const wsStates = createBinding(monitor, "activeWorkspace").as((active) => {
           return Array.from({ length: 10 }, (_, i) => {
             const n = i + 1
             const id = monitor.id * 10 + n
-            return { label: n === 10 ? "0" : String(n), id, active: activeId === id }
-          })
-        })
+            return { label: n === 10 ? "0" : String(n), id, active: active.id === id }
+        })})
 
         return (
           <box>

@@ -7,7 +7,7 @@ import { For, With, createBinding } from "ags"
 import { createPoll } from "ags/time"
 import { execAsync } from "ags/process"
 
-const batIconFn = (p: number, ch: boolean): string =>
+const batIconFn= (p: number, ch: boolean): string =>
   ch
     ? p < 0.15 ? "󰢜" : p < 0.25 ? "󰂆" : p < 0.35 ? "󰂇" : p < 0.45 ? "󰂈" : p < 0.55 ? "󰢝" : p < 0.65 ? "󰂉" : p < 0.75 ? "󰢞" : p < 0.85 ? "󰂊" : p < 0.95 ? "󰂋" : "󰂅"
     : p < 0.05 ? "󰂎" : p < 0.15 ? "󰁺" : p < 0.25 ? "󰁻" : p < 0.35 ? "󰁼" : p < 0.45 ? "󰁽" : p < 0.55 ? "󰁾" : p < 0.65 ? "󰁿" : p < 0.75 ? "󰂀" : p < 0.85 ? "󰂁" : p < 0.95 ? "󰂂" : "󰁹"
@@ -138,9 +138,9 @@ function CCBattery() {
 function CCPower() {
   const actions = [
     { icon: "", label: "Lock", cmd: "loginctl lock-session" },
-    { icon: "󰗽", label: "Logout", cmd: "hyprctl dispatch exit" },
-    { icon: "󰜉", label: "Reboot", cmd: "systemctl reboot" },
-    { icon: "⏻", label: "Shutdown", cmd: "systemctl poweroff" },
+    { icon: "󰗽", label: "Logout", cmd: "hyprshutdown" },
+    { icon: "󰜉", label: "Reboot", cmd: "hyprshutdown -p reboot" },
+    { icon: "⏻", label: "Shutdown", cmd: "hyprshutdown -p poweroff" },
   ]
 
   return (
@@ -169,7 +169,7 @@ function CCPower() {
   )
 }
 
-function ControlCenter() {
+export function ControlCenter() {
   return (
     <box class="control-center" orientation={Gtk.Orientation.VERTICAL}>
       <box class="cc-section" halign={Gtk.Align.CENTER}>
@@ -197,7 +197,46 @@ export default function CCTrigger() {
   const battery = AstalBattery.get_default()
 
   return (
-    <menubutton class="cc-trigger">
+    <box
+      class="cc-trigger"
+      $={(self: Gtk.Box) => {
+        let isOpen = false
+
+        const ccWindow = new Gtk.Window()
+        ccWindow.set_decorated(false)
+        ccWindow.set_resizable(false)
+        ccWindow.set_child(ControlCenter() as Gtk.Widget)
+
+        const root = self.get_root()
+        if (root instanceof Gtk.Window) ccWindow.set_transient_for(root)
+
+        const focusCtrl = new Gtk.EventControllerFocus()
+        focusCtrl.connect("leave", () => {
+          if (isOpen) {
+             ccWindow.close()
+             isOpen = false
+           }
+         })
+        ccWindow.add_controller(focusCtrl)
+
+        ccWindow.connect("close-request", () => {
+          isOpen = false
+          return false
+        })
+
+        const click = new Gtk.GestureClick()
+        click.connect("pressed", () => {
+          if (isOpen) {
+            ccWindow.close()
+            isOpen = false
+          } else {
+            ccWindow.present()
+            isOpen = true
+          }
+        })
+        self.add_controller(click)
+      }}
+    >
       <box>
         <label label="󰈀" class="fs-xl" />
         <label
@@ -222,9 +261,6 @@ export default function CCTrigger() {
           label={createPoll("", 1000, () => GLib.DateTime.new_now_local().format("%H:%M")!)}
         />
       </box>
-      <popover>
-        <ControlCenter />
-      </popover>
-    </menubutton>
+    </box>
   )
 }
