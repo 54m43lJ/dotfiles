@@ -44,8 +44,10 @@ install_module() {
     # --- nemo default terminal ---
     gsettings set org.cinnamon.desktop.default-applications.terminal exec foot
     gsettings set org.cinnamon.desktop.default-applications.terminal exec-arg ''
-    gsettings set org.gnome.desktop.default-applications.terminal exec foot
-    gsettings set org.gnome.desktop.default-applications.terminal exec-arg ''
+    # GLib hardcodes a terminal whitelist that doesn't include foot.
+    # xdg-terminal-exec is the first fallback — symlink it to foot so
+    # Terminal=true .desktop apps (e.g. nvim) can find a terminal.
+    sudo ln -sf /usr/bin/foot /usr/local/bin/xdg-terminal-exec
 
     log "Core system packages installed."
 }

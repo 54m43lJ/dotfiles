@@ -25,9 +25,16 @@ function VolumeSlider() {
 
   return (
     <box class="cc-section">
-      <button onClicked={() => speaker.set_mute(!speaker.mute)}>
+      <box
+        class="clickable"
+        $={(self: Gtk.Box) => {
+          const click = new Gtk.GestureClick()
+          click.connect("pressed", () => speaker.set_mute(!speaker.mute))
+          self.add_controller(click)
+        }}
+      >
         <label label={volIcon} class="fs-xl" />
-      </button>
+      </box>
       <slider
         hexpand
         min={0}
@@ -59,9 +66,9 @@ function CCNetwork() {
 
   return (
     <box class="cc-section" orientation={Gtk.Orientation.VERTICAL}>
-      <button class="cc-header" hexpand>
+      <box class="cc-header" hexpand>
         <label label="󰈀 Network  ▾" class="fs-lg" />
-      </button>
+      </box>
       <With value={wifi}>
         {(wifi: AstalNetwork.Wifi | null) =>
           wifi && (
@@ -79,7 +86,14 @@ function CCNetwork() {
                 <box orientation={Gtk.Orientation.VERTICAL}>
                   <For each={createBinding(wifi, "accessPoints")(sorted)}>
                     {(ap: AstalNetwork.AccessPoint) => (
-                      <button class="cc-wifi-entry" onClicked={() => connect(ap)}>
+                      <box
+                        class="cc-wifi-entry"
+                        $={(self: Gtk.Box) => {
+                          const click = new Gtk.GestureClick()
+                          click.connect("pressed", () => connect(ap))
+                          self.add_controller(click)
+                        }}
+                      >
                         <box>
                           <label label={signalIcon(ap.strength)} />
                           <box hexpand>
@@ -92,7 +106,7 @@ function CCNetwork() {
                             )}
                           />
                         </box>
-                      </button>
+                      </box>
                     )}
                   </For>
                 </box>
@@ -131,17 +145,24 @@ function CCPower() {
 
   return (
     <box class="cc-section" orientation={Gtk.Orientation.VERTICAL}>
-      <button class="cc-header" hexpand>
+      <box class="cc-header" hexpand>
         <label label="⏻ Power  ▾" class="fs-lg" />
-      </button>
+      </box>
       <box orientation={Gtk.Orientation.VERTICAL}>
         {actions.map(({ icon, label, cmd }) => (
-          <button class="cc-power-btn" onClicked={() => execAsync(cmd).catch(console.error)}>
+          <box
+            class="cc-power-btn"
+            $={(self: Gtk.Box) => {
+              const click = new Gtk.GestureClick()
+              click.connect("pressed", () => execAsync(cmd).catch(console.error))
+              self.add_controller(click)
+            }}
+          >
             <box>
               <label label={icon} />
               <label label={`  ${label}`} />
             </box>
-          </button>
+          </box>
         ))}
       </box>
     </box>

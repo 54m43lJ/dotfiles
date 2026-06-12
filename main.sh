@@ -13,7 +13,7 @@ for arg in "$@"; do
             echo
             echo "Modules (installed in order):"
             echo "  system hypr fontconfig foot wofi dunst sddm pipewire"
-            echo "  applications grub electron-apps nwg-bar zsh eww"
+            echo "  applications grub electron-apps nwg-bar zsh ags"
             echo "  nvidia rgb breeze dev per-device-conf clash"
             exit 0
             ;;
@@ -54,7 +54,7 @@ MODULES=(
     electron-apps
     nwg-bar
     zsh
-    eww
+    ags
     nvidia
     rgb
     breeze

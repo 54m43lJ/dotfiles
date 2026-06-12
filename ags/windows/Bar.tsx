@@ -2,12 +2,12 @@ import app from "ags/gtk4/app"
 import Astal from "gi://Astal?version=4.0"
 import Gdk from "gi://Gdk?version=4.0"
 import { onCleanup } from "ags"
-import Workspaces from "./widgets/workspaces"
-import Music from "./widgets/music"
-import WindowTitle from "./widgets/window-title"
-import Tray from "./widgets/tray"
-import Memory from "./widgets/memory"
-import CCTrigger from "./widgets/control-center"
+import Workspaces from "../widgets/workspaces"
+import Music from "../widgets/music"
+import WindowTitle from "../widgets/window-title"
+import Tray from "../widgets/tray"
+import Memory from "../widgets/memory"
+import CCTrigger from "../widgets/control-center"
 
 export default function Bar({ gdkmonitor }: { gdkmonitor: Gdk.Monitor }) {
   let win: Astal.Window

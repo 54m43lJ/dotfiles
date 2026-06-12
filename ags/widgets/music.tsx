@@ -29,27 +29,49 @@ export default function Music() {
 
         return (
           <box class="music-box">
-            <button
+            <box
+              class="clickable"
               visible={createBinding(player, "canGoPrevious")}
-              onClicked={() => player.previous()}
+              $={(self: Gtk.Box) => {
+                const click = new Gtk.GestureClick()
+                click.connect("pressed", () => player.previous())
+                self.add_controller(click)
+              }}
             >
               <label label="󰒮" />
-            </button>
-            <button onClicked={() => player.play_pause()}>
+            </box>
+            <box
+              class="clickable"
+              $={(self: Gtk.Box) => {
+                const click = new Gtk.GestureClick()
+                click.connect("pressed", () => player.play_pause())
+                self.add_controller(click)
+              }}
+            >
               <label label={isPlaying((p: boolean) => (p ? "󰏤" : "󰐊"))} />
-            </button>
-            <button
+            </box>
+            <box
+              class="clickable"
               visible={createBinding(player, "canControl")}
-              onClicked={() => player.stop()}
+              $={(self: Gtk.Box) => {
+                const click = new Gtk.GestureClick()
+                click.connect("pressed", () => player.stop())
+                self.add_controller(click)
+              }}
             >
               <label label="󰓛" />
-            </button>
-            <button
+            </box>
+            <box
+              class="clickable"
               visible={createBinding(player, "canGoNext")}
-              onClicked={() => player.next()}
+              $={(self: Gtk.Box) => {
+                const click = new Gtk.GestureClick()
+                click.connect("pressed", () => player.next())
+                self.add_controller(click)
+              }}
             >
               <label label="󰒭" />
-            </button>
+            </box>
             <box visible={isPlaying} class="fs-md">
               <label
                 $={(self: Gtk.Label) => {
