@@ -29,5 +29,8 @@ hl.window_rule({ name = "float-fcitx5-config",  match = { class = "^(org.fcitx.f
 hl.window_rule({ name = "fs-qt5ct",             match = { class = "^(qt5ct)$" },                                     float = true })
 hl.window_rule({ name = "fs-pavucontrol",       match = { class = "^(pavucontrol)$" },                               float = true })
 
+-- AGS control-center popup: strip all compositor effects
+hl.window_rule({ name = "ags-cc",               match = { title = "^(ags-cc)$" }, border_size = 0, no_blur = true, no_shadow = true })
+
 -- xwayland workarounds
 hl.window_rule({ name = "xwayland-fixes",       match = { xwayland = true }, opaque = true, no_blur = true, no_dim = true })

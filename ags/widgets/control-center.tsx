@@ -201,6 +201,7 @@ export default function CCTrigger() {
       class="cc-trigger"
       $={(self: Gtk.Box) => {
         const ccWindow = new Gtk.Window()
+        ccWindow.set_title("ags-cc")
         ccWindow.set_decorated(false)
         ccWindow.set_resizable(false)
         ccWindow.set_hide_on_close(true)
