@@ -197,36 +197,14 @@ export default function CCTrigger() {
   const battery = AstalBattery.get_default()
 
   return (
-    <box
+    <menubutton
       class="cc-trigger"
-      $={(self: Gtk.Box) => {
-        const ccWindow = new Gtk.Window()
-        ccWindow.set_title("ags-cc")
-        ccWindow.set_decorated(false)
-        ccWindow.set_resizable(false)
-        ccWindow.set_hide_on_close(true)
-        ccWindow.set_child(ControlCenter() as Gtk.Widget)
-
-        const root = self.get_root()
-        if (root instanceof Gtk.Window) ccWindow.set_transient_for(root)
-
-        const focusCtrl = new Gtk.EventControllerFocus()
-        focusCtrl.connect("leave", () => {
-          if (ccWindow.visible) {
-            ccWindow.close()
-          }
-        })
-        ccWindow.add_controller(focusCtrl)
-
-        const click = new Gtk.GestureClick()
-        click.connect("pressed", () => {
-          if (ccWindow.visible) {
-            ccWindow.close()
-          } else {
-            ccWindow.present()
-          }
-        })
-        self.add_controller(click)
+      has-frame={false}
+      $={(self: Gtk.MenuButton) => {
+        const popover = new Gtk.PopoverMenu()
+        popover.set_child(ControlCenter() as Gtk.Widget)
+        popover.set_has_arrow(false)
+        self.set_popover(popover)
       }}
     >
       <box>
@@ -253,6 +231,6 @@ export default function CCTrigger() {
           label={createPoll("", 1000, () => GLib.DateTime.new_now_local().format("%H:%M")!)}
         />
       </box>
-    </box>
+    </menubutton>
   )
 }

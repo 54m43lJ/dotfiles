@@ -8,7 +8,7 @@ export default function WindowTitle() {
   const client = createBinding(hypr, "focusedClient")
 
   return (
-    <box class="title-box" halign={Gtk.Align.CENTER}>
+    <box class="title-box fs-lg" halign={Gtk.Align.CENTER}>
       <label
         $={(self: Gtk.Label) => {
           self.ellipsize = Pango.EllipsizeMode.END

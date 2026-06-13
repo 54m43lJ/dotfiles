@@ -45,6 +45,7 @@ window#bar {
     border-bottom: 2px solid $gold;
     background-image: linear-gradient(25deg, $bg 97%, $gold);
     min-height: 40px;
+    height: 5%;
     padding: 0 13px;
   }
 }
@@ -52,8 +53,8 @@ window#bar {
 // ── Workspaces ────────────────────────────────
 
 .workspace-entry {
-  margin: 5px 1px;
-  padding: 0 8px;
+  margin: 0.5rem 0.3rem;
+  padding: 0 0.8rem;
   border-radius: 10px;
   color: $fg;
   background-color: $purple;
@@ -111,7 +112,29 @@ window#bar {
 // ── Control Center trigger ────────────────────
 
 .cc-trigger {
+  background: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 10px;
+  margin: 1px;
+  min-height: 0;
+  min-width: 0;
   padding: 0 8px;
+  transition: 0.3s;
+
+  button {
+    all: unset;
+  }
+
+  label {
+    transition: 0.3s;
+  }
+
+  &:hover {
+    background-color: $purple;
+
+    label { color: $white; }
+  }
 }
 
 // ── Control Center popover ────────────────────
