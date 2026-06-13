@@ -138,9 +138,9 @@ function CCBattery() {
 function CCPower() {
   const actions = [
     { icon: "", label: "Lock", cmd: "loginctl lock-session" },
-    { icon: "󰗽", label: "Logout", cmd: "hyprshutdown" },
-    { icon: "󰜉", label: "Reboot", cmd: "hyprshutdown -p reboot" },
-    { icon: "⏻", label: "Shutdown", cmd: "hyprshutdown -p poweroff" },
+    { icon: "󰗽", label: "Logout", cmd: "hyprctl eval \'hl.exec_cmd(\"hyprshutdown\")\'" },
+    { icon: "󰜉", label: "Reboot", cmd: "hyprctl eval \'hl.exec_cmd(\"hyprshutdown -p reboot\")\'" },
+    { icon: "⏻", label: "Shutdown", cmd: "hyprctl eval \'hl.exec_cmd(\"hyprshutdown -p poweroff\")\'" },
   ]
 
   return (
