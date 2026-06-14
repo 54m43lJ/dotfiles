@@ -54,7 +54,7 @@ MODULES=(
     electron-apps
     nwg-bar
     zsh
-    ags
+    bread
     nvidia
     rgb
     breeze
