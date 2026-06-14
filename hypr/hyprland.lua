@@ -27,6 +27,7 @@ local function toggle_orientation()
         output    = mon.name,
         transform = new_transform,
     })
+    hl.exec_cmd("hyprpaper")
 end
 
 -- Per-monitor auto-scale: 1080p and below → 1x, above → 2x
