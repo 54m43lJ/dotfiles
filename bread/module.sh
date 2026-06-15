@@ -8,19 +8,22 @@ install_module() {
 
     log "Installing bread..."
 
-    local BREAD_DEPS=(
-        rustup gtk4 gtk4-layer-shell libadwaita meson desktop-file-utils gcc
-    )
+    local BREAD_DEPS=(gtk4 gtk4-layer-shell libadwaita)
     pac_ins "${BREAD_DEPS[@]}"
     yay_ins libastal-meta
 
-    rustup install stable
-    rustup default stable
+    log "Fetching latest preview release..."
+    local url
+    url=$(curl -sS 'https://api.github.com/repos/54m43lJ/BreadKnife/releases/tags/preview' \
+        | grep -oP '"browser_download_url":\s*"\K[^"]*x86_64[^"]*\.tar\.gz')
 
-    mkdir -p ~/Applications
-    git clone https://github.com/54m43lJ/BreadKnife.git ~/Applications/BreadKnife
-    (cd ~/Applications/BreadKnife && cargo build --release --bin bread)
-    sudo cp ~/Applications/BreadKnife/target/release/bread /usr/local/bin/
+    if [[ -z "$url" ]]; then
+        err "Failed to find x86_64 tarball in preview release."
+        return 1
+    fi
 
-    log "Bread installed."
+    log "Downloading $url"
+    curl -sSL "$url" | sudo tar xzf - -C /usr/local/bin
+
+    log "Bread installed to /usr/local/bin/bread."
 }
