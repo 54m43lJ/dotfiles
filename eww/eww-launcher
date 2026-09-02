@@ -1,5 +1,15 @@
 #!/bin/bash
-if pidof eww; then eww close-all; else eww daemon; fi
-for i in $(seq $(hyprctl monitors | grep -Ec "^Monitor")) ; do
-    eww open w_bar --id w_bar$i --arg i=$(($i-1))
+# eww-launcher — starts eww daemon and opens one status bar per monitor
+
+if pidof eww >/dev/null; then
+    eww reload
+    eww close-all
+else
+    eww daemon
+    sleep 0.5
+fi
+
+hyprctl monitors -j | jq -r '.[].name' | while read -r monitor; do
+    eww open w_bar --id "bar_${monitor}" --arg "monitor=$monitor"
+    echo "Opened bar → $monitor"
 done

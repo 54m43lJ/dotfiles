@@ -1,0 +1,257 @@
+;; ──────────────────────────────────────────────
+;; Control Center — unified popup for volume, brightness, network, battery, power
+;; ──────────────────────────────────────────────
+
+;; ── Variables ────────────────────────────────
+
+;; Audio: event-driven via pactl subscribe
+(deflisten audio :initial "{\"vol\": 0, \"mute\": \"no\"}"
+  "bash ~/.config/eww/scripts/listen-audio"
+)
+
+;; Battery: poll-based (changes slowly, no good event source)
+(defpoll bat_state :interval "30s"
+  "bash ~/.config/eww/scripts/get-battery state"
+)
+(defpoll bat_per :interval "30s"
+  "bash ~/.config/eww/scripts/get-battery percent"
+)
+
+;; Network info
+(defpoll if_ad :interval "3s"
+  "bash ~/.config/eww/scripts/get-network"
+)
+
+;; WiFi list for connection picker
+(defpoll wifi_list :interval "5s"
+  "bash ~/.config/eww/scripts/get-wifi-list"
+)
+
+;; Control center UI state
+(defvar show_cc false)
+(defvar cc_net_expanded false)
+(defvar cc_power_expanded false)
+
+;; ── Trigger Widget (displayed in bar) ────────
+
+(defwidget cc_trigger [monitor]
+  (eventbox
+    :onclick "bash ~/.config/eww/scripts/toggle-cc ${monitor}"
+    (box :orientation "h" :class "cc-trigger" :space-evenly false :spacing 8
+      (label :class "xlarge" :text "󰈀")
+      (label :class "xlarge" :text {
+        audio.mute == "yes" ? "󰝟" :
+        audio.vol <= 0 ? "" :
+        audio.vol <= 33 ? "" :
+        audio.vol <= 66 ? "󰕾" :
+        ""
+      })
+      (label :class "medium"
+        :visible { bat_state == "none" ? false : true }
+        :text {
+          bat_state == "Charging" ?
+            bat_per < 15 ? "󰢜" :
+            bat_per < 25 ? "󰂆" :
+            bat_per < 35 ? "󰂇" :
+            bat_per < 45 ? "󰂈" :
+            bat_per < 55 ? "󰢝" :
+            bat_per < 65 ? "󰂉" :
+            bat_per < 75 ? "󰢞" :
+            bat_per < 85 ? "󰂊" :
+            bat_per < 95 ? "󰂋" :
+            "󰂅" :
+            bat_per < 5 ? "󰂎" :
+            bat_per < 15 ? "󰁺" :
+            bat_per < 25 ? "󰁻" :
+            bat_per < 35 ? "󰁼" :
+            bat_per < 45 ? "󰁽" :
+            bat_per < 55 ? "󰁾" :
+            bat_per < 65 ? "󰁿" :
+            bat_per < 75 ? "󰂀" :
+            bat_per < 85 ? "󰂁" :
+            bat_per < 95 ? "󰂂" :
+            "󰁹"
+        }
+      )
+      (label :class "medium" :text { formattime(EWW_TIME, "%H:%M") })
+    )
+  )
+)
+
+;; ── Volume ────────────────────────────────────
+
+(defwidget cc_volume []
+  (box :orientation "h" :class "cc-section" :space-evenly false
+    (eventbox
+      :onclick "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+      (label :class "xlarge" :text {
+        audio.mute == "yes" ? "󰝟" :
+        audio.vol <= 0 ? "" :
+        audio.vol <= 33 ? "" :
+        audio.vol <= 66 ? "󰕾" :
+        ""
+      })
+    )
+    (scale
+      :orientation "h"
+      :min 0
+      :max 100
+      :value { audio.vol }
+      :onchange "pactl set-sink-volume @DEFAULT_SINK@ {}%"
+      :timeout "50ms"
+      :active true
+      :hexpand true
+    )
+    (label :class "large" :text { audio.vol })
+  )
+)
+
+;; ── Brightness (placeholder) ─────────────────
+
+(defwidget cc_brightness []
+  (box :orientation "h" :class "cc-section" :space-evenly false
+    (label :class "xlarge" :text "󰃟")
+    (scale
+      :orientation "h"
+      :min 0
+      :max 100
+      :value 50
+      :active false
+      :hexpand true
+    )
+    (label :class "large cc-placeholder" :text "--")
+  )
+)
+
+;; ── Network ───────────────────────────────────
+
+(defwidget cc_network []
+  (box :orientation "v" :class "cc-section" :space-evenly false
+    (eventbox
+      :class "cc-header"
+      :onclick { cc_net_expanded ? "eww update cc_net_expanded=false" : "eww update cc_net_expanded=true" }
+      :hexpand true
+      (label :class "large" :text { "󰈀 Network  " + (cc_net_expanded ? "▾" : "▸") })
+    )
+    (revealer :transition "slidedown" :reveal cc_net_expanded
+      (box :orientation "v" :class "cc-content" :space-evenly false
+        (box :class "cc-info" :space-evenly false
+          (label :text if_ad :wrap true)
+        )
+        (box :orientation "v" :space-evenly false
+          (label :class "small cc-subtitle" :text "Wi-Fi Networks")
+          (scroll :vscroll true :class "cc-wifi-scroll"
+            (box :orientation "v" :space-evenly false
+              (for entry in wifi_list
+                (eventbox
+                  :onclick "nmcli device wifi connect '${entry.ssid}'"
+                  (box :orientation "h" :space-evenly false
+                    :class { entry.active ? "cc-wifi-entry cc-wifi-active" : "cc-wifi-entry" }
+                    (label :text {
+                      entry.signal >= 80 ? "󰤨" :
+                      entry.signal >= 60 ? "󰤥" :
+                      entry.signal >= 40 ? "󰤢" :
+                      entry.signal >= 20 ? "󰤟" :
+                      "󰤯"
+                    })
+                    (label :text "${entry.ssid}")
+                    (box :hexpand true :space-evenly false)
+                    (label :class "small" :text { entry.active ? "connected" : "" })
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+;; ── Battery ───────────────────────────────────
+
+(defwidget cc_battery []
+  (box :orientation "h" :class "cc-section" :space-evenly false
+    (label :class "medium" :text {
+      bat_state == "Charging" ? "󰂄" :
+      bat_per >= 90 ? "󰁹" :
+      bat_per >= 50 ? "󰂀" :
+      bat_per >= 20 ? "󰁻" :
+      "󰂎"
+    })
+    (progress :value bat_per :orientation "h" :valign "center" :hexpand true)
+    (label :class "large" :text { bat_state == "none" ? "N/A" : bat_per })
+  )
+)
+
+;; ── Power ─────────────────────────────────────
+
+(defwidget cc_power []
+  (box :orientation "v" :class "cc-section" :space-evenly false
+    (eventbox
+      :class "cc-header"
+      :onclick { cc_power_expanded ? "eww update cc_power_expanded=false" : "eww update cc_power_expanded=true" }
+      :hexpand true
+      (label :class "large" :text { "⏻ Power  " + (cc_power_expanded ? "▾" : "▸") })
+    )
+    (revealer :transition "slidedown" :reveal cc_power_expanded
+      (box :orientation "v" :class "cc-content" :space-evenly false
+        (button :class "cc-power-button"
+          :onclick "bash ~/.config/eww/scripts/power-action lock"
+          (box :orientation "h" :space-evenly false
+            (label :text "")
+            (label :text "Lock")
+          )
+        )
+        (button :class "cc-power-button"
+          :onclick "bash ~/.config/eww/scripts/power-action logout"
+          (box :orientation "h" :space-evenly false
+            (label :text "󰗽")
+            (label :text "Logout")
+          )
+        )
+        (button :class "cc-power-button"
+          :onclick "bash ~/.config/eww/scripts/power-action reboot"
+          (box :orientation "h" :space-evenly false
+            (label :text "󰜉")
+            (label :text "Reboot")
+          )
+        )
+        (button :class "cc-power-button"
+          :onclick "bash ~/.config/eww/scripts/power-action shutdown"
+          (box :orientation "h" :space-evenly false
+            (label :text "⏻")
+            (label :text "Shutdown")
+          )
+        )
+      )
+    )
+  )
+)
+
+;; ── Control Center Window ────────────────────
+
+(defwidget control_center []
+  (box :orientation "v" :class "control-center" :space-evenly false
+    (box :orientation "h" :class "cc-section" :space-evenly false :halign "center"
+      (label :class "large" :text { formattime(EWW_TIME, "%c") } :wrap true)
+    )
+    (cc_volume)
+    (cc_brightness)
+    (cc_network)
+    (cc_battery)
+    (cc_power)
+  )
+)
+
+(defwindow w_control_center [monitor]
+  :monitor monitor
+  :geometry (geometry :x "10px"
+                      :y "0px"
+                      :width "360px"
+                      :height "0px"
+                      :anchor "top right")
+  :stacking "fg"
+  :focusable "none"
+  (control_center)
+)

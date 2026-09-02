@@ -1,11 +1,25 @@
 #!/bin/bash
+# Outputs workspace data for ALL monitors
+# Each entry: {id, monitor, windows, active}
+# id = display number (1-10), monitor = monitor name
 
-spaces (){
-	WORKSPACE_WINDOWS=$(hyprctl workspaces -j | jq 'map({key: .id | tostring, value: .windows}) | from_entries')
-	seq 1 10 | jq --argjson windows "${WORKSPACE_WINDOWS}" --slurp -Mc 'map(tostring) | map({id: ., windows: ($windows[.]//0)})'
+spaces() {
+    local monitors_json ws_json
+    monitors_json="$(hyprctl monitors -j)"
+    ws_json="$(hyprctl workspaces -j)"
+
+    echo "$monitors_json" | jq -c --argjson ws "$ws_json" '
+        [.[] | . as $m |
+            [range(1;11) as $d | {
+                id:      ($d | tostring),
+                monitor: $m.name,
+                windows: ($ws | map(select(.id == ($d + $m.id * 10))) | if .[0] then .[0].windows else 0 end),
+                active:  (($m.activeWorkspace.id == $d) or ($m.activeWorkspace.id == $d + $m.id * 10))
+            }]
+        ] | flatten
+    '
 }
 
 spaces
-socat -u UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | while read -r line; do
-	spaces
-done
+socat -u "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" - |
+    while read -r _; do spaces; done

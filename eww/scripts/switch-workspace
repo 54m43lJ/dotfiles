@@ -1,0 +1,14 @@
+#!/bin/bash
+# Usage: switch-workspace <display_id> <monitor>
+# display_id: 1-10 (what user sees)
+# monitor: monitor name (e.g. "DP-4")
+
+display_id="$1"
+monitor="$2"
+[[ -z "$display_id" || -z "$monitor" ]] && exit 1
+
+monitor_idx="$(hyprctl monitors -j | jq -r "map(.name) | index(\"$monitor\") // 0")"
+real=$((monitor_idx * 10 + display_id))
+
+hyprctl dispatch "hl.dsp.focus({ monitor = \"$monitor\" })"
+hyprctl dispatch "hl.dsp.focus({ workspace = \"$real\" })"

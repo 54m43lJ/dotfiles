@@ -4,3 +4,9 @@ hypr/conf.d/*
 .DS_Store
 argv.json
 nvim/lua/plugins/example.lua
+.luarc.json
+.claude/
+ags/node_modules/
+ags/@girs/
+ags/env.d.ts
+ags/tsconfig.json

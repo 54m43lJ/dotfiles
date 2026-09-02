@@ -1,5 +1,5 @@
 * {
-  all: unset; //Unsets everything so you can style everything from scratch
+  all: unset;
     font-family: "NotoSansM Nerd Font Mono", monospace;
 }
 
@@ -55,9 +55,9 @@ tooltip, .tooltip, menu {
   color: #89338E;
   border-width: 0 2px 2px 0;
   border-style: solid;
-  border-color: rgba($color: #D5C3B5, $alpha: 0.95);
+  border-color: rgba(213, 195, 181, 0.95);
   border-radius: 0 8px 8px 8px;
-  background-color: rgba($color: #FFFEFE, $alpha: 0.95);
+  background-color: rgba(255, 254, 254, 0.95);
 }
 
 menu {
@@ -83,19 +83,20 @@ menuitem:hover {
   background-image: linear-gradient(25deg, #231F1F 97%, #8E7753);
 }
 
-.workspaces .workspace-entry {
+.workspace-entry label {
   margin: 5px 1px;
   padding: 0 8px;
   border-radius: 10px;
   transition: 0.3s;
+  color: #D5C3B5;
 }
 
-.workspaces .current {
+.current label {
   color: #89338E;
   background-color: #FFFEFE;
 }
 
-.workspaces .workspace:hover .workspace-entry {
+.workspace-entry:hover label {
   color: #FFFEFE;
   background-color: #89338E;
   transition: 0.3s;
@@ -114,5 +115,137 @@ menuitem:hover {
 }
 
 .lowbat {
+  color: #C06262;
+}
+
+// Control Center
+.control-center {
+  background-color: #231F1F;
+  color: #D5C3B5;
+  border-radius: 20px;
+  padding: 12px 4px;
+  border: 1px solid rgba(213, 195, 181, 0.15);
+}
+
+.cc-section {
+  padding: 0 10px;
+  margin: 2px;
+  border-radius: 16px;
+}
+
+.cc-header:hover {
+  background-color: rgba(137, 51, 142, 0.5);
+  border-radius: 16px;
+}
+
+.cc-section label {
+  padding: 4px;
+  margin: 0;
+}
+
+.cc-section scale trough {
+  all: unset;
+  background-color: #D5C3B5;
+  min-height: 8px;
+  border-radius: 4px;
+}
+
+.cc-section scale trough highlight {
+  all: unset;
+  background-color: #8E7753;
+  border-radius: 4px;
+  min-height: 8px;
+}
+
+.cc-section scale slider {
+  all: unset;
+  min-height: 8px;
+}
+
+.cc-section scale value {
+  color: #D5C3B5;
+}
+
+.cc-section progressbar trough {
+  all: unset;
+  background-color: #D5C3B5;
+  min-height: 8px;
+  border-radius: 4px;
+}
+
+.cc-section progressbar progress {
+  all: unset;
+  background-color: #8E7753;
+  border-radius: 4px;
+  min-height: 8px;
+}
+
+.cc-trigger {
+  padding: 0 8px;
+}
+
+.cc-button {
+  color: #D5C3B5;
+}
+
+.cc-button:hover {
+  color: #FFFEFE;
+  background-color: #89338E;
+}
+
+.cc-subtitle {
+  color: #8E7753;
+}
+
+.cc-wifi-scroll {
+  min-height: 200px;
+}
+
+.cc-info {
+  color: #D5C3B5;
+}
+
+.cc-wifi-entry {
+  color: #D5C3B5;
+  padding: 4px 8px;
+  margin: 2px 0;
+  border-radius: 16px;
+}
+
+.cc-wifi-entry:hover {
+  color: #FFFEFE;
+  background-color: #89338E;
+}
+
+.cc-wifi-active {
+  color: #FFFEFE;
+  background-color: rgba(137, 51, 142, 0.5);
+}
+
+.cc-wifi-active:hover {
+  background-color: #89338E;
+}
+
+.cc-power-button {
+  color: #D5C3B5;
+  padding: 4px 8px;
+  margin: 2px 0;
+  border-radius: 16px;
+}
+
+.cc-power-button:hover {
+  color: #FFFEFE;
+  background-color: #89338E;
+}
+
+.cc-placeholder {
+  color: #8E7753;
+}
+
+.cc-close {
+  color: #D5C3B5;
+}
+
+.cc-close:hover {
   color: #C06262;
 }
