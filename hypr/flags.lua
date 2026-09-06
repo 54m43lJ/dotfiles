@@ -5,4 +5,5 @@ return {
     macbookpro   = false,
     pc_changsha  = false,
     xiaomi_book  = false,
+    pc_beijing   = false,
 }
