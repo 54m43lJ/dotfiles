@@ -93,3 +93,58 @@ set_flag() {
 # Guards
 is_root() { [[ $(id -u) -eq 0 ]] && err "Do not run as root." && exit 1; }
 is_arch() { grep -q 'NAME="Arch Linux"' /etc/os-release || { err "Arch Linux required."; exit 1; }; }
+
+# Interactive module picker.
+# Reads MODULES (available) and DEFAULTS (pre-checked) arrays,
+# fills SELECTED with chosen modules, keeping MODULES order.
+# Keys: up/down move cursor, space toggles, enter confirms, esc cancels.
+select_modules() {
+    local -A is_default=()
+    local -a checked=()
+    local i key seq mark cursor=0 n=${#MODULES[@]}
+    for i in "${!DEFAULTS[@]}"; do is_default["${DEFAULTS[$i]}"]=1; done
+    for i in "${!MODULES[@]}"; do checked[$i]=${is_default["${MODULES[$i]}"]:-0}; done
+
+    trap 'tput cnorm 2>/dev/null' EXIT
+    tput civis 2>/dev/null
+    echo "Space: toggle  Up/Down: move  Enter: run  Esc: cancel"
+    while true; do
+        for i in "${!MODULES[@]}"; do
+            mark=" "; (( checked[$i] )) && mark="x"
+            if (( i == cursor )); then
+                printf '> [%s] %s\e[K\n' "$mark" "${MODULES[$i]}"
+            else
+                printf '  [%s] %s\e[K\n' "$mark" "${MODULES[$i]}"
+            fi
+        done
+        IFS= read -rsn1 key
+        case "$key" in
+            $'\x1b')
+                if IFS= read -rsn2 -t 0.01 seq; then
+                    case "$seq" in
+                        '[A'|'OA') (( cursor > 0 )) && (( cursor-- )) ;;
+                        '[B'|'OB') (( cursor < n - 1 )) && (( cursor++ )) ;;
+                    esac
+                else
+                    err "Cancelled."
+                    exit 0
+                fi
+                ;;
+            ' ') checked[$cursor]=$(( 1 - checked[$cursor] )) ;;
+            '') break ;;
+        esac
+        printf '\e[%dA' "$n"
+    done
+
+    SELECTED=()
+    for i in "${!MODULES[@]}"; do
+        (( checked[$i] )) && SELECTED+=("${MODULES[$i]}")
+    done
+    printf '\e[%dA\e[J' "$n"
+    if (( ${#SELECTED[@]} == 0 )); then
+        err "No module selected."
+        exit 0
+    fi
+    log "Selected modules:"
+    printf '  %s\n' "${SELECTED[@]}"
+}

@@ -24,6 +24,8 @@ MODULES=(
     per-device-conf
     clash
 )
+# Modules checked by default in the interactive picker
+DEFAULTS=("${MODULES[@]}")
 
 # Parse flags
 YES=""
@@ -54,6 +56,13 @@ log "=============================="
 is_root
 is_arch
 
+# --- module selection ---
+if [[ -n "$YES" ]]; then
+    SELECTED=("${DEFAULTS[@]}")
+else
+    select_modules
+fi
+
 # --- proxy ---
 setup_proxy
 
@@ -61,7 +70,7 @@ setup_proxy
 setup_mirrors
 
 # --- modules ---
-for mod in "${MODULES[@]}"; do
+for mod in "${SELECTED[@]}"; do
     script="$WD/$mod/module.sh"
     if [[ -f "$script" ]]; then
         echo
