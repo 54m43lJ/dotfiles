@@ -42,13 +42,13 @@ setup_mirrors
 # --- modules ---
 MODULES=(
     system
+    pipewire
     hypr
     fontconfig
     foot
     wofi
     dunst
     sddm
-    pipewire
     applications
     grub
     electron-apps
