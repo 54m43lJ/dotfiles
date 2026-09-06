@@ -25,7 +25,8 @@ MODULES=(
     clash
 )
 # Modules checked by default in the interactive picker
-DEFAULTS=("${MODULES[@]}")
+# DEFAULTS=("${MODULES[@]}")
+DEFAULTS=()
 
 # Parse flags
 YES=""

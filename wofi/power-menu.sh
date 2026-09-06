@@ -13,6 +13,6 @@ case "$choice" in
     Logout)   confirm "Logout?"   && hyprshutdown ;;
     Lock)     loginctl lock-session ;;
     Suspend)  /usr/local/bin/suspend.sh ;;
-    Reboot)   confirm "Reboot?"   && systemctl reboot ;;
-    Shutdown) confirm "Shutdown?" && systemctl -i poweroff ;;
+    Reboot)   confirm "Reboot?"   && hyprshutdown -p 'systemctl reboot' ;;
+    Shutdown) confirm "Shutdown?" && hyprshutdown -p 'systemctl -i poweroff' ;;
 esac
