@@ -23,7 +23,7 @@ choice=$(printf '%s\n' \
         --columns 5 --lines 1 --hide-search --no-actions \
         -m -Dparse_action=true \
         -Dsingle_click=true \
-        --width '40%' \
+        --width 780 \
         --cache-file /dev/null)
 
 confirm() {
@@ -32,7 +32,8 @@ confirm() {
         --style "$WOFI_DIR/confirm.css" \
         --columns 2 --lines 1 --hide-search --no-actions \
         -m -Dparse_action=true \
-        -Dsingle_click=true --width '18%' \
+        -Dsingle_click=true \
+        --width 370 \
         --cache-file /dev/null)
     [[ "$answer" == *"$1" ]]
 }
