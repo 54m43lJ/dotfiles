@@ -8,37 +8,39 @@ G_LOCK=$'\uf023'     # nf-fa-lock
 G_SUSPEND=$'\uf186'  # nf-fa-moon_o
 G_REBOOT=$'\uf021'   # nf-fa-refresh
 G_SHUTDOWN=$'\uf011' # nf-fa-power
+G_CANCEL=$'\uf00d'   # nf-fa-times
 
 WOFI_DIR="${WOFI_DIR:-$HOME/.config/wofi}"
 
 choice=$(printf '%s\n' \
-    "$G_LOGOUT Logout" \
-    "$G_LOCK Lock" \
-    "$G_SUSPEND Suspend" \
-    "$G_REBOOT Reboot" \
-    "$G_SHUTDOWN Shutdown" \
+    "<big>$G_LOGOUT</big> Logout" \
+    "<big>$G_LOCK</big> Lock" \
+    "<big>$G_SUSPEND</big> Suspend" \
+    "<big>$G_REBOOT</big> Reboot" \
+    "<big>$G_SHUTDOWN</big> Shutdown" \
     | wofi --dmenu \
         --style "$WOFI_DIR/power.css" \
         --columns 5 --lines 1 --hide-search --no-actions \
+        -m -Dparse_action=true \
         -Dsingle_click=true \
-        --width '32%' \
+        --width '40%' \
         --cache-file /dev/null)
 
 confirm() {
     local answer
-    answer=$(printf 'Yes\nNo' | wofi --dmenu \
+    answer=$(printf '%s\n' "<big>$2</big> $1" "<big>$G_CANCEL</big> Cancel" | wofi --dmenu \
         --style "$WOFI_DIR/confirm.css" \
-        --columns 2 --lines 1 --no-actions \
-        --prompt "$1" -Duse_search_box=false -Dsingle_click=true \
-        --width '18%' \
+        --columns 2 --lines 1 --hide-search --no-actions \
+        -m -Dparse_action=true \
+        -Dsingle_click=true --width '18%' \
         --cache-file /dev/null)
-    [[ "$answer" == "Yes" ]]
+    [[ "$answer" == *"$1" ]]
 }
 
 case "$choice" in
-    *Logout)   confirm "Logout?"   && hyprshutdown ;;
+    *Logout)   confirm "Logout"   "$G_LOGOUT"   && hyprshutdown ;;
     *Lock)     loginctl lock-session ;;
     *Suspend)  /usr/local/bin/suspend.sh ;;
-    *Reboot)   confirm "Reboot?"   && hyprshutdown -p 'systemctl reboot' ;;
-    *Shutdown) confirm "Shutdown?" && hyprshutdown -p 'systemctl -i poweroff' ;;
+    *Reboot)   confirm "Reboot"   "$G_REBOOT"   && hyprshutdown -p 'systemctl reboot' ;;
+    *Shutdown) confirm "Shutdown" "$G_SHUTDOWN" && hyprshutdown -p 'systemctl -i poweroff' ;;
 esac
