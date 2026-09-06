@@ -2,6 +2,29 @@
 export WD="$(cd "$(dirname "$0")" && pwd)"
 source "$WD/lib.sh"
 
+MODULES=(
+    system
+    pipewire
+    hypr
+    fontconfig
+    foot
+    wofi
+    dunst
+    sddm
+    applications
+    grub
+    electron-apps
+    nwg-bar
+    zsh
+    bread
+    nvidia
+    rgb
+    breeze
+    dev
+    per-device-conf
+    clash
+)
+
 # Parse flags
 YES=""
 for arg in "$@"; do
@@ -12,9 +35,7 @@ for arg in "$@"; do
             echo "  --yes, -y   Run non-interactively (accept all prompts)"
             echo
             echo "Modules (installed in order):"
-            echo "  system hypr fontconfig foot wofi dunst sddm pipewire"
-            echo "  applications grub electron-apps nwg-bar zsh ags"
-            echo "  nvidia rgb breeze dev per-device-conf clash"
+            printf '  %s\n' "${MODULES[@]}"
             exit 0
             ;;
     esac
@@ -40,29 +61,6 @@ setup_proxy
 setup_mirrors
 
 # --- modules ---
-MODULES=(
-    system
-    pipewire
-    hypr
-    fontconfig
-    foot
-    wofi
-    dunst
-    sddm
-    applications
-    grub
-    electron-apps
-    nwg-bar
-    zsh
-    bread
-    nvidia
-    rgb
-    breeze
-    dev
-    per-device-conf
-    clash
-)
-
 for mod in "${MODULES[@]}"; do
     script="$WD/$mod/module.sh"
     if [[ -f "$script" ]]; then
