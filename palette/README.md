@@ -28,7 +28,7 @@ Light 以 [Alabaster](https://github.com/tonsky/sublime-scheme-alabaster) 为基
 | `bg` | `#F7F7F7` | 主背景（Alabaster background） | — |
 | `surface` | `#F2F0EF` | 次级浮层：弹窗、输入框底（off-white，微暖） | — |
 | `fg` | `#000000` | 正文文字（Alabaster foreground） | on bg 19.6:1 ✓ |
-| `muted` | `#7A7472` | 次要文字、边框（暖灰，微偏金，平衡紫金占比） | on bg 4.3:1 ✓ |
+| `muted` | `#55585C` | 次要文字、边框（冷灰，呼应dark mode） | on bg 4.3:1 ✓ |
 | `purple` | `#8A2E8F` | accent 主紫（与 dark 同族 297°） | on bg 6.8:1 ✓ |
 | `purple-light` | `#D998D9` | 柔和填充：hover/选中底，需配深色文字 | 深字压其上 9.4:1 ✓；色块↔bg 2.1:1（较隐身） |
 | `gold` | `#5C4824` | accent 金：细线、进度填充、副标题文字 | on bg 8.1:1 ✓ 全用途 |
