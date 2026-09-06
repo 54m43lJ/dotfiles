@@ -6,5 +6,6 @@ install_module() {
     pac_ins wofi
     mkdir -p ~/.config/wofi
     cp -r "$WD/wofi/"* ~/.config/wofi/
+    chmod +x ~/.config/wofi/power-menu.sh
     log "Wofi configured."
 }

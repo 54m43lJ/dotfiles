@@ -178,7 +178,7 @@ hl.config({
 
 -- System
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hyprctl kill"))
-hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("nwg-bar -t hypr.json"))
+hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("~/.config/wofi/power-menu.sh"))
 hl.bind(mainMod .. " + SHIFT + Q",  hl.dsp.exec_cmd("hyprshutdown"))
 hl.bind(mainMod .. " + P",          toggle_orientation)
 
