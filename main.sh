@@ -29,12 +29,15 @@ DEFAULTS=("${MODULES[@]}")
 
 # Parse flags
 YES=""
+DRY_RUN=""
 for arg in "$@"; do
     case "$arg" in
         --yes|-y) YES=1 ;;
+        --dry-run) DRY_RUN=1 ;;
         --help|-h)
-            echo "Usage: ./main.sh [--yes|-y]"
+            echo "Usage: ./main.sh [--yes|-y] [--dry-run]"
             echo "  --yes, -y   Run non-interactively (accept all prompts)"
+            echo "  --dry-run   Show what would run without making any changes"
             echo
             echo "Modules (installed in order):"
             printf '  %s\n' "${MODULES[@]}"
@@ -67,9 +70,19 @@ fi
 setup_proxy
 
 # --- mirrors ---
-setup_mirrors
+if [[ -n "$DRY_RUN" ]]; then
+    log "Dry run: skipping mirror configuration."
+else
+    setup_mirrors
+fi
 
 # --- modules ---
+if [[ -n "$DRY_RUN" ]]; then
+    log "Dry run: no modules executed. Would run:"
+    printf '  %s\n' "${SELECTED[@]}"
+    exit 0
+fi
+
 for mod in "${SELECTED[@]}"; do
     script="$WD/$mod/module.sh"
     if [[ -f "$script" ]]; then
