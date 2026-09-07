@@ -24,6 +24,10 @@
 	- 拍扁下沉 `lib/flatten.py`：集合去重 + 断环，bundle 本体不进安装清单；main.sh 启动静默强装 python，失败直接退出
 	- main.sh/lib.sh 共用 `install_modules()`：拍扁 → 按首次出现序执行叶子
 	- 初始三组：bundle-base（system pipewire）、bundle-desktop（嵌套 base + 桌面全家桶）、bundle-dev（vscode dev）
+- [X] 修复 minimal 主题实机报错（默认 greeter 是 Qt5 链接的）
+	- `import QtQuick 2.15`（Qt5 拒绝无版本导入；2.15 双引擎兼容）
+	- `Screen.desktopAvailableHeight` → 根元素 `height`（Qt5 纯 QtQuick 导入下无 Screen 类型）
+	- 注意：此类报错进 journald 不进 stderr；test-mode 验收要用两个二进制都跑（`sddm-greeter` = Qt5、`sddm-greeter-qt6` = Qt6）
 - [ ] yay与python一起作为安装必须依赖安装，失败直接退出脚本
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`

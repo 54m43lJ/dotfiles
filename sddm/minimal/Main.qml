@@ -1,8 +1,10 @@
 // Minimal SDDM greeter.
 // Depends only on QtQuick (a hard dependency of the sddm package itself),
 // so it cannot be broken by unrelated Qt module updates.
+// Versioned import: the default greeter binary is Qt5-linked, which
+// rejects unversioned imports; 2.15 works on both Qt5 and Qt6.
 // Colors from palette/README.md (dark mode).
-import QtQuick
+import QtQuick 2.15
 
 Rectangle {
     id: root
@@ -17,9 +19,10 @@ Rectangle {
     readonly property color cRed: "#CC2A47"
 
     // Scale UI from a 1080p baseline so 4K screens stay readable.
-    // If Qt HiDPI scaling is enabled, Screen already reports logical pixels
-    // and the ratio stays 1.0 while Qt scales fonts -- both paths converge.
-    readonly property real uiScale: Math.min(3, Math.max(1, Screen.desktopAvailableHeight / 1080))
+    // Uses the root item size (the greeter resizes it to the fullscreen
+    // geometry) instead of the Screen type, which the Qt5 greeter engine
+    // does not expose from a bare QtQuick import.
+    readonly property real uiScale: Math.min(3, Math.max(1, height / 1080))
 
     property int sessionIndex: sessionModel.lastIndex >= 0 ? sessionModel.lastIndex : 0
     property var sessionNames: []
