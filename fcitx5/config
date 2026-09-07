@@ -1,0 +1,18 @@
+# Fcitx5 global config. Keys not listed here fall back to fcitx5 defaults.
+
+[Hotkey/TriggerKeys]
+0=Control+space
+
+[Hotkey/ActivateKeys]
+0=Shift+Shift_L
+
+[Hotkey/AltTriggerKeys]
+0=Shift_L
+
+[Behavior]
+# Activate input method by default
+ActiveByDefault=True
+# Share Input State
+ShareInputState=All
+# Default Candidates per page
+DefaultPageSize=7
