@@ -1,14 +1,13 @@
 #!/bin/bash
-# SDDM display manager + sugar-dark theme
+# SDDM display manager + minimal theme
+# Theme depends only on QtQuick (sddm hard dep), so it survives Qt updates.
 
 install_module() {
     log "Installing SDDM..."
-    local SDDM_PKGS=(
-        sddm qt5-graphicaleffects qt5-quickcontrols2 qt5-svg
-    )
-    pac_ins "${SDDM_PKGS[@]}"
+    pac_ins sddm
 
-    sudo cp -r "$WD/sddm/sugar-dark" /usr/share/sddm/themes/
+    sudo rm -rf /usr/share/sddm/themes/minimal /usr/share/sddm/themes/sugar-dark
+    sudo cp -r "$WD/sddm/minimal" /usr/share/sddm/themes/minimal
     sudo mkdir -p /etc/sddm.conf.d/
     sudo cp "$WD/sddm/theme.conf" /etc/sddm.conf.d/
     sudo systemctl enable sddm

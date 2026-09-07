@@ -1,0 +1,11 @@
+[SddmGreeterTheme]
+Name=Minimal
+Description=Minimal palette-themed greeter, QtQuick only
+Author=john
+Copyright=john
+License=MIT
+Type=sddm-theme
+Version=0.1
+MainScript=Main.qml
+Theme-Id=minimal
+Theme-API=2.0
