@@ -29,7 +29,7 @@ choice=$(printf '%s\n' \
 confirm() {
     local answer
     answer=$(printf '%s\n' "<big>$2</big> $1" "<big>$G_CANCEL</big> Cancel" | wofi --dmenu \
-        --style "$WOFI_DIR/confirm.css" \
+        --style "$WOFI_DIR/power.css" \
         --columns 2 --lines 1 --hide-search --no-actions \
         -m -Dparse_action=true \
         -Dsingle_click=true \

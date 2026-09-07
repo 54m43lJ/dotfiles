@@ -53,6 +53,7 @@ window {
 }
 
 #entry {
+  background-color: @bg;
   margin: 5px;
   border-radius: 0 0.5em 0.5em 0.5em;
   border: 2px solid @muted;
@@ -60,12 +61,11 @@ window {
 }
 #entry:selected {
   background-color: @highlight;
-  border-color: @highlight;
   transition: background-color 0.2s linear;
 }
 
 #entry:selected > expander > * > * {
-  // keeps that triangle happy;
+  /* keeps that triangle happy */
   color: @fg;
 }
 
@@ -74,7 +74,7 @@ window {
 }
 
 #entry #entry {
-  background-color: @bg;
+  background-color: transparent;
   border: none;
   margin: 5px;
 }
@@ -84,7 +84,6 @@ window {
 }
 
 #entry #entry:selected {
-  border-color: @purple-light;
   background-color: @purple-light;
 }
 
