@@ -19,11 +19,12 @@
 	- [X] 新 vscode 模块：装 code（+AUR code-features/code-marketplace），部署 code-flags.conf
 	- [X] argv.json 路径修正为 `~/.vscode/argv.json`，写入 `"password-store": "gnome-libsecret"`（已存在的键不覆盖）
 	- [X] dev 模块 vscode 残留清理
-- [ ] bundle 机制：模块打包批量安装，减少选择次数
+- [X] bundle 机制：模块打包批量安装，减少选择次数
 	- bundle = 纯数据 module 目录，只定义 `BUNDLE=(...)`，允许嵌套 bundle
 	- 拍扁下沉 `lib/flatten.py`：集合去重 + 断环，bundle 本体不进安装清单；main.sh 启动静默强装 python，失败直接退出
 	- main.sh/lib.sh 共用 `install_modules()`：拍扁 → 按首次出现序执行叶子
 	- 初始三组：bundle-base（system pipewire）、bundle-desktop（嵌套 base + 桌面全家桶）、bundle-dev（vscode dev）
+- [ ] yay与python一起作为安装必须依赖安装，失败直接退出脚本
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`
 	- [ ] 执行 `sudo sh -c "echo -e \"i2c-dev\ni2c-piix4\" > /etc/modules-load.d/i2c.conf"` 加载必要的 i2c 模组
@@ -48,3 +49,6 @@
 	- 第一个通过的主题写回 `Current=`，修好主题后升级时自动切回（自愈）
 	- theme-fallback.hook：Upgrade sddm / qt6-* 时 PostTransaction 触发
 	- module.sh 负责安装两者；不做 systemd unit、不参与 boot 路径
+- [ ] hyprland在从suspend恢复后（包括hyprlock）会有坏点一样的像素，用hyprctl reload重载以后就没事了，需要调查原因
+- [ ] fcitx5 删除 Simplified and Traditional Chinese Translation => Toggle Key 绑定
+- [ ] 强制安装 pipewire-jack 替换 jack2
