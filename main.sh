@@ -35,14 +35,17 @@ DEFAULTS=()
 # Parse flags
 YES=""
 DRY_RUN=""
+VERBOSE=""
 for arg in "$@"; do
     case "$arg" in
         --yes|-y) YES=1 ;;
         --dry-run) DRY_RUN=1 ;;
+        --verbose|-v) VERBOSE=1 ;;
         --help|-h)
-            echo "Usage: ./main.sh [--yes|-y] [--dry-run]"
-            echo "  --yes, -y   Run non-interactively (accept all prompts)"
-            echo "  --dry-run   Show what would run without making any changes"
+            echo "Usage: ./main.sh [--yes|-y] [--dry-run] [--verbose|-v]"
+            echo "  --yes, -y      Run non-interactively (accept all prompts)"
+            echo "  --dry-run      Show what would run without making any changes"
+            echo "  --verbose, -v  Print all command output (default: quiet)"
             echo
             echo "Modules (installed in order):"
             printf '  %s\n' "${MODULES[@]}"
@@ -88,23 +91,23 @@ if [[ -n "$DRY_RUN" ]]; then
     exit 0
 fi
 
-# Silence module stdout from here on; log/err write to stderr, so only
-# real command errors are visible while modules run.
-exec 1>/dev/null
+# Silence module stdout; log/err write to stderr so they stay visible.
+# --verbose keeps all command output on the terminal.
+[[ -n $VERBOSE ]] || exec 1>/dev/null
 
-# Hard dependencies for module execution, installed silently; any failure
+# Hard dependencies for module execution, installed quietly; any failure
 # aborts the whole script. python3 is required by lib/ helpers, yay by the
 # AUR installs in several modules (git/base-devel are needed to build it).
-sudo pacman --noconfirm --needed --noprogressbar -Sq python git base-devel >/dev/null \
+run_quiet sudo pacman --noconfirm --needed --noprogressbar -Sq python git base-devel \
     || { err "Failed to install python/git/base-devel."; exit 1; }
 command -v python3 >/dev/null || { err "python3 not available."; exit 1; }
 
 if ! command -v yay >/dev/null; then
     log "Installing yay (AUR helper)..."
     mkdir -p ~/Applications
-    git clone https://aur.archlinux.org/yay.git ~/Applications/yay \
+    git clone --quiet https://aur.archlinux.org/yay.git ~/Applications/yay \
         || { err "Failed to clone yay."; exit 1; }
-    (cd ~/Applications/yay && makepkg -si --noconfirm) \
+    run_quiet bash -c 'cd ~/Applications/yay && makepkg -si --noconfirm' \
         || { err "Failed to build yay."; exit 1; }
 fi
 command -v yay >/dev/null || { err "yay not available."; exit 1; }
