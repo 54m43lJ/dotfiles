@@ -14,7 +14,7 @@ MODULES=(
     sddm
     applications
     grub
-    electron-apps
+    vscode
     nwg-bar
     zsh
     bread
