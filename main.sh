@@ -92,10 +92,22 @@ fi
 # real command errors are visible while modules run.
 exec 1>/dev/null
 
-# lib/ helper scripts require python3; install it silently, hard-fail on error
-sudo pacman --noconfirm --needed --noprogressbar -Sq python >/dev/null \
-    || { err "Failed to install python."; exit 1; }
+# Hard dependencies for module execution, installed silently; any failure
+# aborts the whole script. python3 is required by lib/ helpers, yay by the
+# AUR installs in several modules (git/base-devel are needed to build it).
+sudo pacman --noconfirm --needed --noprogressbar -Sq python git base-devel >/dev/null \
+    || { err "Failed to install python/git/base-devel."; exit 1; }
 command -v python3 >/dev/null || { err "python3 not available."; exit 1; }
+
+if ! command -v yay >/dev/null; then
+    log "Installing yay (AUR helper)..."
+    mkdir -p ~/Applications
+    git clone https://aur.archlinux.org/yay.git ~/Applications/yay \
+        || { err "Failed to clone yay."; exit 1; }
+    (cd ~/Applications/yay && makepkg -si --noconfirm) \
+        || { err "Failed to build yay."; exit 1; }
+fi
+command -v yay >/dev/null || { err "yay not available."; exit 1; }
 
 install_modules "${SELECTED[@]}"
 
