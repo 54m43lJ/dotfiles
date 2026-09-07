@@ -6,6 +6,7 @@ MODULES=(
     system
     pipewire
     hypr
+    fcitx5
     fontconfig
     foot
     wofi
