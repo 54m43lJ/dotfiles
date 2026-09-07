@@ -17,13 +17,14 @@
 }
 
 window {
+  border: none;
   background: none;
 }
 
 #outer-box {
   background-color: @surface;
   border-radius: 16px;
-  padding: 0 8px;
+  padding: 5px;
   border-right: 2px solid @gold;
   border-bottom: 2px solid @gold;
 }
@@ -39,11 +40,11 @@ window {
   border-radius: 12px;
   border: 2px solid @muted;
   background-color: @bg;
-  transition: background-color 0.2s linear;
+  transition: border 0.3s linear;
 }
 
-/* keyboard selection: subtle border change only */
+/* keyboard selection: highlight fill + purple border */
 #entry:selected {
-  background-color: @bg;
+  background-color: @highlight;
   border-color: @purple;
 }
