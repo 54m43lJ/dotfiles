@@ -92,6 +92,29 @@ set_flag() {
     sed -i -E "s/(    ${1}.*= *)false/\1true/" "${2}"
 }
 
+# Flatten a module list via lib/flatten.py: bundles expanded, repeats
+# deduped, include cycles broken. Prints leaf modules, first occurrence first.
+flatten_modules() {
+    python3 "$WD/lib/flatten.py" "$WD" "$@"
+}
+
+# Shared execution path for main.sh: install a list of modules
+# (bundles allowed) in flattened order.
+install_modules() {
+    local -a leaves=()
+    mapfile -t leaves < <(flatten_modules "$@")
+    if (( ${#leaves[@]} == 0 )); then
+        err "Nothing to install after flatten."
+        exit 1
+    fi
+    local mod
+    for mod in "${leaves[@]}"; do
+        log "[$mod]"
+        source "$WD/$mod/module.sh"
+        install_module
+    done
+}
+
 # Guards
 is_root() { [[ $(id -u) -eq 0 ]] && err "Do not run as root." && exit 1; }
 is_arch() { grep -q 'NAME="Arch Linux"' /etc/os-release || { err "Arch Linux required."; exit 1; }; }

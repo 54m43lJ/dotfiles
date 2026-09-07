@@ -3,6 +3,9 @@ export WD="$(cd "$(dirname "$0")" && pwd)"
 source "$WD/lib.sh"
 
 MODULES=(
+    bundle-base
+    bundle-desktop
+    bundle-dev
     system
     pipewire
     hypr
@@ -89,17 +92,12 @@ fi
 # real command errors are visible while modules run.
 exec 1>/dev/null
 
-for mod in "${SELECTED[@]}"; do
-    script="$WD/$mod/module.sh"
-    if [[ -f "$script" ]]; then
-        echo
-        log "[$mod]"
-        source "$script"
-        install_module
-    else
-        warn "Module '$mod' not found at $script, skipping."
-    fi
-done
+# lib/ helper scripts require python3; install it silently, hard-fail on error
+sudo pacman --noconfirm --needed --noprogressbar -Sq python >/dev/null \
+    || { err "Failed to install python."; exit 1; }
+command -v python3 >/dev/null || { err "python3 not available."; exit 1; }
+
+install_modules "${SELECTED[@]}"
 
 # --- final report ---
 echo >&2
