@@ -10,3 +10,4 @@ ags/node_modules/
 ags/@girs/
 ags/env.d.ts
 ags/tsconfig.json
+AGENTS.md
