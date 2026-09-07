@@ -1,15 +1,17 @@
 #!/bin/bash
 # Shared utilities for dotfiles deployment
 
-log()  { echo "==> $*"; }
-warn() { echo " !! $*"; }
-err()  { echo "ERR: $*"; }
+# All script messaging goes to stderr, so module stdout can be silenced
+# wholesale (exec 1>/dev/null in main.sh) while errors stay visible.
+log()  { echo "==> $*" >&2; }
+warn() { echo " !! $*" >&2; }
+err()  { echo "ERR: $*" >&2; }
 
 # Confirm with user. Respects $YES for non-interactive mode.
 confirm() {
     local prompt="$1"
     [[ -n "$YES" ]] && return 0
-    read -p "$prompt (y/N) " -n 1 reply && echo
+    read -p "$prompt (y/N) " -n 1 reply && echo >&2
     [[ "$reply" == [yY] ]]
 }
 
@@ -107,14 +109,14 @@ select_modules() {
 
     trap 'tput cnorm 2>/dev/null' EXIT
     tput civis 2>/dev/null
-    echo "Space: toggle  Up/Down: move  Enter: run  Esc: cancel"
+    echo "Space: toggle  Up/Down: move  Enter: run  Esc: cancel" >&2
     while true; do
         for i in "${!MODULES[@]}"; do
             mark=" "; (( checked[$i] )) && mark="x"
             if (( i == cursor )); then
-                printf '> [%s] %s\e[K\n' "$mark" "${MODULES[$i]}"
+                printf '> [%s] %s\e[K\n' "$mark" "${MODULES[$i]}" >&2
             else
-                printf '  [%s] %s\e[K\n' "$mark" "${MODULES[$i]}"
+                printf '  [%s] %s\e[K\n' "$mark" "${MODULES[$i]}" >&2
             fi
         done
         IFS= read -rsn1 key
@@ -133,18 +135,18 @@ select_modules() {
             ' ') checked[$cursor]=$(( 1 - checked[$cursor] )) ;;
             '') break ;;
         esac
-        printf '\e[%dA' "$n"
+        printf '\e[%dA' "$n" >&2
     done
 
     SELECTED=()
     for i in "${!MODULES[@]}"; do
         (( checked[$i] )) && SELECTED+=("${MODULES[$i]}")
     done
-    printf '\e[%dA\e[J' "$n"
+    printf '\e[%dA\e[J' "$n" >&2
     if (( ${#SELECTED[@]} == 0 )); then
         err "No module selected."
         exit 0
     fi
     log "Selected modules:"
-    printf '  %s\n' "${SELECTED[@]}"
+    printf '  %s\n' "${SELECTED[@]}" >&2
 }

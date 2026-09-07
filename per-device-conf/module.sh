@@ -18,11 +18,11 @@ install_module() {
         return 0
     fi
 
-    echo
+    echo >&2
     log "Device-specific configurations"
-    echo "  0) None (default)"
+    echo "  0) None (default)" >&2
     for i in "${!specials[@]}"; do
-        echo "  $((i+1))) ${specials[$i]}"
+        echo "  $((i+1))) ${specials[$i]}" >&2
     done
 
     read -p "Select (space-separated numbers, default: 0): " -a selections

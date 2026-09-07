@@ -84,6 +84,10 @@ if [[ -n "$DRY_RUN" ]]; then
     exit 0
 fi
 
+# Silence module stdout from here on; log/err write to stderr, so only
+# real command errors are visible while modules run.
+exec 1>/dev/null
+
 for mod in "${SELECTED[@]}"; do
     script="$WD/$mod/module.sh"
     if [[ -f "$script" ]]; then
@@ -97,7 +101,7 @@ for mod in "${SELECTED[@]}"; do
 done
 
 # --- final report ---
-echo
+echo >&2
 if [[ -n "$FAILED" ]]; then
     for pkg in $FAILED; do err "Failed to install: $pkg"; done
     err "Some packages failed. Check the list above."
