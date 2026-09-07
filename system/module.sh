@@ -35,6 +35,15 @@ install_module() {
         yay_ins "${AUR[@]}"
     fi
 
+    # --- electron app flags (wayland / ime) ---
+    # brave reads ~/.config/brave-flags.conf, generic electron apps read
+    # ~/.config/electron-flags.conf, obsidian reads
+    # ~/.config/obsidian/user-flags.conf (see /usr/bin/obsidian)
+    mkdir -p ~/.config/obsidian
+    cp "$WD/system/brave-flags.conf" ~/.config/
+    cp "$WD/system/electron-flags.conf" ~/.config/
+    cp "$WD/system/obsidian/user-flags.conf" ~/.config/obsidian/
+
     # --- system scripts ---
     sudo cp "$WD/system/suspend.sh" /usr/local/bin/
 
