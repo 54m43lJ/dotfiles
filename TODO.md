@@ -14,10 +14,16 @@
 	- [X] default candidates per page = 7
 	- [X] classic user interface => font = 14pt
 	- [X] classic user interface => theme = breeze light blue
-- [ ] 拆分 electron-apps 模块：flags 归属各软件的安装模块
+- [X] 拆分 electron-apps 模块：flags 归属各软件的安装模块
 	- [X] brave-flags / electron-flags / obsidian user-flags → system 模块
-	- [ ] 新 vscode 模块：装 code（+AUR code-features/code-marketplace），部署 code-flags.conf
-	- [ ] argv.json 路径修正为 `~/.vscode/argv.json`，写入 `"password-store": "gnome-libsecret"`（已存在的键不覆盖）
+	- [X] 新 vscode 模块：装 code（+AUR code-features/code-marketplace），部署 code-flags.conf
+	- [X] argv.json 路径修正为 `~/.vscode/argv.json`，写入 `"password-store": "gnome-libsecret"`（已存在的键不覆盖）
+	- [X] dev 模块 vscode 残留清理
+- [ ] bundle 机制：模块打包批量安装，减少选择次数
+	- bundle = 纯数据 module 目录，只定义 `BUNDLE=(...)`，允许嵌套 bundle
+	- 拍扁下沉 `lib/flatten.py`：集合去重 + 断环，bundle 本体不进安装清单；main.sh 启动静默强装 python，失败直接退出
+	- main.sh/lib.sh 共用 `install_modules()`：拍扁 → 按首次出现序执行叶子
+	- 初始三组：bundle-base（system pipewire）、bundle-desktop（嵌套 base + 桌面全家桶）、bundle-dev（vscode dev）
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`
 	- [ ] 执行 `sudo sh -c "echo -e \"i2c-dev\ni2c-piix4\" > /etc/modules-load.d/i2c.conf"` 加载必要的 i2c 模组
