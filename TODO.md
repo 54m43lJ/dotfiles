@@ -32,7 +32,7 @@
 - [ ] pc_beijing：SDDM 只在 DP-3 显示（无视 dock 的 DP-5 路径）
 	- xorg/special 的 Ignore "DP-1-5" 已确认生效（Xorg log `Option "Ignore" "true"`），但黑屏依旧
 	- 真因定案：冷启动时 DP-3 链路训练失败（EDID 读不到，X 报 disconnected）→ 回落 1024x768；内核日志中 DP-3 之后再无任何 HPD/重训事件，X 无人唤醒。与主题、dock 双路径均无关
-	- 修复候选（待做）：grub `video=DP-3:3840x2160e` 强制 KMS 模式（绕过 EDID 时序）
+	- 修复（已实现，待冷启动验证）：xorg.conf 手动屏幕信息（wiki SDDM#Screen_resolution_is_too_low）——DP-3 的 Modeline（cvt -r 4K60，533MHz）+ PreferredMode + Enable + DisplaySize(597x336mm) + Screen 绑定；备选仍留 grub `video=DP-3:3840x2160e`
 - [ ] per-device-conf 自包含重构
 	- 设备配置收回 per-device-conf/<设备>/ 子目录（即子模块：hypr.lua、xorg.conf...）
 	- 按选择部署：flags 翻转（选 true / 未选回 false）、~/.config/hypr/special/ 与 /etc/X11/xorg.conf.d/ 跟随部署/清理
