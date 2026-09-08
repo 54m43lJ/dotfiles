@@ -18,7 +18,7 @@ confirm() {
 # pacman install helper
 pac_ins() {
     for pkg in "$@"; do
-        sudo pacman --noconfirm --needed --noprogressbar -Sq "$pkg" >/dev/null || {
+        sudo pacman --noconfirm --needed --noprogressbar -Sq "$pkg" || {
             FAILED="$FAILED $pkg"
             err "Failed: $pkg"
         }
@@ -29,7 +29,7 @@ pac_ins() {
 yay_ins() {
     for pkg in "$@"; do
         yay -Sq "$pkg" --answerclean None --answerdiff None \
-            --noconfirm --noprogressbar --norebuild --noredownload >/dev/null || {
+            --noconfirm --noprogressbar --norebuild --noredownload || {
             FAILED="$FAILED $pkg"
             err "Failed: $pkg"
         }

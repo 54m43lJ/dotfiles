@@ -23,17 +23,11 @@ install_module() {
     )
     pac_ins "${SOFTWARE[@]}"
 
-    # --- yay (AUR helper) ---
-    if confirm "Install yay (AUR helper) and AUR packages?"; then
-        mkdir -p ~/Applications
-        git clone https://aur.archlinux.org/yay.git ~/Applications/yay
-        (cd ~/Applications/yay && makepkg -si --noconfirm)
-
-        local AUR=(
-            brave-bin nemo-compare
-        )
-        yay_ins "${AUR[@]}"
-    fi
+    # --- AUR packages (yay itself is a hard dependency of main.sh) ---
+    local AUR=(
+        brave-bin nemo-compare
+    )
+    yay_ins "${AUR[@]}"
 
     # --- electron app flags (wayland / ime) ---
     # brave reads ~/.config/brave-flags.conf, generic electron apps read
