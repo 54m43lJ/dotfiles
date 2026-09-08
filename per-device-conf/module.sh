@@ -53,24 +53,18 @@ install_module() {
             [[ "$c" == "$d" ]] && active=1
         done
 
-        # Hyprland device config + flag
+        # Deploy-only: on a clean install there is nothing to undo, so
+        # unchosen devices are simply skipped.
         if [[ -n "$active" ]]; then
             set_flag "$d" "$flags_file"
             [[ -f "$mod_dir/$d/hypr.lua" ]] && cp "$mod_dir/$d/hypr.lua" "$hypr_special/$d.lua"
             log "Enabled: $d"
-        else
-            sed -i -E "s/(    $d.*= *)true/\1false/" "$flags_file"
-            rm -f "$hypr_special/$d.lua"
-        fi
 
-        # Xorg device config (used by the sddm greeter and X11 sessions)
-        if [[ -n "$active" && -f "$mod_dir/$d/xorg.conf" ]]; then
-            sudo mkdir -p "$xorg_conf_d"
-            log "Deploying Xorg device config: $d.conf"
-            sudo cp "$mod_dir/$d/xorg.conf" "$xorg_conf_d/$d.conf"
-        elif [[ -z "$active" ]] && sudo test -f "$xorg_conf_d/$d.conf"; then
-            log "Removing Xorg device config: $d.conf"
-            sudo rm "$xorg_conf_d/$d.conf"
+            if [[ -f "$mod_dir/$d/xorg.conf" ]]; then
+                sudo mkdir -p "$xorg_conf_d"
+                log "Deploying Xorg device config: $d.conf"
+                sudo cp "$mod_dir/$d/xorg.conf" "$xorg_conf_d/$d.conf"
+            fi
         fi
     done
 

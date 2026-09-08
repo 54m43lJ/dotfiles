@@ -36,7 +36,7 @@
 	- per-device-conf/pc_beijing/xorg.conf 已删除；Wayland 下 DP-5 的屏蔽由 pc_beijing/hypr.lua（session）与 kwin 自身的输出管理承担
 - [X] per-device-conf 自包含重构
 	- 设备配置收回 per-device-conf/<设备>/ 子目录（即子模块：hypr.lua、xorg.conf...）
-	- 按选择部署：flags 翻转（选 true / 未选回 false）、~/.config/hypr/special/ 与 /etc/X11/xorg.conf.d/ 跟随部署/清理
+	- 按选择部署：选中设备 flags 翻 true 并部署文件；脚本只负责纯净安装上的部署，不做清理回滚（本机残留已手工清理）
 	- hypr 模块不再负责 special/ 的部署
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`
