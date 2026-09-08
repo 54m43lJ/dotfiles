@@ -98,7 +98,7 @@ fi
 # Hard dependencies for module execution, installed quietly; any failure
 # aborts the whole script. python3 is required by lib/ helpers, yay by the
 # AUR installs in several modules (git/base-devel are needed to build it).
-run_quiet sudo pacman --noconfirm --needed --noprogressbar -Sq python git base-devel \
+sudo pacman --noconfirm --needed --noprogressbar -Sq python git base-devel \
     || { err "Failed to install python/git/base-devel."; exit 1; }
 command -v python3 >/dev/null || { err "python3 not available."; exit 1; }
 
@@ -107,7 +107,7 @@ if ! command -v yay >/dev/null; then
     mkdir -p ~/Applications
     git clone --quiet https://aur.archlinux.org/yay.git ~/Applications/yay \
         || { err "Failed to clone yay."; exit 1; }
-    run_quiet bash -c 'cd ~/Applications/yay && makepkg -si --noconfirm' \
+    (cd ~/Applications/yay && makepkg -si --noconfirm) \
         || { err "Failed to build yay."; exit 1; }
 fi
 command -v yay >/dev/null || { err "yay not available."; exit 1; }

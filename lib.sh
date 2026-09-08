@@ -15,19 +15,10 @@ confirm() {
     [[ "$reply" == [yY] ]]
 }
 
-# Run a command, discarding its stdout unless --verbose was given.
-run_quiet() {
-    if [[ -n $VERBOSE ]]; then
-        "$@"
-    else
-        "$@" >/dev/null
-    fi
-}
-
 # pacman install helper
 pac_ins() {
     for pkg in "$@"; do
-        run_quiet sudo pacman --noconfirm --needed --noprogressbar -Sq "$pkg" || {
+        sudo pacman --noconfirm --needed --noprogressbar -Sq "$pkg" || {
             FAILED="$FAILED $pkg"
             err "Failed: $pkg"
         }
@@ -37,7 +28,7 @@ pac_ins() {
 # yay install helper
 yay_ins() {
     for pkg in "$@"; do
-        run_quiet yay -Sq "$pkg" --answerclean None --answerdiff None \
+        yay -Sq "$pkg" --answerclean None --answerdiff None \
             --noconfirm --noprogressbar --norebuild --noredownload || {
             FAILED="$FAILED $pkg"
             err "Failed: $pkg"
