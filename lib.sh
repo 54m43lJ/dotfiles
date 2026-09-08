@@ -92,26 +92,19 @@ set_flag() {
     sed -i -E "s/(    ${1}.*= *)false/\1true/" "${2}"
 }
 
-# Flatten a module list via lib/flatten.py: bundles expanded, repeats
-# deduped, include cycles broken. Prints leaf modules, first occurrence first.
-flatten_modules() {
-    python3 "$WD/lib/flatten.py" "$WD" "$@"
-}
-
-# Shared execution path for main.sh: install a list of modules
-# (bundles allowed) in flattened order.
+# Install a list of modules in order. Shared execution path for main.sh
+# and bundles.
 install_modules() {
-    local -a leaves=()
-    mapfile -t leaves < <(flatten_modules "$@")
-    if (( ${#leaves[@]} == 0 )); then
-        err "Nothing to install after flatten."
-        exit 1
-    fi
-    local mod
-    for mod in "${leaves[@]}"; do
-        log "[$mod]"
-        source "$WD/$mod/module.sh"
-        install_module
+    local mod script
+    for mod in "$@"; do
+        script="$WD/$mod/module.sh"
+        if [[ -f "$script" ]]; then
+            log "[$mod]"
+            source "$script"
+            install_module
+        else
+            warn "Module '$mod' not found at $script, skipping."
+        fi
     done
 }
 

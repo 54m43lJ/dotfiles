@@ -20,8 +20,8 @@
 	- [X] argv.json 路径修正为 `~/.vscode/argv.json`，写入 `"password-store": "gnome-libsecret"`（已存在的键不覆盖）
 	- [X] dev 模块 vscode 残留清理
 - [X] bundle 机制：模块打包批量安装，减少选择次数
-	- bundle = 纯数据 module 目录，只定义 `BUNDLE=(...)`，允许嵌套 bundle
-	- 拍扁下沉 `lib/flatten.py`：集合去重 + 断环，bundle 本体不进安装清单；main.sh 启动静默强装 python，失败直接退出
+	- bundle = 纯数据 module 目录，只定义 `BUNDLE=(...)`，允许嵌套 bundle（设计已演进：bundle 回归普通 module 形态，见下方规范条目）
+	- 拍扁下沉 `lib/flatten.py`（已随设计演进移除）；main.sh 启动静默强装硬依赖，失败直接退出
 	- main.sh/lib.sh 共用 `install_modules()`：拍扁 → 按首次出现序执行叶子
 	- 初始三组：bundle-base（system pipewire）、bundle-desktop（嵌套 base + 桌面全家桶）、bundle-dev（vscode dev）
 - [X] 修复 minimal 主题实机报错（默认 greeter 是 Qt5 链接的）
@@ -38,6 +38,9 @@
 	- 设备配置收回 per-device-conf/<设备>/ 子目录（即子模块：hypr.lua、xorg.conf...）
 	- 按选择部署：选中设备 flags 翻 true 并部署文件；脚本只负责纯净安装上的部署，不做清理回滚（本机残留已手工清理）
 	- hypr 模块不再负责 special/ 的部署
+- [ ] module 规范固化（README「Module 规范」）
+	- bundle 回归普通 module 形态：install_module() 内 install_modules 列表调用；移除 BUNDLE=(...) 纯数据约定与 lib/flatten.py（python 硬依赖随之移除，git/base-devel/yay 保留）
+	- per-device-conf：安装步骤下沉到 <device>/module.sh 子模组（各自暴露 install_module()），父模组只做选择与调度
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`
 	- [ ] 执行 `sudo sh -c "echo -e \"i2c-dev\ni2c-piix4\" > /etc/modules-load.d/i2c.conf"` 加载必要的 i2c 模组

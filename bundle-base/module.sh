@@ -1,3 +1,6 @@
 #!/bin/bash
-# Bundle: core system (pure data; expanded by lib/flatten.py, never executed)
-BUNDLE=(system pipewire)
+# Bundle: core system
+
+install_module() {
+    install_modules system pipewire
+}

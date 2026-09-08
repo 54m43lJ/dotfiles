@@ -1,3 +1,6 @@
 #!/bin/bash
-# Bundle: developer environment (expanded by lib/flatten.py, never executed)
-BUNDLE=(vscode dev)
+# Bundle: developer environment
+
+install_module() {
+    install_modules vscode dev
+}

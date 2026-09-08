@@ -96,11 +96,10 @@ fi
 [[ -n $VERBOSE ]] || exec 1>/dev/null
 
 # Hard dependencies for module execution, installed quietly; any failure
-# aborts the whole script. python3 is required by lib/ helpers, yay by the
-# AUR installs in several modules (git/base-devel are needed to build it).
-sudo pacman --noconfirm --needed --noprogressbar -Sq python git base-devel \
-    || { err "Failed to install python/git/base-devel."; exit 1; }
-command -v python3 >/dev/null || { err "python3 not available."; exit 1; }
+# aborts the whole script. git/base-devel are needed to build yay, which
+# several modules rely on for AUR installs.
+sudo pacman --noconfirm --needed --noprogressbar -Sq git base-devel >/dev/null \
+    || { err "Failed to install git/base-devel."; exit 1; }
 
 if ! command -v yay >/dev/null; then
     log "Installing yay (AUR helper)..."

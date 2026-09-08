@@ -1,24 +1,15 @@
 #!/bin/bash
 # Device-specific configurations.
-# Each subdirectory of this module is a device sub-module; the files inside
-# (hypr.lua, xorg.conf, ...) are deployed when the device is selected and
-# removed otherwise. Selecting flips the device's flag in flags.lua.
+# Each subdirectory is a sub-module exposing install_module(), like any
+# regular module; this module only asks which devices to enable and runs
+# the chosen ones.
 
 install_module() {
     local mod_dir="$WD/per-device-conf"
-    local flags_file=~/.config/hypr/flags.lua
-    local hypr_special=~/.config/hypr/special
-    local xorg_conf_d=/etc/X11/xorg.conf.d
-
-    if [[ ! -f "$flags_file" ]]; then
-        warn "flags.lua not found. Run the hypr module first."
-        return 1
-    fi
-
     local -a devices=()
     local d
     for d in "$mod_dir"/*/; do
-        [[ -d "$d" ]] && devices+=("$(basename "$d")")
+        [[ -f "$d/module.sh" ]] && devices+=("$(basename "$d")")
     done
     if [[ ${#devices[@]} -eq 0 ]]; then
         warn "No device sub-modules found."
@@ -35,38 +26,18 @@ install_module() {
 
     read -p "Select (space-separated numbers, default: 0): " -a selections
 
-    local chosen=()
+    local sel idx sub
     for sel in "${selections[@]}"; do
         if [[ "$sel" == "0" ]]; then
             log "No device config selected."
             break
         fi
-        local idx=$((sel - 1))
-        [[ -n "${devices[$idx]}" ]] && chosen+=("${devices[$idx]}")
-    done
-
-    mkdir -p "$hypr_special"
-    local c active
-    for d in "${devices[@]}"; do
-        active=""
-        for c in "${chosen[@]}"; do
-            [[ "$c" == "$d" ]] && active=1
-        done
-
-        # Deploy-only: on a clean install there is nothing to undo, so
-        # unchosen devices are simply skipped.
-        if [[ -n "$active" ]]; then
-            set_flag "$d" "$flags_file"
-            [[ -f "$mod_dir/$d/hypr.lua" ]] && cp "$mod_dir/$d/hypr.lua" "$hypr_special/$d.lua"
-            log "Enabled: $d"
-
-            if [[ -f "$mod_dir/$d/xorg.conf" ]]; then
-                sudo mkdir -p "$xorg_conf_d"
-                log "Deploying Xorg device config: $d.conf"
-                sudo cp "$mod_dir/$d/xorg.conf" "$xorg_conf_d/$d.conf"
-            fi
+        idx=$((sel - 1))
+        sub="${devices[$idx]}"
+        if [[ -n "$sub" ]]; then
+            log "[$sub]"
+            source "$mod_dir/$sub/module.sh"
+            install_module
         fi
     done
-
-    log "Device-specific configurations done."
 }
