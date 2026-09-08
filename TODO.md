@@ -29,11 +29,12 @@
 	- `Screen.desktopAvailableHeight` → 根元素 `height`（Qt5 纯 QtQuick 导入下无 Screen 类型）
 	- 注意：此类报错进 journald 不进 stderr；test-mode 验收要用两个二进制都跑（`sddm-greeter` = Qt5、`sddm-greeter-qt6` = Qt6）
 - [X] yay与python一起作为安装必须依赖安装，失败直接退出脚本（含 `--verbose|-v` 全局输出开关）
-- [ ] pc_beijing：SDDM 只在 DP-3 显示（无视 dock 的 DP-5 路径）
-	- xorg/special 的 Ignore "DP-1-5" 已确认生效（Xorg log `Option "Ignore" "true"`），但黑屏依旧
-	- 真因定案：冷启动时 DP-3 链路训练失败（EDID 读不到，X 报 disconnected）→ 回落 1024x768；内核日志中 DP-3 之后再无任何 HPD/重训事件，X 无人唤醒。与主题、dock 双路径均无关
-	- 修复（已实现，待冷启动验证）：xorg.conf 手动屏幕信息（wiki SDDM#Screen_resolution_is_too_low）——DP-3 的 Modeline（cvt -r 4K60，533MHz）+ PreferredMode + Enable + DisplaySize(597x336mm) + Screen 绑定；备选仍留 grub `video=DP-3:3840x2160e`
-- [ ] per-device-conf 自包含重构
+- [X] pc_beijing：SDDM 只在 DP-3 显示（无视 dock 的 DP-5 路径）
+	- X11 greeter 路线全部验证无效并弃用：Ignore "DP-1-5" 生效但无用、手动 modeline/Enable/DisplaySize 也无效
+	- 真因存档：X11 下 DP-3 冷启动链路训练失败（EDID 缺失）→ 1024x768 回落，内核无 HPD 重训事件
+	- 最终解法：greeter 换 Wayland（`DisplayServer=wayland` + `kwin_wayland --no-lockscreen`），实测正常；配置照搬为 `sddm/greeter.conf`，sddm 模块补装 kwin + layer-shell-qt
+	- per-device-conf/pc_beijing/xorg.conf 已删除；Wayland 下 DP-5 的屏蔽由 pc_beijing/hypr.lua（session）与 kwin 自身的输出管理承担
+- [X] per-device-conf 自包含重构
 	- 设备配置收回 per-device-conf/<设备>/ 子目录（即子模块：hypr.lua、xorg.conf...）
 	- 按选择部署：flags 翻转（选 true / 未选回 false）、~/.config/hypr/special/ 与 /etc/X11/xorg.conf.d/ 跟随部署/清理
 	- hypr 模块不再负责 special/ 的部署
@@ -61,7 +62,7 @@
 	- 第一个通过的主题写回 `Current=`，修好主题后升级时自动切回（自愈）
 	- theme-fallback.hook：Upgrade sddm / qt6-* 时 PostTransaction 触发
 	- module.sh 负责安装两者；不做 systemd unit、不参与 boot 路径
-- [ ] hyprland在从suspend恢复后（包括hyprlock）会有坏点一样的像素，用hyprctl reload重载以后就没事了，需要调查原因
+- [ ] hyprland在从suspend恢复后（包括hyprlock）会有坏点一样的像素，需要调查原因
 - [ ] fcitx5 删除 Simplified and Traditional Chinese Translation => Toggle Key 绑定
 - [ ] 强制安装 pipewire-jack 替换 jack2
 - [ ] 优化多选互动
