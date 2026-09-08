@@ -29,6 +29,12 @@
 	- `Screen.desktopAvailableHeight` → 根元素 `height`（Qt5 纯 QtQuick 导入下无 Screen 类型）
 	- 注意：此类报错进 journald 不进 stderr；test-mode 验收要用两个二进制都跑（`sddm-greeter` = Qt5、`sddm-greeter-qt6` = Qt6）
 - [X] yay与python一起作为安装必须依赖安装，失败直接退出脚本（含 `--verbose|-v` 全局输出开关）
+- [ ] pc_beijing：SDDM 只在 DP-3 显示（无视 dock 的 DP-5 路径）
+	- 黑屏调查结论：冷启动 EDID 偶发读不到 → X 回落 1024x768，与 minimal 主题无关（取证：journald `Adding view ... 1024x768` + Xorg log EDID 全空；test-mode 跑在已初始化会话里复现不了）
+	- xorg/special/pc_beijing.conf：Xorg `Option "Ignore"` 屏蔽 DP-1-5（iGPU 输出在 X 的命名）
+	- per-device-conf 模块新增 xorg/special/*.conf 跟随设备选择部署/移除
+	- 修复 hyprland.lua 漏掉的 pc_beijing require
+	- 若 Ignore 后仍偶发黑屏，备选：grub 加 `video=DP-3:3840x2160e` 强制 KMS 模式
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`
 	- [ ] 执行 `sudo sh -c "echo -e \"i2c-dev\ni2c-piix4\" > /etc/modules-load.d/i2c.conf"` 加载必要的 i2c 模组

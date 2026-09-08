@@ -27,20 +27,40 @@ install_module() {
 
     read -p "Select (space-separated numbers, default: 0): " -a selections
 
-    if [[ ${#selections[@]} -eq 0 ]]; then
-        log "No device config selected."
-        return 0
-    fi
-
+    local chosen=()
     for sel in "${selections[@]}"; do
         if [[ "$sel" == "0" ]]; then
             log "No device config selected."
-            return 0
+            break
         fi
         local idx=$((sel - 1))
         if [[ -n "${specials[$idx]}" ]]; then
             set_flag "${specials[$idx]}" "$flags_file"
             log "Enabled: ${specials[$idx]}"
+            chosen+=("${specials[$idx]}")
         fi
     done
+
+    # Device-specific Xorg snippets (e.g. ignoring outputs for the sddm
+    # greeter). Deployed for chosen devices, removed for the rest.
+    local xorg_special="$WD/xorg/special"
+    if [[ -d "$xorg_special" ]]; then
+        sudo mkdir -p /etc/X11/xorg.conf.d
+        local f name active c
+        for f in "$xorg_special"/*.conf; do
+            [[ -e "$f" ]] || continue
+            name=$(basename "$f")
+            active=""
+            for c in "${chosen[@]}"; do
+                [[ "$name" == "$c.conf" ]] && active=1
+            done
+            if [[ -n "$active" ]]; then
+                log "Deploying Xorg device config: $name"
+                sudo cp "$f" "/etc/X11/xorg.conf.d/$name"
+            elif sudo test -f "/etc/X11/xorg.conf.d/$name"; then
+                log "Removing Xorg device config: $name"
+                sudo rm "/etc/X11/xorg.conf.d/$name"
+            fi
+        done
+    fi
 }

@@ -66,6 +66,7 @@ local flags = require("flags")
 if flags.macbookpro  then require("macbookpro")  end
 if flags.pc_changsha then require("pc_changsha") end
 if flags.xiaomi_book then require("xiaomi_book") end
+if flags.pc_beijing  then require("pc_beijing")  end
 
 -- ============================================
 -- Window rules (always active)
