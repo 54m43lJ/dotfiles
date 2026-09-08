@@ -36,6 +36,18 @@ yay_ins() {
     done
 }
 
+# git clone helper: reuses an existing checkout instead of failing on a
+# previous (possibly interrupted) clone, so installs can safely re-run.
+git_clone() {
+    local url="$1" dir="$2"
+    if [[ -d "$dir" ]]; then
+        warn "$dir already exists, reusing it."
+        git -C "$dir" pull --quiet 2>/dev/null || warn "Update failed, using existing checkout: $dir"
+    else
+        git clone --quiet "$url" "$dir" || { err "Failed to clone $url."; return 1; }
+    fi
+}
+
 # Read proxy from env or prompt user
 setup_proxy() {
     # Normalize both lowercase and uppercase variants

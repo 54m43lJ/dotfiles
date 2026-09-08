@@ -12,7 +12,7 @@ install_module() {
     pac_ins "${DEV_PKGS[@]}"
 
     # Neovim — LazyVim starter + custom plugins
-    git clone https://github.com/LazyVim/starter ~/.config/nvim
+    git_clone https://github.com/LazyVim/starter ~/.config/nvim || return 1
     cp -r "$WD/dev/nvim/lua/plugins/"* ~/.config/nvim/lua/plugins/
     cat "$WD/dev/nvim/lua/config/keymaps.lua" >> ~/.config/nvim/lua/config/keymaps.lua
     cat "$WD/dev/nvim/lua/config/options.lua" >> ~/.config/nvim/lua/config/options.lua

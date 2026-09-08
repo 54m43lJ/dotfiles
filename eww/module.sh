@@ -17,7 +17,7 @@ install_module() {
     rustup default stable
 
     mkdir -p ~/Applications
-    git clone https://github.com/elkowar/eww.git ~/Applications/eww
+    git_clone https://github.com/elkowar/eww.git ~/Applications/eww || return 1
     (cd ~/Applications/eww && cargo build --release --no-default-features --features=wayland)
     sudo cp ~/Applications/eww/target/release/eww /usr/local/bin/
 
