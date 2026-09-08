@@ -40,6 +40,7 @@
 	- hypr 模块不再负责 special/ 的部署
 - [ ] module 规范固化（README「Module 规范」）
 	- bundle 回归普通 module 形态：install_module() 内 install_modules 列表调用；移除 BUNDLE=(...) 纯数据约定与 lib/flatten.py（python 硬依赖随之移除，git/base-devel/yay 保留）
+	- flatten 语义还原：集合内建于 install_modules（MODULE_SEEN），重复引用执行一次、环引用自然终止
 	- per-device-conf：安装步骤下沉到 <device>/module.sh 子模组（各自暴露 install_module()），父模组只做选择与调度
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`

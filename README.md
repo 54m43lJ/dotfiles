@@ -16,6 +16,7 @@ Arch Linux 桌面环境自动化部署工具。Hyprland + Wayland。
 - **module**：一个目录，入口是 `module.sh`，对外只暴露一个 `install_module()` 接口。`main.sh` 经 `lib.sh` 的 `install_modules()` 按 `MODULES` 数组顺序调用。
 - **bundle**：完全符合 module 规范的 module，实现是基于硬编码的列表调用其它模块（`install_modules a b c ...`），没有任何特殊约束，允许引用其它 bundle。
 - **sub-module**：同样符合 module 规范，但存在于其它 module 目录内部，原则上（不加限制）只由直接上层 module 调用（如 `per-device-conf/<device>/module.sh`）。
+- **flatten 语义**内建于 `install_modules`：以集合记录本次运行已到达的模块，重复引用只执行一次，环引用自然终止。
 
 ## 运行流程
 

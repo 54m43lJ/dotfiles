@@ -92,11 +92,18 @@ set_flag() {
     sed -i -E "s/(    ${1}.*= *)false/\1true/" "${2}"
 }
 
+# Modules already reached in this run: the flatten semantics (a module
+# executes at most once, include cycles terminate naturally) live here
+# rather than in a separate expansion step.
+declare -A MODULE_SEEN
+
 # Install a list of modules in order. Shared execution path for main.sh
 # and bundles.
 install_modules() {
     local mod script
     for mod in "$@"; do
+        [[ -n "${MODULE_SEEN[$mod]:-}" ]] && continue
+        MODULE_SEEN[$mod]=1
         script="$WD/$mod/module.sh"
         if [[ -f "$script" ]]; then
             log "[$mod]"
