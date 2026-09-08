@@ -30,11 +30,13 @@
 	- 注意：此类报错进 journald 不进 stderr；test-mode 验收要用两个二进制都跑（`sddm-greeter` = Qt5、`sddm-greeter-qt6` = Qt6）
 - [X] yay与python一起作为安装必须依赖安装，失败直接退出脚本（含 `--verbose|-v` 全局输出开关）
 - [ ] pc_beijing：SDDM 只在 DP-3 显示（无视 dock 的 DP-5 路径）
-	- 黑屏调查结论：冷启动 EDID 偶发读不到 → X 回落 1024x768，与 minimal 主题无关（取证：journald `Adding view ... 1024x768` + Xorg log EDID 全空；test-mode 跑在已初始化会话里复现不了）
-	- xorg/special/pc_beijing.conf：Xorg `Option "Ignore"` 屏蔽 DP-1-5（iGPU 输出在 X 的命名）
-	- per-device-conf 模块新增 xorg/special/*.conf 跟随设备选择部署/移除
-	- 修复 hyprland.lua 漏掉的 pc_beijing require
-	- 若 Ignore 后仍偶发黑屏，备选：grub 加 `video=DP-3:3840x2160e` 强制 KMS 模式
+	- xorg/special 的 Ignore "DP-1-5" 已确认生效（Xorg log `Option "Ignore" "true"`），但黑屏依旧
+	- 真因定案：冷启动时 DP-3 链路训练失败（EDID 读不到，X 报 disconnected）→ 回落 1024x768；内核日志中 DP-3 之后再无任何 HPD/重训事件，X 无人唤醒。与主题、dock 双路径均无关
+	- 修复候选（待做）：grub `video=DP-3:3840x2160e` 强制 KMS 模式（绕过 EDID 时序）
+- [ ] per-device-conf 自包含重构
+	- 设备配置收回 per-device-conf/<设备>/ 子目录（即子模块：hypr.lua、xorg.conf...）
+	- 按选择部署：flags 翻转（选 true / 未选回 false）、~/.config/hypr/special/ 与 /etc/X11/xorg.conf.d/ 跟随部署/清理
+	- hypr 模块不再负责 special/ 的部署
 - [ ] openrgb自启动和依赖安装
 	- [ ] `i2c-tools`
 	- [ ] 执行 `sudo sh -c "echo -e \"i2c-dev\ni2c-piix4\" > /etc/modules-load.d/i2c.conf"` 加载必要的 i2c 模组
@@ -62,3 +64,6 @@
 - [ ] hyprland在从suspend恢复后（包括hyprlock）会有坏点一样的像素，用hyprctl reload重载以后就没事了，需要调查原因
 - [ ] fcitx5 删除 Simplified and Traditional Chinese Translation => Toggle Key 绑定
 - [ ] 强制安装 pipewire-jack 替换 jack2
+- [ ] 优化多选互动
+  - [ ] per-device-config上也采用类似的互动方式但是单选（在lib.sh中实现）
+  - [ ] 实现循环遍历，例如在最后一个条目按下键应该回到开头

@@ -18,12 +18,12 @@ install_module() {
     yay_ins "${AUR[@]}" 2>/dev/null || true
 
     # --- config files ---
-    mkdir -p ~/.config/hypr/special
+    # (device configs live in per-device-conf/<device>/, deployed there)
+    mkdir -p ~/.config/hypr
     cp -r "$WD/hypr/"*.lua ~/.config/hypr/
     cp -r "$WD/hypr/"*.conf ~/.config/hypr/
     cp -r "$WD/hypr/"*.jpg ~/.config/hypr/
     cp -r "$WD/hypr/scripts" ~/.config/hypr/
-    cp -r "$WD/hypr/special/"* ~/.config/hypr/special/
 
     # Reload if Hyprland is running
     hyprctl reload 2>/dev/null || true
