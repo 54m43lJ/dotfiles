@@ -77,8 +77,12 @@
 - [X] 优化多选互动
   - [X] per-device-config上也采用类似的互动方式但是单选（在lib.sh中实现）
   - [X] 实现循环遍历，例如在最后一个条目按下键应该回到开头
-- [ ] 找出原因并解决 dim 只在笔记本生效不在PC上生效的问题
+- [X] 找出原因并解决 dim 只在笔记本生效不在PC上生效的问题
 	- 原因已查明：PC（台式机）没有 `/sys/class/backlight` 背光类设备，外接显示器亮度不走 backlight class，`brightnessctl` 无处着力
-	- 待做：改用 ddcutil（DDC/CI）控外接屏亮度，需装 ddcutil 并验证 VG273U PRO 支持 DDC 亮度；键盘背光行（smc::kbd_backlight）仅笔记本有意义需容错
+	- 实测结论：VG273U PRO（HKC）支持 DDC/CI 亮度（VCP 0x10 get/set 正常）；`ddcutil capabilities` 报 Maximum DDC retries exceeded 是 capabilities string 全量读取过重所致，getvcp/setvcp 不受影响
+	- 总线定位免扫描：enabled 的 DRM connector 暴露 `i2c-N` symlink（如 `/sys/class/drm/card1-DP-3/i2c-9`），逐 connector 取总线号即可；eDP 面板走 PWM 背光不在此列
+	- dim/undim 重写：brightnessctl 加 `-c backlight`（防桌面零背光设备时回落 leds 类摸到 capslock）+ DDC 循环；首次 dim 才存原值防重复 dim 覆盖，状态存 `XDG_RUNTIME_DIR`（tmpfs 跨 boot 自清）
+	- system 模块补装 `ddcutil`；smc::kbd_backlight 行 `2>/dev/null` 容错（仅笔记本有意义）
+	- 顺带查明 OpenRGB 在 B850-I 实际工作正常（DRAM 走 piix4 SMBus、主板 ARGB 走 USB HID 0b05:19af）；`Connection attempt failed`（SDK server 未开）与 HTML warning（对不存在接口的样板提示）均为噪音
 - [ ] 用greetd替代SDDM
 - [ ] hyprland切换窗口的时候保持全屏状态

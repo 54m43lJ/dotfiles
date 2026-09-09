@@ -14,7 +14,7 @@ install_module() {
     local BASE=(
         sbctl git base-devel unzip neovim
         man-pages man-db texinfo
-        socat jq zoxide fzf brightnessctl blueman
+        socat jq zoxide fzf brightnessctl ddcutil blueman
         gnome-keyring polkit-kde-agent
         xdg-user-dirs xdg-desktop-portal-gtk
         playerctl

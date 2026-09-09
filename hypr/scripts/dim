@@ -1,4 +1,30 @@
 #!/bin/bash
+# Dim internal backlights (brightnessctl) and DDC/CI external monitors (ddcutil).
+# Desktops have no /sys/class/backlight at all: brightnessctl lines error out
+# harmlessly there, the DDC loop does the work. Laptops are the reverse.
 
-brightnessctl -s s 1%
-brightnessctl -s s 0% -d 'smc::kbd_backlight'
+STATE_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr-dim"
+mkdir -p "$STATE_DIR"
+
+# -c backlight: with zero backlight devices (desktop) brightnessctl would
+# otherwise fall through to the leds class and grab e.g. input10::capslock
+brightnessctl --save --quiet --class backlight set 1% 2>/dev/null
+brightnessctl --save --quiet set 0% -d 'smc::kbd_backlight' 2>/dev/null
+
+# Enabled DRM connectors expose their DDC i2c bus as an i2c-N symlink.
+# eDP panels use the PWM backlight above, never DDC. State (saved only on
+# the first dim of a cycle) lands in XDG_RUNTIME_DIR, i.e. tmpfs cleared
+# per boot, so undim can never restore a stale cross-boot value.
+shopt -s nullglob
+for conn in /sys/class/drm/card*-*; do
+    case "$(basename "$conn")" in *eDP*) continue ;; esac
+    [[ $(<"$conn/enabled") == enabled ]] || continue
+    for buslink in "$conn"/i2c-*; do
+        bus=${buslink##*-}
+        if cur=$(ddcutil --bus="$bus" getvcp 10 --brief 2>/dev/null) \
+           && cur=$(awk '{print $4}' <<<"$cur") && [[ -n $cur ]]; then
+            [[ -e $STATE_DIR/bus$bus ]] || printf '%s' "$cur" >"$STATE_DIR/bus$bus"
+            ddcutil --bus="$bus" setvcp 10 1 2>/dev/null
+        fi
+    done
+done

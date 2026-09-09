@@ -1,4 +1,15 @@
 #!/bin/bash
+# Undo `dim`: restore saved brightness of internal backlights and DDC/CI
+# external monitors.
 
-brightnessctl -r
-brightnessctl -r -d 'smc::kbd_backlight'
+STATE_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr-dim"
+
+brightnessctl --restore --quiet --class backlight 2>/dev/null
+brightnessctl --restore --quiet -d 'smc::kbd_backlight' 2>/dev/null
+
+shopt -s nullglob
+for saved in "$STATE_DIR"/bus*; do
+    bus=${saved##*bus}
+    ddcutil --bus="$bus" setvcp 10 "$(<"$saved")" 2>/dev/null && rm -f "$saved"
+done
+rmdir "$STATE_DIR" 2>/dev/null
