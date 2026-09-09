@@ -4,6 +4,12 @@
 install_module() {
     log "Installing core system packages..."
 
+    # Audio stack first: pipewire-jack must be in place before anything in
+    # this module resolves a `jack` dependency (thunderbird -> ffmpeg ->
+    # libjack.so), or pacman's default provider choice pulls in jack2, which
+    # conflicts with pipewire-jack.
+    install_modules pipewire
+
     # --- base system ---
     local BASE=(
         sbctl git base-devel unzip neovim
