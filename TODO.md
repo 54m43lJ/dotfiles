@@ -86,3 +86,4 @@
 	- 顺带查明 OpenRGB 在 B850-I 实际工作正常（DRAM 走 piix4 SMBus、主板 ARGB 走 USB HID 0b05:19af）；`Connection attempt failed`（SDK server 未开）与 HTML warning（对不存在接口的样板提示）均为噪音
 - [ ] 用greetd替代SDDM
 - [ ] hyprland切换窗口的时候保持全屏状态
+- [ ] 支持通过~/.config/autostart自动启动的应用
