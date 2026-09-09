@@ -73,10 +73,12 @@
 - [ ] fcitx5 删除 Simplified and Traditional Chinese Translation => Toggle Key 绑定
 	- 现状：实机 `~/.config/fcitx5/conf/chttrans.conf` 已是 `Hotkey=`（无绑定），但该文件是 fcitx5 自动生成的，repo 的 fcitx5 模块并未部署它——换机部署会带回默认快捷键
 	- 待做：fcitx5 模块补部署 chttrans.conf（固化 `Hotkey=` 空）
-- [ ] 强制安装 pipewire-jack 替换 jack2（pipewire 模块包列表已含 pipewire-jack；实机 pipewire-jack 已装、jack2 已不在）
+- [X] 强制安装 pipewire-jack 替换 jack2（两者冲突不可共存）。根因：system 的 thunderbird→ffmpeg 依赖 `libjack.so`，pacman 默认提供者选中 jack2。解法：pipewire 转为 system 子模块调用且排最前，pipewire-jack 先落地后 ffmpeg 直接命中该提供者，jack2 从源头不进场（bundle-base 相应简化；flatten 去重保证全程一次）
 - [X] 优化多选互动
   - [X] per-device-config上也采用类似的互动方式但是单选（在lib.sh中实现）
   - [X] 实现循环遍历，例如在最后一个条目按下键应该回到开头
 - [ ] 找出原因并解决 dim 只在笔记本生效不在PC上生效的问题
 	- 原因已查明：PC（台式机）没有 `/sys/class/backlight` 背光类设备，外接显示器亮度不走 backlight class，`brightnessctl` 无处着力
 	- 待做：改用 ddcutil（DDC/CI）控外接屏亮度，需装 ddcutil 并验证 VG273U PRO 支持 DDC 亮度；键盘背光行（smc::kbd_backlight）仅笔记本有意义需容错
+- [ ] 用greetd替代SDDM
+- [ ] hyprland切换窗口的时候保持全屏状态
