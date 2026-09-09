@@ -38,37 +38,45 @@
 	- 设备配置收回 per-device-conf/<设备>/ 子目录（即子模块：hypr.lua、xorg.conf...）
 	- 按选择部署：选中设备 flags 翻 true 并部署文件；脚本只负责纯净安装上的部署，不做清理回滚（本机残留已手工清理）
 	- hypr 模块不再负责 special/ 的部署
-- [ ] module 规范固化（README「Module 规范」）
+- [X] module 规范固化（README「Module 规范」）
 	- bundle 回归普通 module 形态：install_module() 内 install_modules 列表调用；移除 BUNDLE=(...) 纯数据约定与 lib/flatten.py（python 硬依赖随之移除，git/base-devel/yay 保留）
 	- flatten 语义还原：集合内建于 install_modules（MODULE_SEEN），重复引用执行一次、环引用自然终止
 	- per-device-conf：安装步骤下沉到 <device>/module.sh 子模组（各自暴露 install_module()），父模组只做选择与调度
-- [ ] openrgb自启动和依赖安装
-	- [ ] `i2c-tools`
-	- [ ] 执行 `sudo sh -c "echo -e \"i2c-dev\ni2c-piix4\" > /etc/modules-load.d/i2c.conf"` 加载必要的 i2c 模组
-	- [ ] 实现自动检测系统是 AMD 平台还是 intel 平台，在 intel 平台上用 `i2c-i801` 替代 `i2c-piix4`
-- [ ] gnome-keyring初始化
+- [X] openrgb自启动和依赖安装
+	- [X] `i2c-tools`
+	- [X] 执行 `sudo sh -c "echo -e \"i2c-dev\ni2c-piix4\" > /etc/modules-load.d/i2c.conf"` 加载必要的 i2c 模组
+	- [X] 实现自动检测系统是 AMD 平台还是 intel 平台，在 intel 平台上用 `i2c-i801` 替代 `i2c-piix4`
+	- 自启动：由 per-device-conf/pc_changsha/hypr.lua 的 `openrgb --start-minimized -p default` 承担
+- [X] gnome-keyring初始化
 	- 修改 `/etc/pam.d/login`
-	- 找到 `auth` 部分，在**末尾**添加一行：
+	- 找到 `auth` 部分，在**末尾**添加一行：
 	```
 	auth optional pam_gnome_keyring.so
 	```
-	- 找到 `session` 部分，在**末尾**添加一行：
+	- 找到 `session` 部分，在**末尾**添加一行：
     ```
     session optional pam_gnome_keyring.so auto_start
     ```
-	- 配置 hyprland `hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")`
-	- `systemctl --user enable gcr-ssh-agent --now` 启动 ssh agent
-- [ ] 重新开发一个兼容qt6的SDDM主题
-    - [ ] 带动画效果
-    - [ ] 细节待讨论，讨论完再实现
-- [ ] sddm 主题自动降级机制（pacman hook + theme-check.sh）
-	- theme-check.sh：按优先级顺序（好看主题 → minimal）offscreen 实测，`QT_QPA_PLATFORM=offscreen timeout 15 sddm-greeter-qt6 --test-mode --theme <dir>`，日志 grep 到 `Fallback to embedded theme` / QML error 才判死（避免误杀）
-	- 第一个通过的主题写回 `Current=`，修好主题后升级时自动切回（自愈）
+	- [X] ~~配置 hyprland `hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")`~~ 跳过：session 行的 auto_start 已由 PAM 拉起 daemon
+	- [X] `systemctl --user enable gcr-ssh-agent --now` 启动 ssh agent（system/module.sh；PAM 插入也在其中，幂等 + 原子写 + .bak 备份）
+- [X] sddm 主题自动降级机制（pacman hook + theme-check.sh）
+	- theme-check.sh：按优先级（sugar-dark → minimal）offscreen 实测；实测修正：greeter 输出进 journald 不进 stderr，判据读 `journalctl _PID=<greeter>`（坏主题 `Fallback to embedded theme`/QML error ~1s 判死，健康 `Adding view` 提前通过，超时本身不杀主题防误杀）
+	- `timeout(1)` 会 fork 导致 `$!` 错拿 timeout PID，必须直接后台 greeter
+	- 第一个通过的主题写回 `Current=`，修好主题后升级时自动切回（自愈）；只测仓库部署的主题（PRIORITY + minimal）
 	- theme-fallback.hook：Upgrade sddm / qt6-* 时 PostTransaction 触发
-	- module.sh 负责安装两者；不做 systemd unit、不参与 boot 路径
-- [ ] hyprland在从suspend恢复后（包括hyprlock）会有坏点一样的像素，需要调查原因
+	- module.sh 负责安装两者（并重新部署 sugar-dark）；不做 systemd unit、不参与 boot 路径
+- [X] hyprland在从suspend恢复后（包括hyprlock）会有坏点一样的像素，需要调查原因
+	- 调查结论：hyprpaper 在 resume 后 surface/buffer 失效（进程死或存活但缓冲陈旧），重启即恢复；上游未修（hyprwm/hyprpaper#350 同族）
+	- 修复：after_sleep 增加 hyprpaper 保活——IPC 探活（`listactive`，3s 超时）健康则 `wallpaper` 重提交，失败则清理全部实例后台重启
+	- 顺带修复两处 0.56 Lua 配置下的坏 dispatch：`dpms on/off` → `'hl.dsp.dpms("on")'`（after_sleep 与 hypridle.conf）
+	- after_sleep 的 LID0 块改为先无 sudo 探测，桌面不再触发 sudo 密码阻塞唤醒
 - [ ] fcitx5 删除 Simplified and Traditional Chinese Translation => Toggle Key 绑定
-- [ ] 强制安装 pipewire-jack 替换 jack2
-- [ ] 优化多选互动
-  - [ ] per-device-config上也采用类似的互动方式但是单选（在lib.sh中实现）
-  - [ ] 实现循环遍历，例如在最后一个条目按下键应该回到开头
+	- 现状：实机 `~/.config/fcitx5/conf/chttrans.conf` 已是 `Hotkey=`（无绑定），但该文件是 fcitx5 自动生成的，repo 的 fcitx5 模块并未部署它——换机部署会带回默认快捷键
+	- 待做：fcitx5 模块补部署 chttrans.conf（固化 `Hotkey=` 空）
+- [ ] 强制安装 pipewire-jack 替换 jack2（pipewire 模块包列表已含 pipewire-jack；实机 pipewire-jack 已装、jack2 已不在）
+- [X] 优化多选互动
+  - [X] per-device-config上也采用类似的互动方式但是单选（在lib.sh中实现）
+  - [X] 实现循环遍历，例如在最后一个条目按下键应该回到开头
+- [ ] 找出原因并解决 dim 只在笔记本生效不在PC上生效的问题
+	- 原因已查明：PC（台式机）没有 `/sys/class/backlight` 背光类设备，外接显示器亮度不走 backlight class，`brightnessctl` 无处着力
+	- 待做：改用 ddcutil（DDC/CI）控外接屏亮度，需装 ddcutil 并验证 VG273U PRO 支持 DDC 亮度；键盘背光行（smc::kbd_backlight）仅笔记本有意义需容错
