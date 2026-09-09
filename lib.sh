@@ -181,8 +181,8 @@ _select_tui() {
             $'\x1b')
                 if IFS= read -rsn2 -t 0.01 seq; then
                     case "$seq" in
-                        '[A'|'OA') (( cursor > 0 )) && (( cursor-- )) ;;
-                        '[B'|'OB') (( cursor < n - 1 )) && (( cursor++ )) ;;
+                        '[A'|'OA') cursor=$(( (cursor - 1 + n) % n )) ;;
+                        '[B'|'OB') cursor=$(( (cursor + 1) % n )) ;;
                     esac
                 else
                     cancelled=1
