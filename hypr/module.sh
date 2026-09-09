@@ -1,5 +1,5 @@
 #!/bin/bash
-# Hyprland compositor: packages, config, device-specific flags
+# Hyprland compositor: packages and config
 
 install_module() {
     log "Installing Hyprland..."

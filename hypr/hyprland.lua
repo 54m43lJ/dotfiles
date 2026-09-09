@@ -5,9 +5,6 @@ local mainMod       = "SUPER"
 local defaultBrowser = "gtk-launch brave-browser"
 local hypr_dir       = os.getenv("HOME") .. "/.config/hypr"
 
-package.path = package.path .. ";" .. hypr_dir .. "/?.lua"
-package.path = package.path .. ";" .. hypr_dir .. "/special/?.lua"
-
 -- ============================================
 -- Monitor defaults (before device-specific overrides)
 -- ============================================
@@ -59,14 +56,18 @@ local function assign_workspaces()
 end
 
 -- ============================================
--- Device-specific flags (set by deploy modules)
+-- Device-specific configs: load every file deployed into special/.
+-- per-device-conf/<device>/module.sh copies its hypr.lua there; no flag
+-- gating — whatever is present runs (multiple files merge like multiple
+-- flags did). Directory scan via io.popen (no lfs in embedded Lua).
 -- ============================================
-local flags = require("flags")
-
-if flags.macbookpro  then require("macbookpro")  end
-if flags.pc_changsha then require("pc_changsha") end
-if flags.xiaomi_book then require("xiaomi_book") end
-if flags.pc_beijing  then require("pc_beijing")  end
+local scan = io.popen("ls -1 " .. hypr_dir .. "/special/*.lua 2>/dev/null")
+if scan then
+    for f in scan:lines() do
+        dofile(f)
+    end
+    scan:close()
+end
 
 -- ============================================
 -- Window rules (always active)

@@ -3,7 +3,11 @@
 
 install_module() {
     mkdir -p ~/.config/hypr/special
-    set_flag pc_changsha ~/.config/hypr/flags.lua
     cp "$WD/per-device-conf/pc_changsha/hypr.lua" ~/.config/hypr/special/pc_changsha.lua
+
+    # Desktop idle policy: no lock, no auto-suspend (overrides hypr module)
+    cp "$WD/per-device-conf/pc_changsha/hypridle.conf" ~/.config/hypr/hypridle.conf
+    restart_hypridle
+
     log "Enabled: pc_changsha"
 }

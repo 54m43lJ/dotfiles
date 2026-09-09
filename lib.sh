@@ -98,10 +98,11 @@ EOF
     npm config set registry https://registry.npmmirror.com 2>/dev/null || true
 }
 
-# Flip a flag in a Lua flags file
-set_flag() {
-    # set_flag <flag_name> <file>
-    sed -i -E "s/(    ${1}.*= *)false/\1true/" "${2}"
+# Restart hypridle so a freshly deployed hypridle.conf takes effect live.
+# Fully detached so nothing keeps the caller's pipes open.
+restart_hypridle() {
+    pkill -x hypridle 2>/dev/null
+    ( sleep 0.3; exec hypridle ) >/dev/null 2>&1 </dev/null &
 }
 
 # Modules already reached in this run: the flatten semantics (a module
