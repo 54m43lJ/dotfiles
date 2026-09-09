@@ -82,7 +82,7 @@ if [[ -n "$DRY_RUN" ]]; then
 else
     setup_mirrors
     log "Refreshing package databases..."
-    sudo pacman -Syy --noconfirm --noprogressbar >/dev/null \
+    sudo pacman -Sy --noconfirm --noprogressbar >/dev/null \
         || { err "Failed to refresh package databases."; exit 1; }
 fi
 
