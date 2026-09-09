@@ -82,6 +82,9 @@ if [[ -n "$DRY_RUN" ]]; then
     log "Dry run: skipping mirror configuration."
 else
     setup_mirrors
+    log "Refreshing package databases..."
+    sudo pacman -Syy --noconfirm --noprogressbar >/dev/null \
+        || { err "Failed to refresh package databases."; exit 1; }
 fi
 
 # --- modules ---
