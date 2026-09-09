@@ -10,5 +10,6 @@ install_module() {
     cp "$WD/fcitx5/config" ~/.config/fcitx5/config
     cp "$WD/fcitx5/profile" ~/.config/fcitx5/profile
     cp "$WD/fcitx5/conf/classicui.conf" ~/.config/fcitx5/conf/classicui.conf
+    cp "$WD/fcitx5/conf/chttrans.conf" ~/.config/fcitx5/conf/chttrans.conf
     log "Fcitx5 configured."
 }
