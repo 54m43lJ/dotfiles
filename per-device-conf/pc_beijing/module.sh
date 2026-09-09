@@ -7,7 +7,6 @@ install_module() {
 
     # Desktop idle policy: no lock, no auto-suspend (overrides hypr module)
     cp "$WD/per-device-conf/pc_beijing/hypridle.conf" ~/.config/hypr/hypridle.conf
-    restart_hypridle
 
     log "Enabled: pc_beijing"
 }
