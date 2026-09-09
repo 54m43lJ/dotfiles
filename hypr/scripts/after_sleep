@@ -1,10 +1,31 @@
 #!/bin/bash
 
-lid_disabled() {
-  sudo bash -c 'cat /proc/acpi/wakeup | grep -E LID0.+\*disabled'
-}
-
-if lid_disabled; then
-  sudo bash -c 'echo LID0 >/proc/acpi/wakeup'
+# /proc/acpi/wakeup is world-readable: probe without sudo so desktops
+# (no LID0 at all) never hit a sudo password prompt on resume.
+if grep -qE 'LID0.+\*disabled' /proc/acpi/wakeup 2>/dev/null; then
+  sudo sh -c 'echo LID0 >/proc/acpi/wakeup'
 fi
-hyprctl dispatch dpms on
+# hl.dsp.* syntax: hyprctl dispatch routes through the Lua config since 0.56
+hyprctl dispatch 'hl.dsp.dpms("on")'
+
+# --- hyprpaper keepalive ---
+# Resume can leave hyprpaper with stale buffers, or with the process alive
+# but its IPC socket dead (hyprwm/hyprpaper#350 family): wallpaper shows
+# dead-pixel-like garbage until hyprpaper is restarted. Probe the IPC; when
+# it answers, force a wallpaper re-commit through it (clears the stale
+# buffer without a restart); on any failure (dead process, dead socket,
+# wedged, failed re-commit) tear down every instance and start fresh in the
+# background — the new instance re-reads hyprpaper.conf on its own.
+wp=""
+if out=$(timeout 3 hyprctl hyprpaper listactive 2>/dev/null) && [[ -n "$out" ]]; then
+    wp=$(sed -n 's/^[^:]*:[[:space:]]*//p' <<<"$out" | head -1)
+fi
+if [[ -n "$wp" ]] && timeout 3 hyprctl hyprpaper wallpaper ",$wp" >/dev/null 2>&1; then
+    :
+else
+    pkill -x hyprpaper 2>/dev/null
+    sleep 0.2
+    pkill -9 -x hyprpaper 2>/dev/null   # wedged (e.g. SIGSTOPed) instances
+    # Fully detached: no inherited fds, so nothing keeps the caller's pipes open
+    ( sleep 0.3; exec hyprpaper ) >/dev/null 2>&1 </dev/null &
+fi
