@@ -18,26 +18,11 @@ install_module() {
 
     echo >&2
     log "Device-specific configurations"
-    echo "  0) None (default)" >&2
-    local i
-    for i in "${!devices[@]}"; do
-        echo "  $((i+1))) ${devices[$i]}" >&2
-    done
 
-    read -p "Select (space-separated numbers, default: 0): " -a selections
-
-    local sel idx sub
-    for sel in "${selections[@]}"; do
-        if [[ "$sel" == "0" ]]; then
-            log "No device config selected."
-            break
-        fi
-        idx=$((sel - 1))
-        sub="${devices[$idx]}"
-        if [[ -n "$sub" ]]; then
-            log "[$sub]"
-            source "$mod_dir/$sub/module.sh"
-            install_module
-        fi
-    done
+    local sub
+    select_one sub --none "${devices[@]}" || { log "No device config selected."; return 0; }
+    [[ -n "$sub" ]] || return 0
+    log "[$sub]"
+    source "$mod_dir/$sub/module.sh"
+    install_module
 }

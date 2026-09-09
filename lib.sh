@@ -131,27 +131,49 @@ install_modules() {
 is_root() { [[ $(id -u) -eq 0 ]] && err "Do not run as root." && exit 1; }
 is_arch() { grep -q 'NAME="Arch Linux"' /etc/os-release || { err "Arch Linux required."; exit 1; }; }
 
-# Interactive module picker.
-# Reads MODULES (available) and DEFAULTS (pre-checked) arrays,
-# fills SELECTED with chosen modules, keeping MODULES order.
-# Keys: up/down move cursor, space toggles, enter confirms, esc cancels.
-select_modules() {
-    local -A is_default=()
+# Interactive selection primitives: the y/N, multi-select and single-select
+# prompt paradigms. Rendering goes to stderr so module stdout stays silenced
+# (exec 1>/dev/null in main.sh); results are written through a nameref to
+# the caller's variable, return codes carry the interactive outcome.
+
+# Shared TUI engine behind select_multi/select_one: renders a cursor list,
+# handles up/down (plus space-toggle in multi mode), enter confirms, esc
+# cancels. Returns 1 on cancel / unusable selection.
+# Usage: _select_tui <multi|one> <result_var> [items...]
+_select_tui() {
+    local mode="$1" result_var="$2"
+    shift 2
+    local -a items=("$@")
+    local n=${#items[@]}
+    (( n > 0 )) || { warn "Nothing to select."; return 1; }
+
     local -a checked=()
-    local i key seq mark cursor=0 n=${#MODULES[@]}
-    for i in "${!DEFAULTS[@]}"; do is_default["${DEFAULTS[$i]}"]=1; done
-    for i in "${!MODULES[@]}"; do checked[$i]=${is_default["${MODULES[$i]}"]:-0}; done
+    local -A pre=()
+    local i key seq mark cursor=0 cancelled=0
+    if [[ "$mode" == multi ]]; then
+        local -n pre_ref="$result_var"
+        for i in "${!pre_ref[@]}"; do pre["${pre_ref[$i]}"]=1; done
+        for i in "${!items[@]}"; do checked[$i]=${pre["${items[$i]}"]:-0}; done
+    fi
 
     trap 'tput cnorm 2>/dev/null' EXIT
     tput civis 2>/dev/null
-    echo "Space: toggle  Up/Down: move  Enter: run  Esc: cancel" >&2
+    if [[ "$mode" == multi ]]; then
+        echo "Space: toggle  Up/Down: move  Enter: confirm  Esc: cancel" >&2
+    else
+        echo "Up/Down: move  Enter: select  Esc: cancel" >&2
+    fi
     while true; do
-        for i in "${!MODULES[@]}"; do
-            mark=" "; (( checked[$i] )) && mark="x"
+        for i in "${!items[@]}"; do
+            mark=""
+            if [[ "$mode" == multi ]]; then
+                mark="[ ] "
+                (( checked[$i] )) && mark="[x] "
+            fi
             if (( i == cursor )); then
-                printf '> [%s] %s\e[K\n' "$mark" "${MODULES[$i]}" >&2
+                printf '> %s%s\e[K\n' "$mark" "${items[$i]}" >&2
             else
-                printf '  [%s] %s\e[K\n' "$mark" "${MODULES[$i]}" >&2
+                printf '  %s%s\e[K\n' "$mark" "${items[$i]}" >&2
             fi
         done
         IFS= read -rsn1 key
@@ -163,25 +185,77 @@ select_modules() {
                         '[B'|'OB') (( cursor < n - 1 )) && (( cursor++ )) ;;
                     esac
                 else
-                    err "Cancelled."
-                    exit 0
+                    cancelled=1
+                    break
                 fi
                 ;;
-            ' ') checked[$cursor]=$(( 1 - checked[$cursor] )) ;;
+            ' ') [[ "$mode" == multi ]] && checked[$cursor]=$(( 1 - checked[$cursor] )) ;;
             '') break ;;
         esac
         printf '\e[%dA' "$n" >&2
     done
 
-    SELECTED=()
-    for i in "${!MODULES[@]}"; do
-        (( checked[$i] )) && SELECTED+=("${MODULES[$i]}")
-    done
-    printf '\e[%dA\e[J' "$n" >&2
-    if (( ${#SELECTED[@]} == 0 )); then
-        err "No module selected."
-        exit 0
+    printf '\e[%dA\e[J' "$((n + 1))" >&2
+    tput cnorm 2>/dev/null
+    if (( cancelled )); then
+        warn "Cancelled."
+        return 1
     fi
-    log "Selected modules:"
-    printf '  %s\n' "${SELECTED[@]}" >&2
+
+    local -n out="$result_var"
+    if [[ "$mode" == multi ]]; then
+        out=()
+        for i in "${!items[@]}"; do
+            (( checked[$i] )) && out+=("${items[$i]}")
+        done
+        if (( ${#out[@]} == 0 )); then
+            warn "Nothing selected."
+            return 1
+        fi
+        log "Selected:"
+        printf '  %s\n' "${out[@]}" >&2
+    else
+        out="${items[$cursor]}"
+    fi
+    return 0
+}
+
+# Generic multi-select. Entries already present in result_var are
+# pre-checked; the confirmed selection (input order) replaces its
+# contents. $YES accepts the pre-filled entries as-is.
+# Usage: select_multi <result_var> [items...]
+select_multi() {
+    local result_var="$1"; shift
+    if [[ -n "$YES" ]]; then
+        local -n out="$result_var"
+        if (( ${#out[@]} > 0 )); then
+            log "Selected:"
+            printf '  %s\n' "${out[@]}" >&2
+        fi
+        return 0
+    fi
+    _select_tui multi "$result_var" "$@"
+}
+
+# Generic single-select. With --none, a "None" entry is shown first and
+# choosing it sets result_var empty; the cursor always starts on the first
+# item. $YES picks the first item (empty with --none). Returns 1 on cancel.
+# Usage: select_one <result_var> [--none] [items...]
+select_one() {
+    local result_var="$1" none=""
+    shift
+    [[ "$1" == "--none" ]] && { none=1; shift; }
+    local -n out="$result_var"
+    if [[ -n "$YES" ]]; then
+        out=""
+        [[ -n "$none" || $# -eq 0 ]] || out="$1"
+        return 0
+    fi
+    (( $# > 0 )) || { warn "Nothing to select."; return 1; }
+    if [[ -n "$none" ]]; then
+        _select_tui one "$result_var" "None" "$@" || return 1
+        [[ "$out" == "None" ]] && out=""
+        return 0
+    fi
+    _select_tui one "$result_var" "$@"
 }

@@ -68,11 +68,10 @@ is_root
 is_arch
 
 # --- module selection ---
-if [[ -n "$YES" ]]; then
-    SELECTED=("${DEFAULTS[@]}")
-else
-    select_modules
-fi
+# select_multi treats entries already in SELECTED as pre-checked; with
+# $YES it accepts them as-is.
+SELECTED=("${DEFAULTS[@]}")
+select_multi SELECTED "${MODULES[@]}" || exit 0
 
 # --- proxy ---
 setup_proxy
