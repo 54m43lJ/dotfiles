@@ -22,7 +22,7 @@ MODULES=(
     zsh
     bread
     nvidia
-    rgb
+    openrgb
     breeze
     dev
     per-device-conf
