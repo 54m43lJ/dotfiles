@@ -41,6 +41,26 @@ install_module() {
     # --- system scripts ---
     sudo cp "$WD/system/suspend.sh" /usr/local/bin/
 
+    # --- gnome-keyring PAM: unlock the keyring on login ---
+    # Inserted at the end of the auth/session stacks (pam_gnome_keyring is
+    # order-sensitive only within its own stack). The session line's
+    # auto_start brings up gnome-keyring-daemon, so no exec_cmd is needed
+    # in Hyprland. Rewritten atomically; guarded so re-runs are a no-op.
+    if ! grep -q pam_gnome_keyring /etc/pam.d/login; then
+        log "Adding gnome-keyring PAM entries to /etc/pam.d/login..."
+        sudo cp -n /etc/pam.d/login /etc/pam.d/login.bak
+        awk '
+            { lines[NR] = $0
+              if ($1 ~ /^-?auth$/)    a = NR
+              if ($1 ~ /^-?session$/) s = NR }
+            END { for (i = 1; i <= NR; i++) {
+                      print lines[i]
+                      if (i == a) print "auth       optional     pam_gnome_keyring.so"
+                      if (i == s) print "session    optional     pam_gnome_keyring.so auto_start"
+                  } }' /etc/pam.d/login | sudo tee /etc/pam.d/login.tmp >/dev/null
+        sudo mv /etc/pam.d/login.tmp /etc/pam.d/login
+    fi
+
     # --- ssh-agent ---
     systemctl --user enable gcr-ssh-agent --now
 
