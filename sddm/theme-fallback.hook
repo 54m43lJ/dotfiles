@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = sddm
+Target = qt6-*
+
+[Action]
+Description = Validating SDDM theme, falling back if broken
+When = PostTransaction
+Exec = /usr/local/bin/theme-check.sh
