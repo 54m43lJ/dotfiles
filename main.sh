@@ -20,6 +20,7 @@ MODULES=(
     zsh
     bread
     nvidia
+    virt
     openrgb
     breeze
     dev
