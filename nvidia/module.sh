@@ -2,10 +2,6 @@
 # Nvidia drivers + Hyprland wrapper
 
 install_module() {
-    if ! confirm "Install Nvidia drivers?"; then
-        return 0
-    fi
-
     log "Installing Nvidia drivers..."
 
     local NVIDIA_PKGS=(nvidia libva-nvidia-driver)

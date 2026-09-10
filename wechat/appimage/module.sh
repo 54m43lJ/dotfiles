@@ -1,6 +1,6 @@
 #!/bin/bash
 # WeChat official AppImage installed to /opt/wechat.
-# Alternative to the wechat-aur module — pick one.
+# Selected by the wechat module (AUR vs AppImage) — or install directly.
 # Re-running this module re-downloads the AppImage, which is the update path.
 
 install_module() {

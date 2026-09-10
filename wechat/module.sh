@@ -3,7 +3,7 @@
 
 install_module() {
     local method
-    select_one method "wechat-aur" "wechat-appimage" \
+    select_one method "wechat/aur" "wechat/appimage" \
         || { warn "WeChat install skipped."; return 0; }
     install_modules "$method"
 }

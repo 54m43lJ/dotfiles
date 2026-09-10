@@ -1,6 +1,8 @@
 #!/bin/bash
-# Bundle: full desktop (includes bundle-base)
+# Bundle: full desktop (optional NVIDIA, pick per machine)
 
 install_module() {
-    install_modules bundle-base hypr fcitx5 fontconfig foot wofi dunst sddm applications
+    install_modules system hypr sddm clash dunst fcitx5 fontconfig foot \
+        qqmusic wechat wofi zsh breeze
+    confirm "Install NVIDIA drivers?" && install_modules nvidia
 }

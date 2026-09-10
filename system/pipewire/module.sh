@@ -10,7 +10,7 @@ install_module() {
     pac_ins "${PW[@]}"
 
     sudo mkdir -p /usr/share/pipewire/pipewire.conf.d
-    sudo cp "$WD/pipewire/samplerate.conf" /usr/share/pipewire/pipewire.conf.d/
+    sudo cp "$WD/system/pipewire/samplerate.conf" /usr/share/pipewire/pipewire.conf.d/
 
     log "Pipewire configured."
 }

@@ -3,11 +3,10 @@ export WD="$(cd "$(dirname "$0")" && pwd)"
 source "$WD/lib.sh"
 
 MODULES=(
-    bundle-base
     bundle-desktop
     bundle-dev
+    bundle-customize
     system
-    pipewire
     hypr
     fcitx5
     fontconfig
@@ -15,10 +14,8 @@ MODULES=(
     wofi
     dunst
     sddm
-    applications
     wechat
     qqmusic
-    grub
     vscode
     nwg-bar
     zsh

@@ -3,10 +3,6 @@
 # Autostart lives in the per-device hypr flags (openrgb --start-minimized -p default)
 
 install_module() {
-    if ! confirm "Configure RGB (OpenRGB)?"; then
-        return 0
-    fi
-
     log "Installing OpenRGB..."
 
     local RGB_PKGS=(openrgb i2c-tools)

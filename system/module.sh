@@ -8,7 +8,7 @@ install_module() {
     # this module resolves a `jack` dependency (thunderbird -> ffmpeg ->
     # libjack.so), or pacman's default provider choice pulls in jack2, which
     # conflicts with pipewire-jack.
-    install_modules pipewire
+    install_modules system/pipewire
 
     # --- base system ---
     local BASE=(
@@ -77,6 +77,8 @@ install_module() {
     # xdg-terminal-exec is the first fallback — symlink it to foot so
     # Terminal=true .desktop apps (e.g. nvim) can find a terminal.
     sudo ln -sf /usr/bin/foot /usr/local/bin/xdg-terminal-exec
+
+    install_modules system/grub
 
     log "Core system packages installed."
 }

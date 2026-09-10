@@ -4,7 +4,7 @@
 install_module() {
     log "Installing GRUB theme..."
 
-    sudo cp -r "$WD/grub" /boot/grub/themes/
+    sudo cp -r "$WD/system/grub" /boot/grub/themes/
 
     sudo sed -i -E 's/^(GRUB_TIMEOUT=).*$/\130/g' /etc/default/grub
     sudo sed -i -E 's/^(GRUB_DEFAULT=).*$/\10/g' /etc/default/grub

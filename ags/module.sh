@@ -2,10 +2,6 @@
 # AGS (Aylur's GTK Shell) — Astal/GTK4 bar
 
 install_module() {
-    if ! confirm "Install ags bar?"; then
-        return 0
-    fi
-
     log "Installing ags..."
     yay_ins aylurs-gtk-shell libastal-meta
 
