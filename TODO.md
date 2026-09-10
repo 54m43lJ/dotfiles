@@ -1,0 +1,2 @@
+- [ ] qq音乐的appimage安装
+- [ ] 把yay的git缓存转移到/opt下面
