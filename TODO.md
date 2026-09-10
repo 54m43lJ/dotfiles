@@ -1,8 +1,0 @@
-- [x] qq音乐的appimage安装
-- [x] dev模块重做
-  - [x] 把nvim作为独立模块
-  - [x] 把各种语言开发编译环境改为每个语言多选，默认全选
-- [ ] 虚拟化工具模块
-  - [ ] qemu-full virt-manager virt-viewer libvirt dnsmasq edk2-ovmf
-  - [ ] 启动并启用 libvirtd 服务 sudo systemctl enable --now libvirtd
-  - [ ] 将当前用户添加到 libvirt 用户组 sudo usermod -aG libvirt $USER
