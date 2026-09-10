@@ -97,7 +97,14 @@
 	- 每次 boot 逐秒复现（boot -1 同模式）→ 永久性 wedged 口/设备，warm reboot 后挂死是经典 USB 病；bus6 正常枚举的只有 AURA LED / DeepCool AIO / USB Audio，6-11 读不出 descriptor 无法软件识别
 	- 内核无 per-port 禁用参数（usbcore 无此 cmdline，quirks 需要读得到的 vid:pid）→ 无法 repo 化修复，走物理排查：①PSU 断电 30s 冷启动（大概率直接治好）②复发则逐个拔 USB（dock upstream / 显示器 USB-B / 后置口设备）二分 ③定位后换到非 Promontory 口
 	- 顺带：GRUB_TIMEOUT=30 实测 loader 仅 2.4s（非瓶颈）；firmware 23s 可试 BIOS Memory Context Restore 优化（超 repo 范围）
-- [ ] hyprland切换窗口的时候保持全屏状态
+- [X] hyprland切换窗口的时候保持全屏状态
+	- 需求语义（纠正后）：窗口全屏（maximized，fs=1）跨窗口切换保持；真全屏（fs=2）切走自动回堆叠（老版 Hyprland 默认行为）
+	- 无现成配置项：wiki 的 config-options / dispatchers / window-rules / layout 页全查过，只有 fullscreen_opacity、allow_pin_fullscreen、windowrule 的 fullscreen（开窗时设置）等，无跨焦点持久化开关 → hyprland.lua 事件驱动实现
+	- 核心难点：fullscreen 标志被清的事件在「用户手动取消」与「焦点切走副作用」两种情况下都触发，且实测（0.56）先于 window.active(新窗) 发出，事件时无法区分 → 延迟裁决：cleared 先挂 pending，`hl.timer` oneshot 120ms 后裁决——焦点已离开=切窗副作用（记住 maximized），仍聚焦=用户取消（遗忘）
+	- 恢复：window.active 落焦时命中 fs_remember 且 fs==0 → `hl.dsp.window.fullscreen({window=w, action="set", mode="maximized"})`；window.close 清状态
+	- 坑：hyprctl dispatch 是 Lua eval（带特殊字符的裸动词直接语法错误，要用 hl.dsp.* 调用形式）；clients json 的 fullscreen 0/1/2 = 无/maximized/real；`hl.timer` opts.type 只接受 "repeat"|"oneshot"（"once" 直接报错不执行）
+	- 附带发现：全屏窗口上 movefocus/cycle_next 行为不一致；早期方案（focus-keep-fs 脚本包装键位）只覆盖键盘路径已废弃，事件方案覆盖键位/鼠标点击/跨工作区全部路径
+	- 五场景实测通过：maximized 跨切换保持 / real 切走落堆叠 / maximized 经 real 循环取消 / real 直接取消 / maximized 直接取消，均不复活
 - [ ] 解决zsh安装的时候需要输入密码的问题
 - [X] 支持通过~/.config/autostart自动启动的应用
 	- 方案：dex（Hyprland wiki 认可路线，Hyprland 本身不实现 XDG autostart）；`hl.exec_cmd("dex -a -s /etc/xdg/autostart/:~/.config/autostart/")`
