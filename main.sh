@@ -16,7 +16,6 @@ MODULES=(
     sddm
     wechat
     qqmusic
-    vscode
     nwg-bar
     zsh
     bread

@@ -1,18 +1,33 @@
 #!/bin/bash
-# Developer environment: tools, Neovim
+# Developer environment: language toolchains + tool modules
 
 install_module() {
-    log "Installing developer tools..."
+    log "Setting up developer environment..."
 
-    local DEV_PKGS=(ripgrep python make gcc npm remmina freerdp sshfs)
-    pac_ins "${DEV_PKGS[@]}"
+    # Language toolchains: per-language multi-select, all on by default
+    local -a langs=("Python" "C/C++" "Node.js")
+    local -a sel=("${langs[@]}")
+    local lang
+    if select_multi sel "${langs[@]}"; then
+        for lang in "${sel[@]}"; do
+            case "$lang" in
+                Python)    pac_ins python ;;
+                "C/C++")   pac_ins gcc make ;;
+                "Node.js") pac_ins npm ;;
+            esac
+        done
+    else
+        warn "No languages selected, skipping toolchains."
+    fi
 
-    # Neovim — LazyVim starter + custom plugins
-    git_clone https://github.com/LazyVim/starter ~/.config/nvim || return 1
-    cp -r "$WD/dev/nvim/lua/plugins/"* ~/.config/nvim/lua/plugins/
-    cat "$WD/dev/nvim/lua/config/keymaps.lua" >> ~/.config/nvim/lua/config/keymaps.lua
-    cat "$WD/dev/nvim/lua/config/options.lua" >> ~/.config/nvim/lua/config/options.lua
-    sed -i 's/colorscheme = {[^}]*}/colorscheme = { "alabaster" }/' ~/.config/nvim/lua/config/lazy.lua
+    # Dev tools: module multi-select, all on by default
+    local -a tools=(nvim vscode remote)
+    local -a tsel=("${tools[@]}")
+    if select_multi tsel "${tools[@]}"; then
+        install_modules "${tsel[@]}"
+    else
+        warn "No dev tools selected, skipping."
+    fi
 
     log "Developer environment configured."
 }

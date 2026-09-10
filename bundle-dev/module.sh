@@ -2,5 +2,5 @@
 # Bundle: developer environment
 
 install_module() {
-    install_modules vscode dev
+    install_modules dev
 }
