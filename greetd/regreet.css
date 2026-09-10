@@ -1,0 +1,138 @@
+/* ReGreet styling — dark palette tokens from palette/README.md, modeled
+   on the sddm/minimal theme: translucent dark panels, gold hairlines,
+   surface inputs, purple accents. Project rule: NO italics anywhere.
+
+   regreet 0.5 builds its UI with relm4 templates, which never call
+   set_widget_name — CSS #id selectors match NOTHING. Everything here
+   uses node types, the "background"/"suggested-action"/
+   "destructive-action" classes, and structural pseudo-classes instead:
+     - two Frame widgets carry .background: the login card (child: grid)
+       and the clock chip (child: single label, flush against top edge)
+     - grid's direct labels: greeting (first-child) + "User:"/"Session:"/
+       password prompts
+     - card buttons: cancel (plain), login (.suggested-action), edit
+       toggles; Reboot/Power Off sit outside the card (.destructive-action)
+*/
+
+* {
+  font-style: normal;
+}
+
+/* Backdrop behind the background picture (letterbox edges, flash of
+   unstyled content before the image loads) */
+window {
+  background-color: #231F1F;
+}
+
+/* Panels: login card (center) + clock chip (top). The clock chip's own
+   inline CSS flushes it against the top edge. */
+frame.background {
+  background-color: alpha(#231F1F, 0.85);
+  border: 1px solid #9D7E4D;
+  border-radius: 6px;
+}
+
+/* Card text: prompts + entry text */
+frame.background grid > label {
+  color: #D6CAB6;
+  font-size: 15px;
+}
+
+/* Greeting message ("Welcome back!") — code forces bold via pango attrs */
+frame.background grid > label:first-child {
+  color: #FFF7E4;
+  font-size: 17px;
+}
+
+/* Clock: the only direct label child of a .background frame */
+frame.background > label {
+  color: #D6CAB6;
+  font-size: 40px;
+  font-weight: 300;
+}
+
+/* Inputs: user/session combos, manual-entry and password fields */
+frame.background entry,
+frame.background passwordentry {
+  background-color: #3E3542;
+  color: #FFF7E4;
+  border: 1px solid #9D7E4D;
+  border-radius: 4px;
+}
+
+frame.background entry:focus,
+frame.background passwordentry:focus {
+  border-color: #FFF7E4;
+}
+
+frame.background combobox > button {
+  background-color: #3E3542;
+  color: #FFF7E4;
+  border: 1px solid #9D7E4D;
+  border-radius: 4px;
+}
+
+frame.background combobox > button:hover {
+  background-color: #4A3F50;
+}
+
+/* Card buttons: Cancel + the edit-icon ToggleButtons */
+frame.background button {
+  background-color: #3E3542;
+  color: #D6CAB6;
+  border: 1px solid #9D7E4D;
+  border-radius: 4px;
+}
+
+frame.background button:hover {
+  background-color: #4A3F50;
+}
+
+frame.background togglebutton:checked {
+  background-color: #3E3542;
+  color: #FFF7E4;
+}
+
+/* Login button (libadwaita "suggested-action") — palette purple/cream */
+frame.background button.suggested-action {
+  background-color: #89338E;
+  color: #FFF7E4;
+  border: 1px solid #9D7E4D;
+}
+
+frame.background button.suggested-action:hover {
+  background-color: #E593E7;
+  color: #231F1F;
+}
+
+frame.background button.suggested-action:active {
+  background-color: #89338E;
+  color: #FFF7E4;
+}
+
+/* Reboot / Power Off (libadwaita "destructive-action") — palette red */
+button.destructive-action {
+  background-color: #CC2A47;
+  color: #FFF7E4;
+}
+
+button.destructive-action:hover {
+  background-color: #E56A7E;
+  color: #231F1F;
+}
+
+button.destructive-action:active {
+  background-color: #CC2A47;
+  color: #FFF7E4;
+}
+
+/* Notification bar (login errors, greetd messages) */
+infobar.info {
+  background-color: #3E3542;
+  border-bottom: 1px solid #9D7E4D;
+}
+
+infobar.info label {
+  color: #FFF7E4;
+  font-size: 15px;
+}

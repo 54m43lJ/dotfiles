@@ -84,7 +84,14 @@
 	- dim/undim 重写：brightnessctl 加 `-c backlight`（防桌面零背光设备时回落 leds 类摸到 capslock）+ DDC 循环；首次 dim 才存原值防重复 dim 覆盖，状态存 `XDG_RUNTIME_DIR`（tmpfs 跨 boot 自清）
 	- system 模块补装 `ddcutil`；smc::kbd_backlight 行 `2>/dev/null` 容错（仅笔记本有意义）
 	- 顺带查明 OpenRGB 在 B850-I 实际工作正常（DRAM 走 piix4 SMBus、主板 ARGB 走 USB HID 0b05:19af）；`Connection attempt failed`（SDK server 未开）与 HTML warning（对不存在接口的样板提示）均为噪音
-- [ ] 用greetd替代SDDM
+- [X] 用greetd替代SDDM
+	- 方案：greetd + regreet（extra 仓库 greetd-regreet 0.5，GTK4）跑在 cage kiosk 合成器里：`command = "cage -s -- regreet"`，user=greeter；accountsservice 提供用户列表
+	- 样式照搬 sddm/minimal：palette dark tokens、Background.jpg（Cover=PreserveAspectCrop）、顶部大时钟、金边半透明卡片、紫 Login 红 Reboot/PowerOff；全程无斜体（`* { font-style: normal }` + adwaita 默认无斜体）
+	- 关键坑：regreet 0.5 用 relm4 模板构建 UI，宏只把 #[name] 当 Rust 变量名、从不调 set_widget_name → **CSS `#id` 选择器全部无效**；regreet.css 全部改用节点类型 + `.background`/`.suggested-action`/`.destructive-action` 类 + 结构伪类（时钟 = `.background` frame 的唯一直接 label 子节点；问候语 = grid 第一个 label）
+	- gnome-keyring：greetd 有独立 PAM 栈（/etc/pam.d/greetd），system 模块对 login 的插入不覆盖它 → greetd 模块做同样的幂等插入（.bak 备份）
+	- 老坑确认不复发：polkit-kde/kglobalacceld 的 OnlyShowIn=KDE 与 keyring 的 GNOME 过滤与 greeter 无关；SDDM DP-3 冷启动 EDID 问题是 X11 路线的，cage 是 Wayland 不受影响；cage 无法按输出屏蔽（extend 默认双输出都显示 greeter），DP-5 dock 路径留观察
+	- sddm 包保留未卸载（disabled）作回滚：`sudo systemctl disable greetd && sudo systemctl enable sddm`；sddm/ 目录留档
+	- 验证：WLR_BACKENDS=wayland 嵌套 cage + `regreet --demo` 实机截图核对样式；hyprland-uwsm 会话同样在会话列表可选
 - [ ] hyprland切换窗口的时候保持全屏状态
 - [ ] 解决zsh安装的时候需要输入密码的问题
 - [X] 支持通过~/.config/autostart自动启动的应用

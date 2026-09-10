@@ -1,0 +1,9 @@
+# greetd session supervisor: regreet greeter inside the cage kiosk
+# compositor (regreet is a plain GTK4 app and needs a compositor parent).
+
+[terminal]
+vt = 1
+
+[default_session]
+command = "cage -s -- regreet"
+user = "greeter"

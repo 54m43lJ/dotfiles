@@ -1,0 +1,26 @@
+# ReGreet config. Colors/typography live in regreet.css; this file only
+# wires up behaviour. Reference look: sddm/minimal (Background.jpg + clock
+# on top, dark translucent card, no italics anywhere).
+
+[background]
+path = "/etc/greetd/background.jpg"
+# same as the minimal theme's PreserveAspectCrop
+fit = "Cover"
+
+[GTK]
+application_prefer_dark_theme = true
+# greeter user has no ~/.config/fontconfig (that deploy is per-user), so
+# pin the font explicitly; Latin-only UI, system fallback resolves fine
+font_name = "Sans 14"
+
+[appearance]
+greeting_msg = "Welcome back!"
+
+[widget.clock]
+# minimal theme showed HH:mm big + weekday/date small; regreet has one
+# label, so combine
+format = "%H:%M  ·  %a, %b %-d"
+
+[commands]
+reboot = [ "systemctl", "reboot" ]
+poweroff = [ "systemctl", "poweroff" ]
