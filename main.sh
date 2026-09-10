@@ -16,6 +16,8 @@ MODULES=(
     dunst
     sddm
     applications
+    wechat-aur
+    wechat-appimage
     grub
     vscode
     nwg-bar

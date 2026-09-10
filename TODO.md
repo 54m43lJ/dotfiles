@@ -109,5 +109,8 @@
 	- 实测 dex dry-run：OnlyShowIn 天然过滤掉 KDE/GNOME 专属条目（polkit-kde、kglobalacceld=KDE;，at-spi、gnome-keyring=GNOME;）——双 polkit agent 冲突不存在，keyring 仍由 PAM 独管；实际新增自启仅 xapp-sn-watcher（nemo 托盘）、xdg-user-dirs-update
 	- polkit-kde-agent 确认为显式安装残留（Required By: None，hyprpolkitagent 完全等价覆盖）→ system 模块移除 + 实机 pacman -R
 	- 此后 app 内「开机自启」开关（写 ~/.config/autostart）直接生效；注意 pc_changsha 的 openrgb 若也有 OpenRGB.desktop 会双开（deploy-only 不清理，留观察）
-- [ ] 加入微信的安装模块
-  - [ ] 比较三个方式的优劣：AUR, appimage, 自己从deb包或者rpm包转格式
+- [X] 加入微信的安装模块
+  - [X] 比较三个方式的优劣：AUR, appimage, 自己从deb包或者rpm包转格式
+	- 对比结论：AUR（wechat-universal-bwrap 4.1.13.9，146 票）赢在 bwrap 沙箱 + 打包者维护的 IME/剪贴板/Show-in-Folder workaround，更新随 AUR 助手；官方 AppImage（官方仍发 4.x 主线）赢在渠道零中间人、单文件，代价是 fuse2 依赖 + IME 环境变量自管 + 更新靠重跑模块；debtap 转包出局（需额外装 + 初始化库，每次官方更新手动重转，桌面/IME 集成全自兜底，无任何独有收益）
+	- 落地：双模块供选——`wechat-aur`（yay_ins wechat-universal-bwrap）与 `wechat-appimage`（官方 AppImage → /opt/wechat + fuse2 + /usr/local 的 .desktop（QT_IM_MODULE/QT_IM_MODULES/XMODIFIERS 三件套喂 fcitx5）+ AppImage 内图标 best-effort 提取；重跑模块即更新）；两者互斥，picker 自选
+	- 留观察：AppImage 的 StartupWMClass=WeChat 为常见报告值，装后若 windowrule 不匹配需实测修正
