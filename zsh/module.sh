@@ -14,9 +14,11 @@ install_module() {
     # Deploy .zshrc
     cp "$WD/zsh/.zshrc" ~/.zshrc
 
-    # Set zsh as default shell
-    if [[ "$SHELL" != *zsh ]]; then
-        chsh -s /bin/zsh
+    # Set zsh as default shell.
+    # Plain `chsh` runs as the user and prompts for their login password
+    # mid-install (PAM); do it from the root side instead.
+    if ! getent passwd "$USER" | grep -q ':/bin/zsh$'; then
+        sudo usermod -s /bin/zsh "$USER"
         log "Default shell changed to zsh. Re-login for it to take effect."
     fi
 
