@@ -100,7 +100,9 @@
 - [X] hyprland切换窗口的时候保持全屏状态
 	- 终解：`misc.on_focus_under_fullscreen = 1`（默认 2 会在聚焦 tiled 窗口时把 fullscreen/maximized 窗口打回原形；1 = tiled 窗口接管焦点但保留全屏/maximized 状态；0 = 忽略焦点请求）
 	- 此前的事件驱动方案（window.fullscreen/active + 延迟裁决重应用）已 revert（20281b5），技术细节存档：0.56 的 fullscreen 清除事件先于 active(新窗) 发出，事件时无法区分用户取消与切窗副作用；hyprctl dispatch 是 Lua eval；hl.timer type 只接受 "repeat"|"oneshot"
-- [ ] 解决zsh安装的时候需要输入密码的问题
+- [X] 解决zsh安装的时候需要输入密码的问题
+	- 元凶：模块里 `chsh -s /bin/zsh` 以用户身份运行，走 PAM 要登录密码
+	- 修复：改 `sudo usermod -s /bin/zsh $USER`（root 侧不触发 PAM 询问）；判断条件从 `$SHELL` 环境变量（会话内可能过期）改为 `getent passwd` 实查
 - [X] 支持通过~/.config/autostart自动启动的应用
 	- 方案：dex（Hyprland wiki 认可路线，Hyprland 本身不实现 XDG autostart）；`hl.exec_cmd("dex -a -s /etc/xdg/autostart/:~/.config/autostart/")`
 	- hyprland.start 删三行改由 .desktop 接管：`fcitx5 -d`、`blueman-applet &`（/etc 条目）、`gtk-launch 'Clash Verge'`（用户条目）；hyprpaper/bread/hypridle/udiskie/hyprpolkitagent 无条目保留
