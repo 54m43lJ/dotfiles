@@ -16,9 +16,8 @@ MODULES=(
     dunst
     sddm
     applications
-    wechat-aur
-    wechat-appimage
-    qqmusic-appimage
+    wechat
+    qqmusic
     grub
     vscode
     nwg-bar
