@@ -97,7 +97,9 @@
 	- 每次 boot 逐秒复现（boot -1 同模式）→ 永久性 wedged 口/设备，warm reboot 后挂死是经典 USB 病；bus6 正常枚举的只有 AURA LED / DeepCool AIO / USB Audio，6-11 读不出 descriptor 无法软件识别
 	- 内核无 per-port 禁用参数（usbcore 无此 cmdline，quirks 需要读得到的 vid:pid）→ 无法 repo 化修复，走物理排查：①PSU 断电 30s 冷启动（大概率直接治好）②复发则逐个拔 USB（dock upstream / 显示器 USB-B / 后置口设备）二分 ③定位后换到非 Promontory 口
 	- 顺带：GRUB_TIMEOUT=30 实测 loader 仅 2.4s（非瓶颈）；firmware 23s 可试 BIOS Memory Context Restore 优化（超 repo 范围）
-- [ ] hyprland切换窗口的时候保持全屏状态
+- [X] hyprland切换窗口的时候保持全屏状态
+	- 终解：`misc.on_focus_under_fullscreen = 1`（默认 2 会在聚焦 tiled 窗口时把 fullscreen/maximized 窗口打回原形；1 = tiled 窗口接管焦点但保留全屏/maximized 状态；0 = 忽略焦点请求）
+	- 此前的事件驱动方案（window.fullscreen/active + 延迟裁决重应用）已 revert（20281b5），技术细节存档：0.56 的 fullscreen 清除事件先于 active(新窗) 发出，事件时无法区分用户取消与切窗副作用；hyprctl dispatch 是 Lua eval；hl.timer type 只接受 "repeat"|"oneshot"
 - [ ] 解决zsh安装的时候需要输入密码的问题
 - [X] 支持通过~/.config/autostart自动启动的应用
 	- 方案：dex（Hyprland wiki 认可路线，Hyprland 本身不实现 XDG autostart）；`hl.exec_cmd("dex -a -s /etc/xdg/autostart/:~/.config/autostart/")`

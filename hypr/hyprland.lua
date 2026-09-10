@@ -128,6 +128,10 @@ hl.config({
         disable_hyprland_logo = true,
         disable_splash_rendering = true,
         focus_on_activate        = true,
+        -- focusing a tiled window under a fullscreen/maximized one takes
+        -- over WITHOUT dropping the fullscreen/maximized state (default 2
+        -- unmaximizes it on every focus switch)
+        on_focus_under_fullscreen = 1,
     },
 })
 
