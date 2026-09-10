@@ -21,7 +21,7 @@ install_module() {
     fi
 
     # Dev tools: module multi-select, all on by default
-    local -a tools=(nvim vscode remote)
+    local -a tools=(nvim vscode remote opencode-desktop)
     local -a tsel=("${tools[@]}")
     if select_multi tsel "${tools[@]}"; then
         install_modules "${tsel[@]}"
