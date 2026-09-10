@@ -1,7 +1,8 @@
 #!/bin/bash
 # greetd + regreet greeter inside the cage kiosk compositor.
-# Replaces SDDM (the sddm/ module is retired; its minimal theme lives on
-# as the reference design for regreet.css).
+# ARCHIVED ALTERNATIVE: not registered in main.sh MODULES (the restyled
+# regreet look didn't pan out; SDDM + minimal theme stays the default
+# greeter). Run manually if ever wanted; see sddm/ for the active setup.
 
 install_module() {
     log "Installing greetd + regreet..."

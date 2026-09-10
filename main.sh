@@ -14,7 +14,7 @@ MODULES=(
     foot
     wofi
     dunst
-    greetd
+    sddm
     applications
     grub
     vscode
