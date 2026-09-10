@@ -105,3 +105,5 @@
 	- 实测 dex dry-run：OnlyShowIn 天然过滤掉 KDE/GNOME 专属条目（polkit-kde、kglobalacceld=KDE;，at-spi、gnome-keyring=GNOME;）——双 polkit agent 冲突不存在，keyring 仍由 PAM 独管；实际新增自启仅 xapp-sn-watcher（nemo 托盘）、xdg-user-dirs-update
 	- polkit-kde-agent 确认为显式安装残留（Required By: None，hyprpolkitagent 完全等价覆盖）→ system 模块移除 + 实机 pacman -R
 	- 此后 app 内「开机自启」开关（写 ~/.config/autostart）直接生效；注意 pc_changsha 的 openrgb 若也有 OpenRGB.desktop 会双开（deploy-only 不清理，留观察）
+- [ ] 加入微信的安装模块
+  - [ ] 比较三个方式的优劣：AUR, appimage, 自己从deb包或者rpm包转格式
