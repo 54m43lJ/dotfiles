@@ -90,6 +90,13 @@
 	- 保留的技术存档：greetd-regreet 0.5 跑在 cage（`cage -s -- regreet`）；regreet 用 relm4 模板构建，宏只把 #[name] 当 Rust 变量名、从不调 set_widget_name → **CSS `#id` 选择器全部无效**，只能用节点类型 + `.background`/`.suggested-action`/`.destructive-action` 类 + 结构伪类（时钟 = `.background` frame 唯一直接 label 子节点；问候语 = grid 第一个 label）
 	- gnome-keyring：greetd 有独立 PAM 栈（/etc/pam.d/greetd），system 模块对 login 的插入不覆盖它，greetd/module.sh 内含同样的幂等插入
 	- 回滚开关：`sudo systemctl disable greetd && sudo systemctl enable sddm`（实机已执行回退）；greetd/cage/greetd-regreet 包保留未卸载
+- [X] pc_beijing 开机黑屏延迟排查（greeter 显示前的 ~1.5 分钟）
+	- video=DP-5:d 确认真管用：`/proc/cmdline` 含参数，内核层 `card0-DP-5: status=disconnected`（DRM force-off 发生在任何合成器之前，非 hypr.lua 幻觉）；DP-3 冷启动直接点亮无回落
+	- 真凶：`usb 6-11`（Promontory/chipset USB 控制器 port 11，PCI 0000:0c:00.0 的 12 口 hub）枚举风暴——descriptor read -110 → 多轮 15.87s 超时 → 47s power cycle → 地址分配 -71 ×2 → 68s `unable to enumerate` 放弃；`systemd-udevd` 墙钟 1min 6.025s 与 systemd-analyze 的 initrd 66.5s 完全吻合
+	- 时间线：firmware 23.2s（AM5 POST + 双 GPU，BIOS 侧）+ loader 2.4s + kernel 1.7s + initrd 66.5s（USB 风暴）+ userspace 4.1s（greeter 在 switch-root 后 ~3s 内出现，显示路径本身不慢）
+	- 每次 boot 逐秒复现（boot -1 同模式）→ 永久性 wedged 口/设备，warm reboot 后挂死是经典 USB 病；bus6 正常枚举的只有 AURA LED / DeepCool AIO / USB Audio，6-11 读不出 descriptor 无法软件识别
+	- 内核无 per-port 禁用参数（usbcore 无此 cmdline，quirks 需要读得到的 vid:pid）→ 无法 repo 化修复，走物理排查：①PSU 断电 30s 冷启动（大概率直接治好）②复发则逐个拔 USB（dock upstream / 显示器 USB-B / 后置口设备）二分 ③定位后换到非 Promontory 口
+	- 顺带：GRUB_TIMEOUT=30 实测 loader 仅 2.4s（非瓶颈）；firmware 23s 可试 BIOS Memory Context Restore 优化（超 repo 范围）
 - [ ] hyprland切换窗口的时候保持全屏状态
 - [ ] 解决zsh安装的时候需要输入密码的问题
 - [X] 支持通过~/.config/autostart自动启动的应用
