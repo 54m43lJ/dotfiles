@@ -12,7 +12,7 @@ install_module() {
 
     # --- base system ---
     local BASE=(
-        sbctl git base-devel unzip neovim
+        sbctl unzip neovim
         man-pages man-db texinfo
         socat jq zoxide fzf brightnessctl ddcutil blueman
         gnome-keyring

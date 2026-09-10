@@ -2,10 +2,6 @@
 # Developer environment: tools, Neovim
 
 install_module() {
-    if ! confirm "Install developer environment?"; then
-        return 0
-    fi
-
     log "Installing developer tools..."
 
     local DEV_PKGS=(ripgrep python make gcc npm remmina freerdp sshfs)

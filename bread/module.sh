@@ -2,10 +2,6 @@
 # Bread — GTK4 desktop shell (BreadKnife)
 
 install_module() {
-    if ! confirm "Install bread (BreadKnife)?"; then
-        return 0
-    fi
-
     log "Installing bread..."
 
     local BREAD_DEPS=(gtk4 gtk4-layer-shell libadwaita)

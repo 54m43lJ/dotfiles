@@ -2,10 +2,6 @@
 # Eww widget framework — build from source + deploy config
 
 install_module() {
-    if ! confirm "Install eww widget framework?"; then
-        return 0
-    fi
-
     log "Installing eww..."
 
     local EWW_DEPS=(
