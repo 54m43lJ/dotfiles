@@ -248,10 +248,11 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("bread")
     hl.exec_cmd("hypridle")
     hl.exec_cmd("udiskie &")
-    hl.exec_cmd("blueman-applet &")
-    hl.exec_cmd("fcitx5 -d")
+    -- XDG autostart (both system-wide and user entries): takes over
+    -- fcitx5, blueman-applet and anything apps register themselves
+    -- (Clash Verge, keepassxc, OpenRGB toggles write ~/.config/autostart)
+    hl.exec_cmd("dex -a -s /etc/xdg/autostart/:~/.config/autostart/")
     -- hl.exec_cmd("foot")
-    hl.exec_cmd("gtk-launch 'Clash Verge'")
 end)
 
 hl.on("monitor.added", function()

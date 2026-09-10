@@ -86,4 +86,9 @@
 	- 顺带查明 OpenRGB 在 B850-I 实际工作正常（DRAM 走 piix4 SMBus、主板 ARGB 走 USB HID 0b05:19af）；`Connection attempt failed`（SDK server 未开）与 HTML warning（对不存在接口的样板提示）均为噪音
 - [ ] 用greetd替代SDDM
 - [ ] hyprland切换窗口的时候保持全屏状态
-- [ ] 支持通过~/.config/autostart自动启动的应用
+- [X] 支持通过~/.config/autostart自动启动的应用
+	- 方案：dex（Hyprland wiki 认可路线，Hyprland 本身不实现 XDG autostart）；`hl.exec_cmd("dex -a -s /etc/xdg/autostart/:~/.config/autostart/")`
+	- hyprland.start 删三行改由 .desktop 接管：`fcitx5 -d`、`blueman-applet &`（/etc 条目）、`gtk-launch 'Clash Verge'`（用户条目）；hyprpaper/bread/hypridle/udiskie/hyprpolkitagent 无条目保留
+	- 实测 dex dry-run：OnlyShowIn 天然过滤掉 KDE/GNOME 专属条目（polkit-kde、kglobalacceld=KDE;，at-spi、gnome-keyring=GNOME;）——双 polkit agent 冲突不存在，keyring 仍由 PAM 独管；实际新增自启仅 xapp-sn-watcher（nemo 托盘）、xdg-user-dirs-update
+	- polkit-kde-agent 确认为显式安装残留（Required By: None，hyprpolkitagent 完全等价覆盖）→ system 模块移除 + 实机 pacman -R
+	- 此后 app 内「开机自启」开关（写 ~/.config/autostart）直接生效；注意 pc_changsha 的 openrgb 若也有 OpenRGB.desktop 会双开（deploy-only 不清理，留观察）

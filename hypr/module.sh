@@ -8,7 +8,7 @@ install_module() {
     local HYPR=(
         hyprland hyprpolkitagent hyprpaper hypridle hyprshot hyprlock
         xdg-desktop-portal-hyprland qt5-wayland qt6-wayland
-        hyprshutdown
+        hyprshutdown dex
     )
     pac_ins "${HYPR[@]}"
 

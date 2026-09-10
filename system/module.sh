@@ -15,7 +15,7 @@ install_module() {
         sbctl git base-devel unzip neovim
         man-pages man-db texinfo
         socat jq zoxide fzf brightnessctl ddcutil blueman
-        gnome-keyring polkit-kde-agent
+        gnome-keyring
         xdg-user-dirs xdg-desktop-portal-gtk
         playerctl
     )
