@@ -28,8 +28,18 @@ local function toggle_orientation()
 end
 
 -- Per-monitor auto-scale: 1080p and below → 1x, above → 2x
-local function apply_monitor_scales()
+-- FALLBACK (Hyprland's zero-outputs placeholder, seen for ~2s when a real
+-- panel re-trains its DP link on wake) must never receive config writes.
+local function real_monitors()
+    local out = {}
     for _, mon in ipairs(hl.get_monitors()) do
+        if mon.name ~= "FALLBACK" then out[#out + 1] = mon end
+    end
+    return out
+end
+
+local function apply_monitor_scales()
+    for _, mon in ipairs(real_monitors()) do
         local scale = (mon.height > 1080) and 2 or 1
         hl.monitor({
             output   = mon.name,
@@ -41,16 +51,47 @@ local function apply_monitor_scales()
     end
 end
 
--- Per-monitor workspace ranges: monitor 1 → 1-10, monitor 2 → 11-20, etc.
+-- Per-monitor workspace ranges: monitor N → (N*10+1) .. (N*10+10).
+-- MAP_MONITOR learns name → base once per session and only grows ("in,
+-- never out"): a monitor keeps its decade across hotplug storms and
+-- re-ordering, so no name can ever hold more than one range. CUR_BASE is
+-- the highest base handed out; new monitors take the next one. Paranoia
+-- cap: past MAX_BASE entries the map is rebuilt from what is connected.
+local MAP_MONITOR = {}
+local CUR_BASE = -1
+local MAX_BASE = 100
+
 local function assign_workspaces()
-    for idx, mon in ipairs(hl.get_monitors()) do
-        local base = (idx - 1) * 10
-        for i = 1, 10 do
-            hl.workspace_rule({
-                workspace  = tostring(base + i),
-                monitor    = mon.name,
-                persistent = false,
-            })
+    for _, mon in ipairs(real_monitors()) do
+        if not MAP_MONITOR[mon.name] then
+            CUR_BASE = CUR_BASE + 1
+            MAP_MONITOR[mon.name] = CUR_BASE
+        end
+    end
+
+    local n = 0
+    for _ in pairs(MAP_MONITOR) do n = n + 1 end
+    if n > MAX_BASE then
+        MAP_MONITOR = {}
+        CUR_BASE = -1
+        for _, mon in ipairs(real_monitors()) do
+            CUR_BASE = CUR_BASE + 1
+            MAP_MONITOR[mon.name] = CUR_BASE
+        end
+    end
+
+    for name, base in pairs(MAP_MONITOR) do
+        for _, mon in ipairs(real_monitors()) do
+            if mon.name == name then
+                for i = 1, 10 do
+                    hl.workspace_rule({
+                        workspace  = tostring(base * 10 + i),
+                        monitor    = name,
+                        persistent = false,
+                    })
+                end
+                break
+            end
         end
     end
 end
@@ -264,21 +305,8 @@ hl.on("monitor.added", function()
     assign_workspaces()
 end)
 
-hl.on("monitor.removed", function()
-    apply_monitor_scales()
-    assign_workspaces()
-end)
-
 hl.on("config.reloaded", function()
     apply_monitor_scales()
-    assign_workspaces()
-end)
-
-hl.on("workspace.created", function()
-    assign_workspaces()
-end)
-
-hl.on("workspace.removed", function()
     assign_workspaces()
 end)
 
