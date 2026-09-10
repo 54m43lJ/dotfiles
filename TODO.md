@@ -34,6 +34,7 @@
 	- 真因存档：X11 下 DP-3 冷启动链路训练失败（EDID 缺失）→ 1024x768 回落，内核无 HPD 重训事件
 	- 最终解法：greeter 换 Wayland（`DisplayServer=wayland` + `kwin_wayland --no-lockscreen`），实测正常；配置照搬为 `sddm/greeter.conf`，sddm 模块补装 kwin + layer-shell-qt
 	- per-device-conf/pc_beijing/xorg.conf 已删除；Wayland 下 DP-5 的屏蔽由 pc_beijing/hypr.lua（session）与 kwin 自身的输出管理承担
+	- 屏蔽下沉到内核层（2026-09）：`video=DP-5:d` 进 GRUB_CMDLINE_LINUX_DEFAULT（pc_beijing/module.sh 幂等追加 + grub-mkconfig）——KMS 探测即禁用 dock 路径，fbcon/SDDM greeter/session 全程不见 DP-5，DP-3 检测从最早阶段就干净；amdgpu 拒绝 sysfs status 强制写（-EINVAL，i915 独有扩展），cmdline 是唯一杠杆；hypr.lua 的 DP-5 屏蔽保留为冗余保险；生效需重启，验证看 `/proc/cmdline` + DP-5 从 kwin/Hyprland 输出列表消失
 - [X] per-device-conf 自包含重构
 	- 设备配置收回 per-device-conf/<设备>/ 子目录（即子模块：hypr.lua、xorg.conf...）
 	- 按选择部署：选中设备 flags 翻 true 并部署文件；脚本只负责纯净安装上的部署，不做清理回滚（本机残留已手工清理）
