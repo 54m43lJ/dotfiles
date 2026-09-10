@@ -18,6 +18,7 @@ MODULES=(
     applications
     wechat-aur
     wechat-appimage
+    qqmusic-appimage
     grub
     vscode
     nwg-bar
