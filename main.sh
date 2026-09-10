@@ -104,9 +104,10 @@ sudo pacman --noconfirm --needed --noprogressbar -Sq git base-devel >/dev/null \
 
 if ! command -v yay >/dev/null; then
     log "Installing yay (AUR helper)..."
-    mkdir -p ~/Applications
-    git_clone https://aur.archlinux.org/yay.git ~/Applications/yay || exit 1
-    (cd ~/Applications/yay && makepkg -si --noconfirm) \
+    # Throwaway build dir: only needed for the initial install, /tmp
+    # (tmpfs) keeps it out of the way and clears it on reboot.
+    git_clone https://aur.archlinux.org/yay.git /tmp/yay || exit 1
+    (cd /tmp/yay && makepkg -si --noconfirm) \
         || { err "Failed to build yay."; exit 1; }
 fi
 command -v yay >/dev/null || { err "yay not available."; exit 1; }
