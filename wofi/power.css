@@ -11,7 +11,7 @@
 @define-color red #AB3248;
 
 * {
-  font-family: "NotoSans Nerd Font", "Nerd Font";
+  font-family: "Maple Mono NF CN", "Nerd Font";
   font-size: 17px;
   color: @purple;
 }
