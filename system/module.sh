@@ -67,6 +67,12 @@ install_module() {
         sudo mv /etc/pam.d/login.tmp /etc/pam.d/login
     fi
 
+    # --- hardware clock in local time ---
+    # Windows stores the RTC in local time, Linux defaults to UTC, so
+    # dual-boot machines see skewed clocks. Match Windows instead of
+    # patching its registry.
+    sudo timedatectl set-local-rtc 1
+
     # --- ssh-agent ---
     systemctl --user enable gcr-ssh-agent --now
 
