@@ -122,6 +122,10 @@ hl.window_rule({
     border_size = 0,
 })
 
+-- Vicinae launcher: blur the layer, no animations
+hl.layer_rule({ name = "vicinae-blur",         match = { namespace = "vicinae" }, blur = true, ignore_alpha = 0 })
+hl.layer_rule({ name = "vicinae-no-animation", match = { namespace = "vicinae" }, no_anim = true })
+
 -- ============================================
 -- Look and feel
 -- ============================================
@@ -225,12 +229,12 @@ hl.config({
 
 -- System
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hyprctl kill"))
-hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("~/.config/wofi/power-menu.sh"))
+hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("~/.config/vicinae/power-menu.sh"))
 hl.bind(mainMod .. " + SHIFT + Q",  hl.dsp.exec_cmd("hyprshutdown"))
 hl.bind(mainMod .. " + P",          toggle_orientation)
 
 -- Utilities & controls
-hl.bind(mainMod .. " + SPACE",      hl.dsp.exec_cmd("wofi"))
+hl.bind(mainMod .. " + SPACE",      hl.dsp.exec_cmd("vicinae toggle"))
 hl.bind("ALT + SHIFT + 3",          hl.dsp.exec_cmd("hyprshot -m output -o ~/Desktop/"))
 hl.bind("ALT + SHIFT + 4",          hl.dsp.exec_cmd("hyprshot -m region -o ~/Desktop/"))
 
@@ -292,6 +296,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("bread")
     hl.exec_cmd("hypridle")
+    hl.exec_cmd("vicinae server")
     hl.exec_cmd("udiskie &")
     -- XDG autostart (both system-wide and user entries): takes over
     -- fcitx5, blueman-applet and anything apps register themselves

@@ -11,7 +11,7 @@ MODULES=(
     fcitx5
     fontconfig
     foot
-    wofi
+    vicinae
     dunst
     sddm
     wechat
