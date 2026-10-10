@@ -4,6 +4,10 @@
 install_module() {
     log "Setting up developer environment..."
 
+    # Forced dependency: diagram renderer, always present (opencode uses it
+    # for architecture/sequence diagrams in docs work).
+    install_modules plantuml
+
     # Language toolchains: per-language multi-select, all on by default
     local -a langs=("Python" "C/C++" "Rust" "Node.js")
     local -a sel=("${langs[@]}")
