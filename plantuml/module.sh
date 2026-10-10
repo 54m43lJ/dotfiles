@@ -19,15 +19,14 @@ install_module() {
             || { FAILED="$FAILED plantuml.jar"; err "Failed: plantuml.jar download"; return 0; }
     fi
 
-    # CLI alias, idempotent so the module can re-run safely.
-    if ! grep -q 'alias plantuml=' ~/.zshrc 2>/dev/null; then
-        cat >> ~/.zshrc <<'EOF'
-
-# PlantUML (managed by plantuml module)
-alias plantuml='java -jar ~/Applications/plantuml.jar'
+    # CLI wrapper in ~/.local/bin (on PATH via zshrc). A script, not an
+    # alias, so non-interactive shells (opencode) resolve it too.
+    mkdir -p ~/.local/bin
+    cat > ~/.local/bin/plantuml <<'EOF'
+#!/bin/bash
+exec java -jar "$HOME/Applications/plantuml.jar" "$@"
 EOF
-        log "Added plantuml alias to ~/.zshrc (re-login or `source ~/.zshrc`)."
-    fi
+    chmod +x ~/.local/bin/plantuml
 
     log "PlantUML configured."
 }
