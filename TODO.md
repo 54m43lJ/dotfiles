@@ -1,5 +1,6 @@
 - [x] `timedatectl set-local-rtc 1`
 - [ ] dpms off => on 后 float 窗口会跑到屏幕外面去
+- [ ] suspend之后回来会黑屏
 - [ ] 让 Hyprland 能够处理窗口 minimize 事件
 - [ ] 滚轮切换workspace方向需要反过来
 - [ ] 用Vicinae做launcher
