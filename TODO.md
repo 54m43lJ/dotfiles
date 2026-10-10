@@ -4,3 +4,4 @@
 - [ ] 让 Hyprland 能够处理窗口 minimize 事件
 - [ ] 滚轮切换workspace方向需要反过来
 - [ ] 用Vicinae做launcher
+- [ ] PC上hypridle不设置suspend
