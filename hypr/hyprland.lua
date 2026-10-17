@@ -309,7 +309,11 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("bread")
     hl.exec_cmd("hypridle")
-    hl.exec_cmd("vicinae server")
+    -- env -u: belt-and-braces for vicinae #1022 — a QT_QPA_PLATFORMTHEME
+    -- (inherited qt5ct) overrides the vicinae app font on QML init. The
+    -- session-level qt5ct env was removed 2026-10-17 (qt5ct is not even
+    -- installed); this is a no-op unless the env var ever comes back.
+    hl.exec_cmd("env -u QT_QPA_PLATFORMTHEME vicinae server")
     hl.exec_cmd("udiskie &")
     -- XDG autostart (both system-wide and user entries): takes over
     -- fcitx5, blueman-applet and anything apps register themselves
@@ -435,5 +439,4 @@ end)
 hl.env("EDITOR", "nvim")
 hl.env("XCURSOR_SIZE", "24")
 hl.env("XMODIFIERS", "@im=fcitx")
-hl.env("QT_QPA_PLATFORMTHEME", "qt5ct")
 hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/gcr/ssh")
