@@ -10,18 +10,21 @@ install_module() {
     chmod +x ~/.config/vicinae/power-menu.sh
 
     # Theme: authoritative palette light mode (themes/palette-light.toml).
-    # Force both appearance slots so vicinae keeps the palette look no
-    # matter what the system color scheme says. settings.json may carry
-    # // comments (vicinae's GUI rewrites strip them anyway), so strip
-    # before jq; idempotent.
-    mkdir -p ~/.config/vicinae/themes
-    cp "$WD/vicinae/themes/"*.toml ~/.config/vicinae/themes/
+    # Vicinae scans Omnicast::dataDir()/themes = ~/.local/share/vicinae/themes
+    # (NOT the config dir), and the settings "name" must match the theme ID,
+    # which is the FILE STEM (theme-parser.cpp: data.id = filename stem).
+    # Force both appearance slots so vicinae keeps the palette look no matter
+    # what the system color scheme says. settings.json may carry // comments
+    # (vicinae's GUI rewrites strip them anyway), so strip before jq;
+    # idempotent.
+    mkdir -p ~/.local/share/vicinae/themes
+    cp "$WD/vicinae/themes/"*.toml ~/.local/share/vicinae/themes/
     local cfg=~/.config/vicinae/settings.json
     if [[ -f $cfg ]] && command -v jq >/dev/null; then
         local tmp
         tmp=$(mktemp)
         grep -v '^//' "$cfg" \
-            | jq '.theme.dark.name = "Palette Light" | .theme.light.name = "Palette Light"' \
+            | jq '.theme.dark.name = "palette-light" | .theme.light.name = "palette-light"' \
             > "$tmp" && mv "$tmp" "$cfg"
     fi
 
