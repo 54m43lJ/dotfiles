@@ -289,6 +289,9 @@ for i = 1, 10 do
 end
 hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "m+1" }))
 hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "m-1" }))
+-- tilt wheel (REL_HWHEEL): KeybindManager.onAxisEvent maps tilt left/right
+hl.bind(mainMod .. " + mouse_left",       hl.dsp.focus({ workspace = "m-1" }))
+hl.bind(mainMod .. " + mouse_right",      hl.dsp.focus({ workspace = "m+1" }))
 hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "m+1" }))
 hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "m-1" }))
 hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "r+1" }))

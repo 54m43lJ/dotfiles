@@ -33,7 +33,9 @@
   - 修的方向(不急): 内核升级跟 Navi4x S3 修复; 或 suspend 前主动 dpms off 回 DPMS 而非 S3;
     L3 部分随 TODO#1 的 #15890 升级一并解决
 - [ ] 让 Hyprland 能够处理窗口 minimize 事件
-- [ ] 滚轮切换workspace方向需要反过来
+- [x] ~~滚轮切换workspace方向需要反过来~~ 2026-10-17: 垂直方向已由 d13e528 修正(下滚=next);
+      倾斜滚轮 mouse_left/right 已补绑(m-1/m+1)。注意鼠标需发 REL_HWHEEL(倾斜时应用里能
+      横向滚动即满足); 若鼠标倾斜发的是按键码则要改绑 mouse:8/9
 - [ ] 用Vicinae做launcher
 - [ ] Vicinae需要重做样式
 - [ ] Vicinae的电源菜单太丑了
