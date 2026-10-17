@@ -30,6 +30,14 @@ install_module() {
             > "$tmp" && mv "$tmp" "$cfg"
     fi
 
+    # Extension: icon power menu (supersedes power-menu.sh). Vicinae scans
+    # dataDir()/extensions/<dir>/, entrypoint = <command-name>.js at the
+    # bundle root (extension-manifest.cpp); the extension runtime injects
+    # @vicinae/react/api into require, so plain CJS works, no build step.
+    # SUPER+Q opens it via `vicinae deeplink vicinae://launch/power-menu/index`.
+    mkdir -p ~/.local/share/vicinae/extensions
+    cp -r "$WD/vicinae/extension/power-menu" ~/.local/share/vicinae/extensions/
+
     # Apply now if the server is running (theme/settings hot path is not
     # guaranteed across versions); otherwise Hyprland autostart picks it up.
     if pgrep -x vicinae-server >/dev/null; then

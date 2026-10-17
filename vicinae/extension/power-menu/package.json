@@ -1,0 +1,18 @@
+{
+  "name": "power-menu",
+  "title": "Power Menu",
+  "description": "Session power actions with breeze icons (lock/logout/reboot/shutdown/suspend)",
+  "author": "john",
+  "categories": ["System"],
+  "dependencies": {
+    "@vicinae/api": "*"
+  },
+  "commands": [
+    {
+      "name": "index",
+      "title": "Power Menu",
+      "description": "Session power actions",
+      "mode": "view"
+    }
+  ]
+}
