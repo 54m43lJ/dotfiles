@@ -26,7 +26,7 @@ hl.window_rule({ name = "float-keepass",        match = { class = "^(org\\.keepa
 hl.window_rule({ name = "float-fcitx5-config",  match = { class = "^(org.fcitx.fcitx5-config-qt)$" },                float = true })
 
 -- Fullscreen rules
-hl.window_rule({ name = "fs-qt5ct",             match = { class = "^(qt5ct)$" },                                     float = true })
+hl.window_rule({ name = "fs-qtconfig",           match = { class = "^(qt5ct|qt6ct)$" },                               float = true })
 hl.window_rule({ name = "fs-pavucontrol",       match = { class = "^(pavucontrol)$" },                               float = true })
 
 -- xwayland workarounds

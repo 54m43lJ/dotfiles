@@ -45,6 +45,10 @@
 - [x] ~~滚轮切换workspace方向需要反过来~~ 2026-10-17: 垂直方向已由 d13e528 修正(下滚=next);
       倾斜滚轮 mouse_left/right 已补绑(m-1/m+1)。注意鼠标需发 REL_HWHEEL(倾斜时应用里能
       横向滚动即满足); 若鼠标倾斜发的是按键码则要改绑 mouse:8/9
-- [ ] Vicinae需要重做样式
-- [ ] Vicinae的电源菜单太丑了
+- [x] ~~Vicinae需要重做样式~~ 2026-10-17 dev/vicinae: themes/palette-light.toml(palette light
+      令牌→vicinae schema), 双槽位强制, Maple Mono 界面字体。坑: 主题扫描在
+      ~/.local/share/vicinae/themes(data dir), ID=文件名 stem 非 meta.name
+- [x] ~~Vicinae的电源菜单太丑了~~ 2026-10-17 dev/vicinae: extension/power-menu(Raycast 兼容
+      List 视图+breeze 图标+confirmAlert), SUPER+Q → vicinae://launch/@john/power-menu/index
+      ?toggle=true(入口 ID=@author/目录名:命令名)。power-menu.sh 留作 fallback 未删
 - [ ] PC上hypridle不设置suspend
