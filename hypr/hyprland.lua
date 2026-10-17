@@ -317,17 +317,33 @@ end)
 
 -- ============================================
 -- DPMS/wake recovery workaround (TODO #1)
--- dpms off=>on strands floating windows off-screen and leaves keyboard
--- focus dead: Hyprland <= v0.56.2 corrupts monitor/workspace state through
--- the FALLBACK placeholder interlude (the panel drops HPD when the output
--- is disabled). Upstream: #15800 (same state corruption, crashes there),
--- fixed on main by #15890 (2026-08-24) — no release contains it yet.
+-- dpms off=>on strands floating windows off-screen AND breaks keyboard
+-- input on the focused (tiled) window: Hyprland <= v0.56.2 corrupts
+-- monitor/workspace state through the FALLBACK placeholder interlude (the
+-- panel drops HPD when the output is disabled). Upstream: #15800 (same
+-- state corruption, crashes there), fixed on main by #15890 (2026-08-24);
+-- no release contains it yet.
 -- Until then: after a real monitor (re)appears, drag stranded floats back
--- into view and re-focus the last window so input works without having to
--- switch workspaces.
+-- into view and repair focus. The focus *object* often survives (the
+-- reconnect path runs changeWorkspace->fullWindowFocus) but the seat's
+-- keyboard focus surface is left stale (lock screen / layer surface), so
+-- keys go nowhere until the window is refocused — the "must switch
+-- windows and back" symptom. focusWindow re-sends seat keyboard focus
+-- unless BOTH the focus object and the seat surface already match
+-- (FocusState.cpp short-circuit), so re-issuing focus is a no-op when
+-- healthy and a repair when stale.
 -- ============================================
-local function wake_recovery()
+local function wake_repair(attempts_left, delay_ms)
     hl.timer(function()
+        -- never fight hyprlock; retry after unlock instead (no lock/unlock
+        -- event exists, hence the ladder)
+        if io.popen("pidof hyprlock 2>/dev/null"):read("*l") then
+            if attempts_left > 1 then
+                wake_repair(attempts_left - 1, 5000)
+            end
+            return
+        end
+
         -- logical (scale-applied) boxes of every real monitor
         local boxes = {}
         for _, m in ipairs(hl.get_monitors()) do
@@ -365,35 +381,38 @@ local function wake_recovery()
             end
         end
 
-        -- a dpms cycle on the last monitor resets seat focus entirely
-        -- (CMonitor::onDisconnect clears window/surface/monitor focus and
-        -- the reconnect path may leave focus on a bare layer surface).
-        -- Restore it — but never fight hyprlock: while locked, unlock
-        -- refocuses anyway.
-        if not hl.get_active_window() then
-            local lockpid = io.popen("pidof hyprlock 2>/dev/null"):read("*l")
-            if not lockpid then
-                local act    = hl.get_active_workspace()
-                local last   = hl.get_last_window()
-                local target = nil
-                if last and act and last.workspace and last.workspace.id == act.id then
-                    target = last
-                elseif act then
-                    -- last focused window lives on another workspace (focusing
-                    -- it would switch); take any live window on the active one
-                    for _, w in ipairs(hl.get_workspace_windows(act)) do
-                        if w.mapped and not w.hidden then
-                            target = w
-                            break
-                        end
+        -- repair focus: prefer the active window (stale-seat case); if the
+        -- focus object is gone entirely, take the last focused window on the
+        -- active workspace (focusing cross-workspace windows would switch)
+        local target = hl.get_active_window()
+        if not target then
+            local last = hl.get_last_window()
+            local ws   = hl.get_active_workspace()
+            if last and ws and last.workspace and last.workspace.id == ws.id then
+                target = last
+            elseif ws then
+                for _, w in ipairs(hl.get_workspace_windows(ws)) do
+                    if w.mapped and not w.hidden then
+                        target = w
+                        break
                     end
-                end
-                if target then
-                    hl.dispatch(hl.dsp.focus({ window = target }))
                 end
             end
         end
-    end, { timeout = 3000, type = "oneshot" })
+
+        if target then
+            hl.dispatch(hl.dsp.focus({ window = target }))
+        elseif attempts_left > 1 then
+            wake_repair(attempts_left - 1, 5000)
+        end
+    end, { timeout = delay_ms, type = "oneshot" })
+end
+
+local function wake_recovery()
+    -- ~3s after monitor.added, then ~5s apart (~40s total); covers slow
+    -- unlocks (lock attempts just reschedule) — every pass is a no-op when
+    -- healthy
+    wake_repair(8, 3000)
 end
 
 hl.on("monitor.added", function()
