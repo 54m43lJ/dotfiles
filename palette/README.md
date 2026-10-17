@@ -14,7 +14,7 @@ Light 以 [Alabaster](https://github.com/tonsky/sublime-scheme-alabaster) 为基
 | `bg` | `#231F1F` | 主背景、窗口边框、选中底 | — |
 | `surface` | `#3E3542` | 次级浮层：通知底、弹窗、输入框底 | — |
 | `fg` | `#D6CAB6` | 正文文字、slider 轨道 | on bg 10.1:1 ✓ |
-| `muted` | `#B0B4BC` | 中性边框、图标（dunst frame、电池图标） | 有意保留冷灰，与暖米正文区分 |
+| `muted` | `#B0B4BC` | 中性边框、图标（通知边框、电池图标） | 有意保留冷灰，与暖米正文区分 |
 | `purple` | `#89338E` | accent：hover/选中填充（配 cream 字）；亮底（cream/white 面）上的文字 | 填充↔bg 2.3:1（仅填充用）；文字↔cream 底 7.2:1 ✓ |
 | `purple-light` | `#E593E7` | accent 提亮：深浮层上的文字、hover 高亮 | on surface 5.4:1 ✓，on bg 7.5:1 ✓ |
 | `gold` | `#9D7E4D` | accent：细线（栏底边）、进度填充、副标题弱文字、窗口阴影 | on bg 4.3:1（弱文字 OK，正文勉强） |

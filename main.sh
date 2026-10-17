@@ -12,7 +12,6 @@ MODULES=(
     fontconfig
     foot
     vicinae
-    dunst
     sddm
     wechat
     qqmusic
