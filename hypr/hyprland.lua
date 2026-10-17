@@ -180,6 +180,16 @@ hl.config({
     },
 })
 
+-- TODO #1 diagnostics: 0.56 disables the file log by default; keep it on so
+-- dpms/wake cycles can be autopsied in $XDG_RUNTIME_DIR/hypr/<sig>/hyprland.log.
+-- Remove together with wake_recovery once a release with #15890 ships.
+hl.config({
+    debug = {
+        disable_logs = false,
+        disable_time = false,
+    },
+})
+
 -- Decoration (overridden by device-specific configs)
 hl.config({
     decoration = {
@@ -305,9 +315,91 @@ hl.on("hyprland.start", function()
     -- hl.exec_cmd("foot")
 end)
 
+-- ============================================
+-- DPMS/wake recovery workaround (TODO #1)
+-- dpms off=>on strands floating windows off-screen and leaves keyboard
+-- focus dead: Hyprland <= v0.56.2 corrupts monitor/workspace state through
+-- the FALLBACK placeholder interlude (the panel drops HPD when the output
+-- is disabled). Upstream: #15800 (same state corruption, crashes there),
+-- fixed on main by #15890 (2026-08-24) — no release contains it yet.
+-- Until then: after a real monitor (re)appears, drag stranded floats back
+-- into view and re-focus the last window so input works without having to
+-- switch workspaces.
+-- ============================================
+local function wake_recovery()
+    hl.timer(function()
+        -- logical (scale-applied) boxes of every real monitor
+        local boxes = {}
+        for _, m in ipairs(hl.get_monitors()) do
+            if m.name ~= "FALLBACK" and m.scale > 0 then
+                boxes[m.name] = {
+                    x = m.x, y = m.y,
+                    w = math.floor(m.size.width / m.scale),
+                    h = math.floor(m.size.height / m.scale),
+                }
+            end
+        end
+
+        for _, w in ipairs(hl.get_windows()) do
+            if w.floating and w.mapped and not w.hidden and w.monitor
+               and boxes[w.monitor.name] then
+                local b      = boxes[w.monitor.name]
+                local at, sz = w.at, w.size
+                if sz.x > 0 and sz.y > 0 then
+                    -- rescue when <25% of the float remains inside its
+                    -- monitor's logical box (deliberate partial off-screen
+                    -- placement is left alone)
+                    local ix = math.max(0, math.min(at.x + sz.x, b.x + b.w) - math.max(at.x, b.x))
+                    local iy = math.max(0, math.min(at.y + sz.y, b.y + b.h) - math.max(at.y, b.y))
+                    if ix * iy < 0.25 * sz.x * sz.y then
+                        local nx = math.max(b.x, b.x + math.floor((b.w - sz.x) / 2))
+                        local ny = math.max(b.y, b.y + math.floor((b.h - sz.y) / 2))
+                        -- NOTE: hl.dsp.* returns a dispatcher object; it must be
+                        -- run through hl.dispatch (calling it directly errors out).
+                        -- pass the window OBJECT, not a "0x..." string: only
+                        -- "address:0x..." is a valid selector, an unresolved
+                        -- selector makes the dispatcher silently no-op
+                        hl.dispatch(hl.dsp.window.move({ window = w, x = nx, y = ny }))
+                    end
+                end
+            end
+        end
+
+        -- a dpms cycle on the last monitor resets seat focus entirely
+        -- (CMonitor::onDisconnect clears window/surface/monitor focus and
+        -- the reconnect path may leave focus on a bare layer surface).
+        -- Restore it — but never fight hyprlock: while locked, unlock
+        -- refocuses anyway.
+        if not hl.get_active_window() then
+            local lockpid = io.popen("pidof hyprlock 2>/dev/null"):read("*l")
+            if not lockpid then
+                local act    = hl.get_active_workspace()
+                local last   = hl.get_last_window()
+                local target = nil
+                if last and act and last.workspace and last.workspace.id == act.id then
+                    target = last
+                elseif act then
+                    -- last focused window lives on another workspace (focusing
+                    -- it would switch); take any live window on the active one
+                    for _, w in ipairs(hl.get_workspace_windows(act)) do
+                        if w.mapped and not w.hidden then
+                            target = w
+                            break
+                        end
+                    end
+                end
+                if target then
+                    hl.dispatch(hl.dsp.focus({ window = target }))
+                end
+            end
+        end
+    end, { timeout = 3000, type = "oneshot" })
+end
+
 hl.on("monitor.added", function()
     apply_monitor_scales()
     assign_workspaces()
+    wake_recovery()
 end)
 
 hl.on("config.reloaded", function()
