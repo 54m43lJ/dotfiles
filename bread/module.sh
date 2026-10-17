@@ -4,9 +4,8 @@
 install_module() {
     log "Installing bread..."
 
-    local BREAD_DEPS=(gtk4 gtk4-layer-shell libadwaita)
+    local BREAD_DEPS=(gtk4 gtk4-layer-shell)
     pac_ins "${BREAD_DEPS[@]}"
-    yay_ins libastal-meta
 
     log "Fetching latest preview release..."
     local url
