@@ -24,7 +24,9 @@ install_module() {
         local tmp
         tmp=$(mktemp)
         grep -v '^//' "$cfg" \
-            | jq '.theme.dark.name = "palette-light" | .theme.light.name = "palette-light"' \
+            | jq '.theme.dark.name = "palette-light"
+                  | .theme.light.name = "palette-light"
+                  | .font.normal.family = "Maple Mono Normal NF CN"' \
             > "$tmp" && mv "$tmp" "$cfg"
     fi
 
