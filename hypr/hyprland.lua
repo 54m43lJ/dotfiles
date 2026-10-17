@@ -239,7 +239,7 @@ hl.config({
 
 -- System
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("hyprctl kill"))
-hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("vicinae deeplink 'vicinae://launch/power-menu/index'"))
+hl.bind(mainMod .. " + Q",          hl.dsp.exec_cmd("vicinae deeplink 'vicinae://launch/@john/power-menu/index?toggle=true'"))
 hl.bind(mainMod .. " + SHIFT + Q",  hl.dsp.exec_cmd("hyprshutdown"))
 hl.bind(mainMod .. " + P",          toggle_orientation)
 
