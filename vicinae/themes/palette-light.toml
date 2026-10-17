@@ -1,0 +1,72 @@
+# Palette Light — dotfiles authoritative palette (palette/README.md, light mode)
+# Alabaster-based bg/fg + purple/gold accents. nwg-bar legacy: compact
+# floating panel with purple hover — carried over as the accent/selection
+# language below. Undefixed keys inherit from the vicinae-light base.
+
+[meta]
+name = "Palette Light"
+description = "Authoritative dotfiles palette, light mode (Alabaster base, purple/gold accents)"
+variant = "light"
+inherits = "vicinae-light"
+
+[colors.core]
+accent = "#8A2E8F"                # purple — accent 主紫 (on bg 6.8:1)
+accent_foreground = "#FFFFFF"
+background = "#F7F7F7"            # bg
+foreground = "#000000"            # fg
+secondary_background = "#F2F0EF"  # surface — 次级浮层
+border = "#55585C"                # muted — 边框/次要
+
+[colors.main_window]
+border = "#5C4824"                # gold — 细线（nwg-bar 式浮层的暖色描边）
+footer = { background = "#F2F0EF" }
+
+[colors.settings_window]
+border = "#55585C"
+
+[colors.accents]
+purple = "#8A2E8F"
+magenta = "#D998D9"               # purple-light
+yellow = "#5C4824"                # gold
+red = "#AB3248"
+
+[colors.shortcut]
+border = "#55585C"
+
+[colors.text]
+default = "#000000"
+muted = "#55585C"
+danger = "#AB3248"
+success = "#5C4824"               # gold 全用途
+placeholder = "#55585C"
+selection = { background = "#E9DBF2", foreground = "#000000" }  # highlight + fg 15.9:1
+
+[colors.text.links]
+default = "#8A2E8F"
+visited = "#5C4824"
+
+[colors.input]
+border = "#55585C"
+border_focus = "#8A2E8F"
+border_error = "#AB3248"
+
+[colors.button.primary]
+background = "#8A2E8F"            # purple 填充 + 白字（dark 表推荐用法）
+foreground = "#FFFFFF"
+hover = { background = "#33FFFFFF" }  # 白 20% 叠加提亮，白字仍可读
+focus = { outline = "#8A2E8F" }
+
+[colors.list.item.hover]
+foreground = "#000000"
+secondary_foreground = "#55585C"
+
+[colors.list.item.selection]
+background = "#D998D9"            # purple-light — hover/选中底，深字 9.4:1
+foreground = "#000000"
+secondary_background = "#E9DBF2"  # highlight — 选中态高亮底
+secondary_foreground = "#000000"
+
+[colors.grid.item]
+background = "#F2F0EF"
+hover = { outline = "#8A2E8F" }
+selection = { outline = "#8A2E8F" }
