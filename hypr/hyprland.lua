@@ -233,6 +233,14 @@ hl.config({
     },
 })
 
+-- No cooldown between wheel events: SUPER+scroll must keep switching
+-- workspaces continuously, including while the slide animation is running.
+hl.config({
+    binds = {
+        scroll_event_delay = 0,
+    },
+})
+
 -- ============================================
 -- Keybinds
 -- ============================================
