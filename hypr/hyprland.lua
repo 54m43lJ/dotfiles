@@ -226,6 +226,9 @@ hl.config({
         sensitivity         = 0.1,
         accel_profile       = "flat",
         float_switch_override_focus = 0,
+        -- Start key repeat before the 600ms workspace slide finishes, so
+        -- holding a workspace key keeps switching during the animation.
+        repeat_delay        = 300,
         touchpad = {
             disable_while_typing = true,
             natural_scroll       = false,
@@ -284,7 +287,7 @@ hl.bind(mainMod .. " + SHIFT + RETURN",    hl.dsp.window.fullscreen())
 -- Lua assign_workspaces() binds 1-10 to monitor 1, 11-20 to monitor 2, etc.
 for i = 1, 10 do
     local key = i % 10
-    hl.bind(mainMod .. " + " .. key,           hl.dsp.focus({ workspace = "r~" .. i }))
+    hl.bind(mainMod .. " + " .. key,           hl.dsp.focus({ workspace = "r~" .. i }), { repeating = true })
     hl.bind(mainMod .. " + SHIFT + " .. key,   hl.dsp.window.move({ workspace = "r~" .. i }))
 end
 hl.bind(mainMod .. " + mouse_down",       hl.dsp.focus({ workspace = "m+1" }))
@@ -292,8 +295,8 @@ hl.bind(mainMod .. " + mouse_up",         hl.dsp.focus({ workspace = "m-1" }))
 -- tilt wheel (REL_HWHEEL): KeybindManager.onAxisEvent maps tilt left/right
 hl.bind(mainMod .. " + mouse_left",       hl.dsp.focus({ workspace = "m-1" }))
 hl.bind(mainMod .. " + mouse_right",      hl.dsp.focus({ workspace = "m+1" }))
-hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "m+1" }))
-hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "m-1" }))
+hl.bind(mainMod .. " + TAB",              hl.dsp.focus({ workspace = "m+1" }), { repeating = true })
+hl.bind(mainMod .. " + SHIFT + TAB",      hl.dsp.focus({ workspace = "m-1" }), { repeating = true })
 hl.bind(mainMod .. " + SHIFT + right",    hl.dsp.window.move({ workspace = "r+1" }))
 hl.bind(mainMod .. " + SHIFT + left",     hl.dsp.window.move({ workspace = "r-1" }))
 hl.bind(mainMod .. " + N",                hl.dsp.focus({ workspace = "emptym" }))
