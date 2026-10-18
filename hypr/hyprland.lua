@@ -233,11 +233,12 @@ hl.config({
     },
 })
 
--- No cooldown between wheel events: SUPER+scroll must keep switching
--- workspaces continuously, including while the slide animation is running.
+-- Slight cooldown between wheel events: filters duplicate axis events from
+-- high-resolution wheels while still allowing continuous SUPER+scroll
+-- workspace switching during the slide animation.
 hl.config({
     binds = {
-        scroll_event_delay = 0,
+        scroll_event_delay = 80,
     },
 })
 
