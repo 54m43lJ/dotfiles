@@ -233,6 +233,14 @@ hl.config({
     },
 })
 
+-- Keyboard focus changes (SUPER+`) must not move the pointer: Hyprland
+-- warps the cursor to the target window in switchToWindow() by default.
+hl.config({
+    cursor = {
+        no_warps = true,
+    },
+})
+
 -- Slight cooldown between wheel events: filters duplicate axis events from
 -- high-resolution wheels while still allowing continuous SUPER+scroll
 -- workspace switching during the slide animation.
