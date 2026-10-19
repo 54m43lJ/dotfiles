@@ -1,9 +1,9 @@
 // Power Menu — vicinae extension (Raycast-compatible API, CommonJS).
-// Icons: breeze system action icons; destructive actions confirm via
-// confirmAlert; Lock/Suspend are dispatched through hyprctl so Hyprland
-// runs them (same pattern as the old dmenu power-menu.sh / hypridle).
+// Commands mirror the old wofi power menu: run everything through hyprctl so
+// Hyprland owns the child process and it survives Vicinae closing; destructive
+// actions use hyprshutdown.
 const React = require("react");
-const { exec } = require("child_process");
+const { execFile } = require("child_process");
 const {
 	List,
 	Action,
@@ -15,7 +15,16 @@ const {
 
 const BREEZE = "/usr/share/icons/breeze/actions/22";
 
-const hyprDispatch = (lua) => exec(`hyprctl dispatch 'hl.dsp.exec_cmd("${lua}")'`);
+// Pass the Lua expression as a single argv entry (no shell quoting games).
+// JSON.stringify gives a valid double-quoted Lua string.
+const hyprDispatch = (lua) =>
+	new Promise((resolve, reject) => {
+		execFile(
+			"hyprctl",
+			["dispatch", `hl.dsp.exec_cmd(${JSON.stringify(lua)})`],
+			(err) => (err ? reject(err) : resolve()),
+		);
+	});
 
 const ACTIONS = [
 	{
@@ -30,21 +39,21 @@ const ACTIONS = [
 		subtitle: "hyprshutdown",
 		icon: `${BREEZE}/system-log-out.svg`,
 		confirm: "Logout",
-		run: () => exec("hyprshutdown"),
+		run: () => hyprDispatch("hyprshutdown"),
 	},
 	{
 		title: "Reboot",
-		subtitle: "systemctl reboot",
+		subtitle: "hyprshutdown -p 'systemctl reboot'",
 		icon: `${BREEZE}/system-reboot.svg`,
 		confirm: "Reboot",
-		run: () => exec("hyprshutdown -p 'systemctl reboot'"),
+		run: () => hyprDispatch("hyprshutdown -p 'systemctl reboot'"),
 	},
 	{
 		title: "Shutdown",
-		subtitle: "systemctl -i poweroff",
+		subtitle: "hyprshutdown -p 'systemctl -i poweroff'",
 		icon: `${BREEZE}/system-shutdown.svg`,
 		confirm: "Shutdown",
-		run: () => exec("hyprshutdown -p 'systemctl -i poweroff'"),
+		run: () => hyprDispatch("hyprshutdown -p 'systemctl -i poweroff'"),
 	},
 	{
 		title: "Suspend",
@@ -64,8 +73,14 @@ async function runAction(a) {
 		});
 		if (!ok) return;
 	}
+	// Dispatch before closing: closing unloads the extension worker, and
+	// hyprctl needs to hand the command to Hyprland first.
+	try {
+		await a.run();
+	} catch (err) {
+		console.error(`Power action failed: ${err}`);
+	}
 	await closeMainWindow();
-	a.run();
 }
 
 function Command() {
