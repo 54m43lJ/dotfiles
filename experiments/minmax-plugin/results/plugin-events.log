@@ -1,0 +1,13 @@
+PLUGIN_INIT server_hash=efb50993780079460b0cbed1363e2166a2de1d9f_aq_0.15_hu_0.14_hg_0.5_hc_0.1_hlg_0.6 client_hash=efb50993780079460b0cbed1363e2166a2de1d9f_aq_0.15_hu_0.14_hg_0.5_hc_0.1_hlg_0.6 api=0.1
+FIND onUpdateState matches=1
+FUNC addr=94069805464784 sig=_ZN7Desktop4View7CWindow13onUpdateStateEv demangled=Desktop::View::CWindow::onUpdateState()
+HOOK onUpdateState install=ok original=94069815922848
+EVENT window.open class=minmax-probe title=minmax-probe addr=94070905605760
+EVENT window.open class=minmax-probe title=minmax-probe addr=94070895295744
+MINIMIZE_REQUEST class=minmax-probe title=minmax-probe addr=94070895295744 value=1
+EVENT window.open class=minmax-probe title=minmax-probe addr=94070905605760
+MAXIMIZE_REQUEST class=minmax-probe title=minmax-probe addr=94070905605760 value=1
+EVENT window.fullscreen class=minmax-probe title=minmax-probe addr=94070905605760 internal=1 client=1
+EVENT window.fullscreen class=minmax-probe title=minmax-probe addr=94070905605760 internal=0 client=0
+EVENT window.open class=minmax-probe title=minmax-probe addr=94070905605760
+PLUGIN_EXIT

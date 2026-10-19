@@ -1,0 +1,5 @@
+make: Entering directory '/home/john/Documents/dotfiles/experiments/minmax-plugin/plugin'
+rm -f ../build/hyprminmax.so
+mkdir -p ../build
+g++ -std=c++2b -O2 -fPIC -fvisibility=hidden -Wall -Wextra -Wno-unused-parameter -I/usr/include/hyprland/protocols -I/usr/include/hyprland -I/usr/include/hyprland/src -I/usr/include/libdrm -I/usr/include/cairo -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/pixman-1 -shared -o ../build/hyprminmax.so src/main.cpp
+make: Leaving directory '/home/john/Documents/dotfiles/experiments/minmax-plugin/plugin'

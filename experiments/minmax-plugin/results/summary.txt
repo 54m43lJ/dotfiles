@@ -1,0 +1,21 @@
+== build plugin ==
+PASS  plugin build
+== build probe ==
+PASS  probe build
+== load plugin ==
+PASS  plugin load + pluginInit
+PASS  CWindow::onUpdateState hook installed
+== event: window.open ==
+PASS  window.open event
+== event/request: minimize ==
+PASS  app minimize request intercepted
+== event/request: maximize ==
+PASS  app maximize request intercepted
+PASS  native maximize state (fullscreenClient=1)
+== action: special workspace move/restore ==
+PASS  move to special:minimized
+PASS  restore to original workspace (3)
+== unload plugin ==
+PASS  plugin unload + pluginExit
+
+summary: PASS=11 FAIL=0 SKIP=0
