@@ -137,7 +137,7 @@ hl.config({
         col = {
             active_border = {
                 colors = { palette.bg, palette.fg },
-                angle  = 45,
+                angle  = 315,
             },
             inactive_border = palette.surface,
         },
