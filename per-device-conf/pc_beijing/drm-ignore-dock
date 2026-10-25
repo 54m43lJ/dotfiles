@@ -1,0 +1,73 @@
+#!/bin/bash
+# Force-off every display connector of the GPUs listed in IGNORED_GPUS.
+#
+# Why not use connector names: DRM connector ids are NOT per-GPU and not
+# stable. drm_connector_init() takes them from a kernel-global, per-type IDA
+# (drm_connector_enum_list[type].ida in drm_connector.c) in *creation* order,
+# so "DP-4" means "the 4th DP connector registered by any driver on this
+# boot". Probe order (which GPU registers first), the number of DP links a
+# GPU exposes, BIOS/VBIOS or DC changes, or another DRM device in the system
+# all renumber every DP connector after them. cardN is a second, independent
+# axis (DRM minor allocation order).
+#
+# On this machine the panel is on the dGPU (0x7550) and the dock HDMI comes
+# from the APU's USB-C DP alt-mode (0x13c0) — matched by PCI id here, so it
+# keeps working whatever the connector ends up being called.
+#
+# Note: this runs after the kernel's first KMS probe, so it cannot prevent
+# the boot-time link-training interference by itself — that is what the
+# video=DP-4:d/DP-5:d cmdline block and the pre-greeter EDID wait are for.
+# It is the catch-all: any rename/reorder still leaves the dock output dead.
+set -u
+
+IGNORED_GPUS=("0x1002:0x13c0")   # Granite Ridge iGPU = USB-C dock display link
+
+log() { echo "drm-ignore-dock: $*"; }
+
+is_ignored() {
+    local id=$1 want
+    for want in "${IGNORED_GPUS[@]}"; do
+        [ "$id" = "$want" ] && return 0
+    done
+    return 1
+}
+
+# amdgpu probe may still be in flight on fast boots: give it a moment
+for _ in $(seq 1 20); do
+    compgen -G '/sys/class/drm/card[0-9]*' >/dev/null && break
+    sleep 0.15
+done
+
+found=0
+for card in /sys/class/drm/card[0-9]*; do
+    [ -e "$card/device/vendor" ] || continue
+    id="$(cat "$card/device/vendor"):$(cat "$card/device/device")"
+    is_ignored "$id" || continue
+    found=1
+    for conn in "$card"/card*-*; do
+        case "$conn" in
+            *Writeback*) continue ;;   # not a physical output
+        esac
+        name=${conn##*/}
+        if echo off > "$conn/status" 2>/dev/null; then
+            log "forced off $name ($id)"
+        else
+            log "WARNING: could not force off $name ($id)"
+        fi
+    done
+done
+
+[ "$found" -eq 1 ] || log "WARNING: no GPU matching ${IGNORED_GPUS[*]} - nothing ignored"
+
+# Keep one line per boot in the journal: the connector-name -> status map is
+# the fastest way to spot a renumbering after a kernel/BIOS upgrade.
+map=""
+for c in /sys/class/drm/card[0-9]*-*/status; do
+    case "$c" in
+        *Writeback*) continue ;;
+    esac
+    map+="$(basename "${c%/status}")=$(cat "$c" 2>/dev/null) "
+done
+log "map: ${map% }"
+
+exit 0

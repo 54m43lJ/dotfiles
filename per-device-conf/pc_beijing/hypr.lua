@@ -5,9 +5,10 @@
 -- its link training interferes with cold-start detection on the direct one,
 -- and enabling it produces a phantom second monitor.
 --
--- Connector names are kernel-assigned and have shifted once already (the
--- stale DP-5-only rules silently stopped matching), so disable both
--- generations. After a kernel upgrade, verify with:
+-- This file is only the last-resort layer (the kernel cmdline block and
+-- drm-ignore-dock.service handle the real block by GPU PCI id). Connector
+-- ids are a kernel-global per-type IDA handed out in creation order, so both
+-- known generations of the name are disabled here. After a kernel upgrade:
 --   ls /sys/class/drm | grep -v disconnected
 hl.monitor({ output = "DP-4", disabled = true }) -- current dock name
 hl.monitor({ output = "DP-5", disabled = true }) -- pre-7.2.6 dock name

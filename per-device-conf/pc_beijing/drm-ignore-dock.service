@@ -1,0 +1,13 @@
+[Unit]
+Description=Force-off display connectors of ignored GPUs (pc_beijing dock path)
+# kwin latches its connector list at startup: run before the greeter, not
+# after the session is already up.
+Before=display-manager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/drm-ignore-dock
+
+[Install]
+WantedBy=graphical.target
