@@ -21,6 +21,15 @@ install_module() {
     # current theme offscreen and steps down/up Current= as themes heal.
     sudo install -m755 "$WD/sddm/theme-check.sh" /usr/local/bin/
     sudo install -m644 "$WD/sddm/theme-fallback.hook" /usr/share/libalpm/hooks/theme-fallback.hook
+
+    # Cold-boot EDID race guard (see drm-wait-edid): the panel drops HPD in
+    # deep sleep, so kwin can start while the connector is "connected" but
+    # still has no EDID -> zero modes -> black greeter until reboot.
+    sudo install -m755 "$WD/sddm/drm-wait-edid" /usr/local/bin/
+    sudo mkdir -p /etc/systemd/system/sddm.service.d/
+    sudo install -m644 "$WD/sddm/wait-edid.conf" /etc/systemd/system/sddm.service.d/10-wait-edid.conf
+    sudo systemctl daemon-reload
+
     sudo systemctl enable sddm
     sudo systemctl enable --now bluetooth
 

@@ -1,0 +1,65 @@
+#!/bin/bash
+# SDDM greeter guard (runs as ExecStartPre of sddm.service).
+#
+# The VG273U PRO drops HPD when it enters deep sleep, so a cold boot can race
+# the panel's AUX wake-up: the kernel caches the connector as "connected" but
+# with no EDID, kwin then sees zero modes, fails every modeset with EINVAL
+# ("kwin_wayland_drm: Modeset failed: Invalid argument") and the greeter stays
+# black until the next reboot.
+#
+# 2026-10-26: boot f41c6c80 died exactly this way on card1-DP-2 (one
+# "Could not find edid for connector ... name=\"DP-2\"" followed by ~10 min of
+# failed commits). Bounded wait + explicit re-probe is enough; the compositor
+# itself never re-reads the EDID once its output config is applied.
+#
+# Connector names are kernel-assigned, so nothing here is name-specific: every
+# connected connector must end up with a readable EDID before we give up.
+set -u
+
+TIMEOUT=${DRM_WAIT_EDID_TIMEOUT:-10}
+SYSFS=${DRM_SYSFS:-/sys/class/drm}   # override point for testing
+
+log() { echo "drm-wait-edid: $*"; }
+
+# echo each connector that still has no usable EDID
+stuck_connectors() {
+    local c status bytes any=0
+    for c in "${SYSFS}"/card*-*/status; do
+        [ -e "$c" ] || continue
+        status=$(cat "$c" 2>/dev/null) || continue
+        [ "$status" = connected ] || continue
+        any=1
+        bytes=$(wc -c < "${c%/status}/edid" 2>/dev/null)
+        [ "${bytes:-0}" -lt 128 ] && echo "${c%/status}"
+    done
+    # nothing connected at all: the panel may still be asleep -> report every
+    # real connector so the caller re-probes them
+    if [ "$any" -eq 0 ]; then
+        for c in "${SYSFS}"/card*-*; do
+            case "$c" in
+                *Writeback*) continue ;;
+            esac
+            [ -e "$c/status" ] && echo "$c"
+        done
+    fi
+}
+
+start=$SECONDS
+while :; do
+    mapfile -t stuck < <(stuck_connectors)
+    [ ${#stuck[@]} -eq 0 ] && break
+
+    if [ $((SECONDS - start)) -ge "$TIMEOUT" ]; then
+        log "giving up after ${TIMEOUT}s, no EDID on: ${stuck[*]##*/}"
+        break
+    fi
+
+    for c in "${stuck[@]}"; do
+        # "detect" forces drm_helper_probe_single_connector_modes(): fresh
+        # EDID read + mode list rebuild
+        echo detect 2>/dev/null > "$c/status" || true
+    done
+    sleep 0.25
+done
+
+exit 0
