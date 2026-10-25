@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="308" viewBox="0 0 920 308" role="img" aria-labelledby="title">
+<title id="title">Dark palette preview</title>
+<rect width="920" height="308" fill="#1B1818"/>
+<rect x="16" y="16" width="288" height="46" rx="3" fill="#231F1F" stroke="#FFFFFF26"/>
+<text x="18" y="82" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">bg</text>
+<text x="18" y="99" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#231F1F</text>
+<rect x="316" y="16" width="288" height="46" rx="3" fill="#3E3542" stroke="#FFFFFF26"/>
+<text x="318" y="82" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">surface</text>
+<text x="318" y="99" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#3E3542</text>
+<rect x="616" y="16" width="288" height="46" rx="3" fill="#D6CAB6" stroke="#FFFFFF26"/>
+<text x="618" y="82" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">fg</text>
+<text x="618" y="99" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#D6CAB6</text>
+<rect x="16" y="108" width="288" height="46" rx="3" fill="#B0B4BC" stroke="#FFFFFF26"/>
+<text x="18" y="174" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">muted</text>
+<text x="18" y="191" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#B0B4BC</text>
+<rect x="316" y="108" width="288" height="46" rx="3" fill="#89338E" stroke="#FFFFFF26"/>
+<text x="318" y="174" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">purple</text>
+<text x="318" y="191" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#89338E</text>
+<rect x="616" y="108" width="288" height="46" rx="3" fill="#E593E7" stroke="#FFFFFF26"/>
+<text x="618" y="174" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">purple-light</text>
+<text x="618" y="191" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#E593E7</text>
+<rect x="16" y="200" width="288" height="46" rx="3" fill="#9D7E4D" stroke="#FFFFFF26"/>
+<text x="18" y="266" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">gold</text>
+<text x="18" y="283" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#9D7E4D</text>
+<rect x="316" y="200" width="288" height="46" rx="3" fill="#FFF7E4" stroke="#FFFFFF26"/>
+<text x="318" y="266" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">cream</text>
+<text x="318" y="283" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#FFF7E4</text>
+<rect x="616" y="200" width="288" height="46" rx="3" fill="#CC2A47" stroke="#FFFFFF26"/>
+<text x="618" y="266" fill="#D6CAB6" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600">red</text>
+<text x="618" y="283" fill="#9D9487" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="12">#CC2A47</text>
+</svg>

@@ -52,3 +52,4 @@
       List 视图+breeze 图标+confirmAlert), SUPER+Q → vicinae://launch/@john/power-menu/index
       ?toggle=true(入口 ID=@author/目录名:命令名)。power-menu.sh 留作 fallback 未删
 - [ ] PC上hypridle不设置suspend
+- [ ] 让 hyprland 能够处理窗口 maximize 事件

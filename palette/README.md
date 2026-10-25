@@ -9,6 +9,8 @@ Light 以 [Alabaster](https://github.com/tonsky/sublime-scheme-alabaster) 为基
 
 ### Dark
 
+![Dark palette preview](previews/dark.svg)
+
 | Token | Hex | 语义 / 用途 | 对比度备注 |
 |---|---|---|---|
 | `bg` | `#231F1F` | 主背景、窗口边框、选中底 | — |
@@ -22,6 +24,8 @@ Light 以 [Alabaster](https://github.com/tonsky/sublime-scheme-alabaster) 为基
 | `red` | `#CC2A47` | 警告/危险：低电量、关闭按钮 hover、错误填充 | on bg 3.1:1（警告文字/图标可用，正文不足）；cream 字压其上 4.9:1 ✓（红填充+cream 字为推荐用法） |
 
 ### Light
+
+![Light palette preview](previews/light.svg)
 
 | Token | Hex | 语义 / 用途 | 对比度备注 |
 |---|---|---|---|

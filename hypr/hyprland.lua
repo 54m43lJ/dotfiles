@@ -5,6 +5,13 @@ local mainMod       = "SUPER"
 local defaultBrowser = "gtk-launch brave-browser"
 local hypr_dir       = os.getenv("HOME") .. "/.config/hypr"
 
+-- palette/README.md — dark mode tokens
+local palette = {
+    bg      = "rgba(231F1Fff)",
+    surface = "rgba(3E3542ff)",
+    fg      = "rgba(D6CAB6ff)",
+}
+
 -- ============================================
 -- Monitor defaults (before device-specific overrides)
 -- ============================================
@@ -115,13 +122,6 @@ end
 -- ============================================
 require("windowrule")
 
--- Noborder for floating windows
-hl.window_rule({
-    name  = "noborder-float",
-    match = { float = true },
-    border_size = 0,
-})
-
 -- Vicinae launcher: blur the layer, no animations
 hl.layer_rule({ name = "vicinae-blur",         match = { namespace = "vicinae" }, blur = true, ignore_alpha = 0 })
 hl.layer_rule({ name = "vicinae-no-animation", match = { namespace = "vicinae" }, no_anim = true })
@@ -131,15 +131,15 @@ hl.layer_rule({ name = "vicinae-no-animation", match = { namespace = "vicinae" }
 -- ============================================
 hl.config({
     general = {
-        gaps_in     = 2,
-        gaps_out    = { top = 5, bottom = 8, left = 6, right = 6 },
-        border_size = 3,
+        gaps_in     = 0,
+        gaps_out    = { top = 2, bottom = 2, left = 2, right = 2 },
+        border_size = 1,
         col = {
             active_border = {
-                colors = { "rgba(FFF7E4ff)", "rgba(231F1Fff)", "rgba(231F1Fff)" },
-                angle  = 45,
+                colors = { palette.bg, palette.fg },
+                angle  = 315,
             },
-            inactive_border = "rgba(231F1Faa)",
+            inactive_border = palette.surface,
         },
         layout = "master",
     },
@@ -193,7 +193,7 @@ hl.config({
 -- Decoration (overridden by device-specific configs)
 hl.config({
     decoration = {
-        rounding         = 6,
+        rounding         = 4,
         inactive_opacity = 0.85,
         blur = {
             enabled = true,
@@ -201,11 +201,7 @@ hl.config({
             passes  = 1,
         },
         shadow = {
-            enabled        = true,
-            range          = 1,
-            offset         = { 2, 2 },
-            color          = "rgb(8E7753)",
-            color_inactive = "rgba(ffffff00)",
+            enabled = false,
         },
     },
 })

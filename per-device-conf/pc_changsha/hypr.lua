@@ -10,13 +10,6 @@ hl.config({
             size    = 4,
             passes  = 1,
         },
-        shadow = {
-            enabled        = true,
-            range          = 1,
-            offset         = { 2, 2 },
-            color          = "rgb(8E7753)",
-            color_inactive = "rgba(ffffff00)",
-        },
     },
 })
 
