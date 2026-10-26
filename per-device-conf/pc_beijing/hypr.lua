@@ -1,14 +1,15 @@
--- VG273U PRO is wired twice:
---   dGPU direct:  card1-DP-2  (was DP-3 before kernel 7.2.6)
---   HP dock HDMI: card0-DP-4  (was DP-5 before kernel 7.2.6)
--- The dock path must never be driven: it is the same panel on a second link,
--- its link training interferes with cold-start detection on the direct one,
--- and enabling it produces a phantom second monitor.
+-- Dock display path (the VG273U PRO is wired twice: dGPU direct and HP dock
+-- HDMI on the APU's USB-C DP alt-mode).
 --
--- This file is only the last-resort layer (the kernel cmdline block and
--- drm-ignore-dock.service handle the real block by GPU PCI id). Connector
--- ids are a kernel-global per-type IDA handed out in creation order, so both
--- known generations of the name are disabled here. After a kernel upgrade:
---   ls /sys/class/drm | grep -v disconnected
-hl.monitor({ output = "DP-4", disabled = true }) -- current dock name
-hl.monitor({ output = "DP-5", disabled = true }) -- pre-7.2.6 dock name
+-- Deliberately nothing to disable here: connector ids come from a kernel-global
+-- per-type IDA handed out in creation order ("DP-4" = 4th DP connector
+-- registered by any driver this boot), so `output = "DP-4", disabled` style
+-- rules are exactly what silently rots — DP-5/DP-3 became DP-4/DP-2 between
+-- kernel 7.2.3 and 7.2.6 and the old rule stopped matching.
+--
+-- The block lives at kernel level instead:
+--   * video=DP-4:d video=DP-5:d on the cmdline (applies before the first
+--     KMS probe, so the dock link never trains at cold boot)
+--   * drm-ignore-dock.service (matched by GPU PCI id) force-offs every
+--     connector of the APU — and re-enables them when no dGPU display is
+--     present, so the iGPU still works as a rescue console.
