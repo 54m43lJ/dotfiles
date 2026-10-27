@@ -9,8 +9,10 @@ install_module() {
     )
     pac_ins "${PW[@]}"
 
-    sudo mkdir -p /usr/share/pipewire/pipewire.conf.d
-    sudo cp "$WD/system/pipewire/samplerate.conf" /usr/share/pipewire/pipewire.conf.d/
+    sudo mkdir -p /etc/pipewire/pipewire.conf.d
+    sudo cp "$WD/system/pipewire/samplerate.conf" /etc/pipewire/pipewire.conf.d/
+    # Remove the old location used by earlier versions of this dotfiles repo.
+    sudo rm -f /usr/share/pipewire/pipewire.conf.d/samplerate.conf
 
     log "Pipewire configured."
 }
