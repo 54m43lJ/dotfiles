@@ -1,0 +1,53 @@
+#!/bin/bash
+# Recover the SDDM Wayland greeter when kwin never gets a working modeset.
+#
+# Root cause (not our config): amdgpu on RDNA4 lists DRM_FORMAT_RGBA8888 as a
+# supported plane format although the hardware rejects it (drm/amd#5339,
+# KDE bug 524476). kwin picks it for its first commit in a startup race; the
+# atomic commit fails with EINVAL and kwin keeps retrying instead of falling
+# back, so the greeter stays black until the next reboot. Hyprland is not
+# affected (it never uses that format for scanout).
+#
+# Signal: amdgpu logs "Unsupported screen format RA24" and kwin logs
+# "Modeset failed: Invalid argument" right after the greeter starts. Healthy
+# boots log neither (checked across all boots since 2026-10-28).
+#
+# Recovery: restart sddm — a fresh greeter has always come up. Two attempts
+# per boot at most, never while a user session exists.
+set -u
+
+PATTERN='Modeset failed: Invalid argument'
+RA24='Unsupported screen format RA24'
+ATTEMPTS_FILE=/run/sddm-greeter-guard.attempts
+
+log() { echo "greeter-guard: $*"; }
+
+# somebody is logged in -> hands off (the greeter is not on screen anyway)
+if loginctl list-sessions --no-legend 2>/dev/null | awk '{print $3}' | grep -vx sddm | grep -q .; then
+    exit 0
+fi
+
+# no greeter running -> nothing to recover
+pgrep -u sddm -x kwin_wayland >/dev/null 2>&1 || exit 0
+
+# only look at the current greeter instance
+since=$(systemctl show -p ActiveEnterTimestamp --value sddm.service)
+since=$(date -d "$since" '+%Y-%m-%d %H:%M:%S' 2>/dev/null) || exit 0
+fails=$(journalctl -u sddm --since "$since" --no-pager -o cat 2>/dev/null | grep -c "$PATTERN")
+[ "$fails" -eq 0 ] && exit 0
+
+attempts=$(cat "$ATTEMPTS_FILE" 2>/dev/null || echo 0)
+if [ "$attempts" -ge 2 ]; then
+    log "greeter still stuck after $attempts restarts, giving up (manual reboot needed)"
+    exit 1
+fi
+
+ra24=$(journalctl -k -b --since "$since" --no-pager -o cat 2>/dev/null | grep -c "$RA24")
+log "greeter stuck: $fails modeset failures, $ra24 RA24 errors since $since; restarting sddm"
+for d in /sys/kernel/debug/dri/*/DP-*/link_settings; do
+    [ -e "$d" ] || continue
+    log "  ${d#/sys/kernel/debug/dri/}: $(tr -s ' \n' ' ' < "$d")"
+done 2>/dev/null
+
+echo $((attempts + 1)) > "$ATTEMPTS_FILE"
+exec systemctl restart sddm

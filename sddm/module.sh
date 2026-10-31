@@ -28,7 +28,16 @@ install_module() {
     sudo install -m755 "$WD/sddm/drm-wait-edid" /usr/local/bin/
     sudo mkdir -p /etc/systemd/system/sddm.service.d/
     sudo install -m644 "$WD/sddm/wait-edid.conf" /etc/systemd/system/sddm.service.d/10-wait-edid.conf
+
+    # Second greeter failure mode: amdgpu on RDNA4 advertises RGBA8888
+    # although it is rejected (drm/amd#5339); kwin picks it in a startup race
+    # and loops on EINVAL forever. The timer checks shortly after boot and
+    # restarts a stuck greeter (never with a user session active).
+    sudo install -m755 "$WD/sddm/sddm-greeter-guard" /usr/local/bin/
+    sudo install -m644 "$WD/sddm/sddm-greeter-guard.service" /etc/systemd/system/
+    sudo install -m644 "$WD/sddm/sddm-greeter-guard.timer" /etc/systemd/system/
     sudo systemctl daemon-reload
+    sudo systemctl enable --now sddm-greeter-guard.timer
 
     sudo systemctl enable sddm
     sudo systemctl enable --now bluetooth

@@ -1,0 +1,13 @@
+[Unit]
+Description=Check the SDDM greeter for the amdgpu RA24 modeset failure
+
+[Timer]
+# The greeter may start late (slow udev on the USB dock pushed sddm to ~70s
+# on 2026-10-31), so check a few times rather than anchoring to boot.
+OnBootSec=90s
+OnBootSec=240s
+OnBootSec=600s
+AccuracySec=5s
+
+[Install]
+WantedBy=timers.target
