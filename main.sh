@@ -11,6 +11,7 @@ MODULES=(
     fcitx5
     fontconfig
     foot
+    celluloid
     vicinae
     sddm
     wechat
