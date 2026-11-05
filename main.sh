@@ -16,12 +16,12 @@ MODULES=(
     sddm
     wechat
     qqmusic
-    nwg-bar
     zsh
     bread
     nvidia
     virt
     openrgb
+    coolercontrol
     breeze
     dev
     per-device-conf
