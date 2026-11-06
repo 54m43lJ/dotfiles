@@ -15,12 +15,12 @@ local palette = {
 -- ============================================
 -- Monitor defaults (before device-specific overrides)
 -- ============================================
-hl.monitor({
-    output   = "",
-    mode     = "preferred",
-    position = "auto-right",
-    reserved = { top = -5 },
-})
+-- No catch-all monitor rule here. hl.monitor() is additive: fields omitted
+-- from a later call keep their previous value, but only when both calls use
+-- the same rule key (name and "desc:..." are separate rules). The layout
+-- pass below targets "desc:..." for described monitors, so device-specific
+-- special/*.lua rules keep ownership of mode/VRR while this pass only
+-- updates position/scale/reserved.
 
 -- Toggle the first monitor's transform between 0 (normal) and 1 (90°)
 local function toggle_orientation()
@@ -48,9 +48,15 @@ end
 local function apply_monitor_scales()
     for _, mon in ipairs(real_monitors()) do
         local scale = (mon.height > 1080) and 2 or 1
+        -- Deliberately omit mode/vrr: hl.monitor() is additive and keeps
+        -- fields not present in this call. This pass must only own layout
+        -- (position/scale/reserved), leaving a device rule's highrr/VRR alone.
+        -- Use the same rule key as device rules so hl.monitor()'s additive
+        -- field merge applies: a name "DP-2" rule and a "desc:..." rule are
+        -- separate rules, and the later one wins wholesale with defaults.
+        local output = mon.description and ("desc:" .. mon.description) or mon.name
         hl.monitor({
-            output   = mon.name,
-            mode     = "preferred",
+            output   = output,
             position = "auto-right",
             scale    = scale,
             reserved = { top = -5 },

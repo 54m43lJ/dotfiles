@@ -1,13 +1,16 @@
 #!/bin/bash
 # SDDM display manager + minimal theme.
-# The greeter runs on kwin_wayland: the X11 greeter hits a cold-boot EDID
-# failure on the DP-3 link (falls back to 1024x768, black screen) which the
-# Wayland stack does not have.
+# The greeter runs on cage (see greeter.conf): the X11 greeter hits a
+# cold-boot EDID failure on the DP-3 link and kwin_wayland has its own RA24
+# scanout-format trap on RDNA4. Cage avoids both with the smallest possible
+# compositor surface; no extra wait/guard layers are installed here.
 
 install_module() {
     log "Installing SDDM..."
+    # qt6-wayland provides the Qt Wayland platform plugin the greeter needs;
+    # sddm does not depend on it directly.
     local SDDM_PKGS=(
-        sddm kwin layer-shell-qt
+        sddm cage qt6-wayland
     )
     pac_ins "${SDDM_PKGS[@]}"
 
@@ -21,23 +24,6 @@ install_module() {
     # current theme offscreen and steps down/up Current= as themes heal.
     sudo install -m755 "$WD/sddm/theme-check.sh" /usr/local/bin/
     sudo install -m644 "$WD/sddm/theme-fallback.hook" /usr/share/libalpm/hooks/theme-fallback.hook
-
-    # Cold-boot EDID race guard (see drm-wait-edid): the panel drops HPD in
-    # deep sleep, so kwin can start while the connector is "connected" but
-    # still has no EDID -> zero modes -> black greeter until reboot.
-    sudo install -m755 "$WD/sddm/drm-wait-edid" /usr/local/bin/
-    sudo mkdir -p /etc/systemd/system/sddm.service.d/
-    sudo install -m644 "$WD/sddm/wait-edid.conf" /etc/systemd/system/sddm.service.d/10-wait-edid.conf
-
-    # Second greeter failure mode: amdgpu on RDNA4 advertises RGBA8888
-    # although it is rejected (drm/amd#5339); kwin picks it in a startup race
-    # and loops on EINVAL forever. The timer checks shortly after boot and
-    # restarts a stuck greeter (never with a user session active).
-    sudo install -m755 "$WD/sddm/sddm-greeter-guard" /usr/local/bin/
-    sudo install -m644 "$WD/sddm/sddm-greeter-guard.service" /etc/systemd/system/
-    sudo install -m644 "$WD/sddm/sddm-greeter-guard.timer" /etc/systemd/system/
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now sddm-greeter-guard.timer
 
     sudo systemctl enable sddm
     sudo systemctl enable --now bluetooth

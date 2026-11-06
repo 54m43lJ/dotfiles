@@ -12,11 +12,16 @@
 # and its link training interferes with cold-start detection on the direct
 # link.
 #
-# If no non-ignored GPU has a connected output (dGPU removed, dead, no
-# monitor on it, or the direct cable unplugged) the APU outputs are *enabled*
-# instead — that is the rescue console. This also undoes the name-based
-# `video=DP-4:d/DP-5:d` cmdline block, so a wrong name can never leave the
-# machine with no output at all.
+# If no non-ignored GPU has a connected output (removed, dead, no monitor, or
+# the direct cable unplugged) the APU outputs are *enabled* instead — that is
+# the rescue console. A connected-but-no-EDID keeper is not the fallback case:
+# the compositor can re-probe it; enabling the dock link during the wake-up
+# is exactly the competing link this service exists to keep quiet.
+#
+# In the keeper branch the panel's input source is also pinned to the dGPU
+# DisplayPort with DDC/CI. Its auto input-select can otherwise latch onto
+# the dock HDMI while that link is briefly alive, and stay there after the
+# APU is forced off — a black panel with a healthy dGPU output.
 #
 # Kill switches:
 #   - `drm_ignore_dock=0` on the kernel cmdline (editable from the GRUB menu)
@@ -33,14 +38,22 @@
 # port all renumber it -- exactly what turned DP-5/DP-3 into DP-4/DP-2
 # between kernel 7.2.3 and 7.2.6. cardN is a second, independent axis.
 #
-# Note: this runs after the kernel's first KMS probe, so the disable branch
-# cannot prevent boot-time link-training interference by itself -- that is
-# what the video= cmdline block and the pre-greeter EDID wait are for.
+# Note: this runs after the kernel's first KMS probe, so it cannot prevent
+# boot-time link training by itself. In this minimal setup that early window
+# is deliberately left unblocked; the service catches the dock path as soon
+# as it runs, before the greeter.
 set -u
+# systemd gives oneshot services a minimal environment; ddcutil needs a home
+# directory for its sleep-stats cache and exits 1 without one.
+export HOME=${HOME:-/root}
 
 IGNORED_GPUS=("0x1002:0x13c0")   # Granite Ridge iGPU = USB-C dock display link
 SYSFS=${DRM_SYSFS:-/sys/class/drm}                # override point for testing
 KEEPER_WAIT=${DRM_KEEPER_WAIT:-5}                 # seconds to wait for a keeper
+PANEL_MODEL=${PANEL_MODEL:-VG273U PRO}            # ddcutil EDID model match
+PANEL_DP_INPUT=${PANEL_DP_INPUT:-0x0f}            # VCP 60 value: DisplayPort-1
+DDC_TIMEOUT=${DDC_TIMEOUT:-2}                     # per ddcutil call
+DDC_RETRIES=${DDC_RETRIES:-2}
 
 log() { echo "drm-ignore-dock: $*"; }
 
@@ -66,7 +79,86 @@ conn_name() {
     echo "${path##*/}"
 }
 
-# any connector on a non-ignored GPU that reports connected?
+# ---- panel input source ----------------------------------------------
+# The VG273U PRO is wired twice: dGPU DisplayPort and dock HDMI (APU USB-C
+# DP alt-mode). Its input auto-select can latch onto the dock HDMI during
+# boot; once the APU outputs are forced off, the panel is left showing a
+# dead input while the dGPU itself is perfectly healthy. That is the
+# "unplug the dock and it works" symptom.
+#
+# DDC/CI rides the dGPU's DP AUX channel, so it can switch the panel back
+# even while the panel displays the other input. Only pin the input in the
+# keeper branch: when the APU is the fallback console, its dock HDMI input
+# is the one we want. Bus numbers are not stable, so match the EDID model.
+panel_bus() {
+    command -v ddcutil >/dev/null 2>&1 || return 1
+    timeout 5 ddcutil detect --brief 2>/dev/null | awk -v model="$PANEL_MODEL" '
+        /^Display [0-9]+/ { bus = "" }
+        /I2C bus:/        { bus = $3; sub("^/dev/i2c-", "", bus) }
+        /Monitor:/        { if (index($0, model)) { print bus; exit } }
+    '
+}
+
+panel_input() {
+    local bus=$1
+    timeout "$DDC_TIMEOUT" ddcutil --bus "$bus" getvcp 60 --terse 2>/dev/null \
+        | awk '{print $NF}'
+}
+
+# ddcutil prints "x0f" for VCP 60 but setvcp wants "0x0f"; compare normalized.
+hexval() {
+    local v=$1
+    v=${v#0x}
+    v=${v#x}
+    echo "${v,,}"
+}
+
+log_panel_input() {
+    local bus cur
+    bus=$(panel_bus) || return 0
+    [ -n "$bus" ] || return 0
+    cur=$(panel_input "$bus")
+    log "panel: input ${cur:-unknown} on i2c-$bus (model $PANEL_MODEL)"
+}
+
+pin_panel_input() {
+    local bus cur i
+    bus=$(panel_bus)
+    if [ -z "$bus" ]; then
+        log "panel: not found via ddcutil; cannot pin input"
+        return 0
+    fi
+
+    for i in $(seq 1 "$DDC_RETRIES"); do
+        cur=$(panel_input "$bus")
+        [ -n "$cur" ] && break
+        sleep 0.5
+    done
+    if [ -z "$cur" ]; then
+        log "panel: cannot read input on i2c-$bus"
+        return 0
+    fi
+    if [ "$(hexval "$cur")" = "$(hexval "$PANEL_DP_INPUT")" ]; then
+        log "panel: input $cur (DisplayPort-1) on i2c-$bus"
+        return 0
+    fi
+
+    log "panel: input $cur on i2c-$bus, forcing $PANEL_DP_INPUT (dGPU DisplayPort)"
+    for i in $(seq 1 "$DDC_RETRIES"); do
+        timeout "$DDC_TIMEOUT" ddcutil --bus "$bus" setvcp 60 "$PANEL_DP_INPUT" \
+            >/dev/null 2>&1 && break
+        sleep 0.5
+    done
+    sleep 0.5
+    cur=$(panel_input "$bus")
+    log "panel: input now ${cur:-unknown} on i2c-$bus"
+}
+
+# Any connector on a non-ignored GPU that reports connected? Deliberately
+# status-only: a connected connector with no EDID yet is the cold-boot
+# panel-wake race, not an absent monitor. Treating it as absent here would
+# enable the APU dock path during the wake-up, which is exactly the
+# competing link this service exists to keep quiet.
 keeper_connected() {
     local c id
     for c in "$SYSFS"/card[0-9]*-*/status; do
@@ -115,7 +207,7 @@ enable_ignored() {
         case "$c" in *Writeback*) continue ;; esac
         id=$(card_id_of "$c") || continue
         is_ignored "$id" || continue
-        # "detect" clears DRM_FORCE_OFF, so this also undoes video=...:d
+        # "detect" clears DRM_FORCE_OFF and re-probes the connector
         if echo detect > "$c" 2>/dev/null; then
             log "re-enabled $(conn_name "$c") ($id)"
         else
@@ -128,6 +220,7 @@ enable_ignored() {
 if grep -qw 'drm_ignore_dock=0' /proc/cmdline 2>/dev/null; then
     log "drm_ignore_dock=0 on cmdline: enabling ${IGNORED_GPUS[*]}"
     enable_ignored
+    log_panel_input
     log_map
     exit 0
 fi
@@ -138,6 +231,7 @@ until keeper_connected; do
     if [ "$SECONDS" -ge "$deadline" ]; then
         log "no display on a non-ignored GPU: leaving ${IGNORED_GPUS[*]} usable (fallback console)"
         enable_ignored
+        log_panel_input
         log_map
         exit 0
     fi
@@ -146,5 +240,8 @@ done
 
 # ---- normal case: panel is on the dGPU, silence the dock path --------
 disable_ignored
+# The panel may have latched onto the dock HDMI while the APU outputs were
+# still live. The dGPU link is available, so DDC/CI can pin it back.
+pin_panel_input
 log_map
 exit 0

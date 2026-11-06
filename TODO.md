@@ -1,3 +1,25 @@
+- [ ] 开机 dGPU DP 黑屏（2026-11-06 复现；拔掉 dock 可规避）
+  - 已证实 A（RA24 greeter 失败）: boot 324d41aa 有 208 条 amdgpu RA24 + 24 条 kwin
+    "Modeset failed"; 旧 sddm-greeter-guard 用 `journalctl -u sddm` 过滤 → 0 匹配,
+    因为 PAM 把 sddm-helper-start-wayland 放进 session-c1.scope, 不在 sddm.service
+    里 → guard 从未执行恢复。KWin 6.7+ 在 QHash 里随机排 RA24/AR24/AB24; amdgpu 在
+    DCN4 拒绝 RA24 (drm/amd#5339, KDE 524476)。
+  - 待确认 B（面板输入停在 dock 死输入）: VG273U PRO 同时接 dGPU DP 和 dock HDMI;
+    当前 VCP 60 = 0x0f (DisplayPort-1)。拔 dock 后正常 → 面板自动输入选择可能停在
+    dock HDMI, iGPU 被 force-off 后就是黑屏 (dGPU 其实正常)。
+  - 最小化测试 (2026-11-06, 已部署): 只保留 drm-ignore-dock + DDC pin; 移除 video=
+    cmdline、drm-wait-edid、sddm-greeter-guard。greeter 用 cage -s。下次开机观察:
+    - cage 在没有 EDID wait 时能否自己起来;
+    - drm-ignore-dock 日志里的 "panel: input ..." 读数;
+    - 若黑屏, 先抓下面这些再决定是否恢复某一层。
+  - 下次复现抓: `journalctl -b -1 -u drm-ignore-dock -u sddm`,
+    `ddcutil getvcp 60`, `ls /sys/class/drm/*/status`, `lsusb | grep -i dock`;
+    若 dGPU 正常但面板黑, 先看 drm-ignore-dock 日志里的 "panel: input ..."。
+- [x] Hyprland 0.57 4K60 闪屏（2026-11-06）
+  - VG273U PRO 的 preferred 60Hz（HBR2）会闪；highrr 4K160（HBR3）+ VRR 稳定。
+  - special/pc_beijing.lua 直接 hl.monitor({ mode=highrr, vrr=1, ... })；
+    apply_monitor_scales() 只做 layout（position/scale/reserved），不再写 mode/vrr
+    （hl.monitor 的增量为字段级，省略的字段保留原值）。
 - [ ] dpms off => on 后 float 窗口会跑到屏幕外面去
   - [ ] 而且必须要切换workspace才能正常输入/互动当前窗口
   - 根因(2026-10-17 调查): Hyprland <=v0.56.2 的 FALLBACK 占位输出状态机缺陷。dpms off 在 0.56

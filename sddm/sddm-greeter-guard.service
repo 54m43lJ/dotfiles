@@ -1,6 +1,0 @@
-[Unit]
-Description=Recover a stuck SDDM Wayland greeter (amdgpu RA24 modeset race)
-
-[Service]
-Type=oneshot
-ExecStart=/usr/local/bin/sddm-greeter-guard
