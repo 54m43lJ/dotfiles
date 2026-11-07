@@ -15,26 +15,47 @@ local palette = {
 -- ============================================
 -- Monitor defaults (before device-specific overrides)
 -- ============================================
--- No catch-all monitor rule here. hl.monitor() is additive: fields omitted
--- from a later call keep their previous value, but only when both calls use
--- the same rule key (name and "desc:..." are separate rules). The layout
--- pass below targets "desc:..." for described monitors, so device-specific
--- special/*.lua rules keep ownership of mode/VRR while this pass only
--- updates position/scale/reserved.
+-- monitor_control supports three match modes:
+--   dual (connector + description) > connector only > description only
+-- Native Hyprland rules are single-key: a name rule survives a different
+-- panel being plugged into the same port, and a desc: rule matches the same
+-- model on every link. Profiles are declared in per-device special/*.lua
+-- via monitor_control.define({ ... }).
+--
+-- monitor_control owns monitor rules, auto layout/scale and its own
+-- hyprland.start / monitor.added / config.reloaded handlers.  This file
+-- only keeps workspace assignment, wake recovery and autostart.
+local monitor_control = require("monitor_control")
 
 -- Toggle the first monitor's transform between 0 (normal) and 1 (90°)
 local function toggle_orientation()
     local mon = hl.get_active_monitor()
     if not mon then return end
     local new_transform = (mon.transform == 0) and 1 or 0
-    hl.monitor({
-        output    = mon.name,
-        transform = new_transform,
-    })
+
+    -- A profile owns the complete rule (mode/scale/VRR/layout).  Rebuild
+    -- the concrete spec before changing transform so the name-keyed rule
+    -- keeps those fields even when the profile itself omits them.
+    local profile = monitor_control.match(mon)
+    if profile then
+        local spec = monitor_control.resolve(mon, profile)
+        spec.transform = new_transform
+        hl.monitor(spec)
+    else
+        local layout = monitor_control.default_layout(mon)
+        hl.monitor({
+            output    = mon.name,
+            position  = layout.position,
+            scale     = layout.scale,
+            reserved  = layout.reserved,
+            transform = new_transform,
+        })
+    end
+
     hl.exec_cmd("hyprpaper")
 end
 
--- Per-monitor auto-scale: 1080p and below → 1x, above → 2x
+-- Active real monitors (FALLBACK excluded) for workspace assignment.
 -- FALLBACK (Hyprland's zero-outputs placeholder, seen for ~2s when a real
 -- panel re-trains its DP link on wake) must never receive config writes.
 local function real_monitors()
@@ -43,25 +64,6 @@ local function real_monitors()
         if mon.name ~= "FALLBACK" then out[#out + 1] = mon end
     end
     return out
-end
-
-local function apply_monitor_scales()
-    for _, mon in ipairs(real_monitors()) do
-        local scale = (mon.height > 1080) and 2 or 1
-        -- Deliberately omit mode/vrr: hl.monitor() is additive and keeps
-        -- fields not present in this call. This pass must only own layout
-        -- (position/scale/reserved), leaving a device rule's highrr/VRR alone.
-        -- Use the same rule key as device rules so hl.monitor()'s additive
-        -- field merge applies: a name "DP-2" rule and a "desc:..." rule are
-        -- separate rules, and the later one wins wholesale with defaults.
-        local output = mon.description and ("desc:" .. mon.description) or mon.name
-        hl.monitor({
-            output   = output,
-            position = "auto-right",
-            scale    = scale,
-            reserved = { top = -5 },
-        })
-    end
 end
 
 -- Per-monitor workspace ranges: monitor N → (N*10+1) .. (N*10+10).
@@ -322,7 +324,6 @@ hl.bind(mainMod .. " + SHIFT + N",        hl.dsp.window.move({ workspace = "empt
 -- Autostart
 -- ============================================
 hl.on("hyprland.start", function()
-    apply_monitor_scales()
     assign_workspaces()
     hl.exec_cmd("systemctl --user start hyprpolkitagent")
     hl.exec_cmd("hyprpaper")
@@ -442,13 +443,11 @@ local function wake_recovery()
 end
 
 hl.on("monitor.added", function()
-    apply_monitor_scales()
     assign_workspaces()
     wake_recovery()
 end)
 
 hl.on("config.reloaded", function()
-    apply_monitor_scales()
     assign_workspaces()
 end)
 
