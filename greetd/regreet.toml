@@ -1,10 +1,10 @@
 # ReGreet config. Colors/typography live in regreet.css; this file only
-# wires up behaviour. Reference look: sddm/minimal (Background.jpg + clock
-# on top, dark translucent card, no italics anywhere).
+# wires up behaviour. Reference look: the old minimal greeter (clock on
+# top, dark translucent card, no italics anywhere).
 
 [background]
 path = "/etc/greetd/background.jpg"
-# same as the minimal theme's PreserveAspectCrop
+# same as the old greeter's PreserveAspectCrop
 fit = "Cover"
 
 [GTK]
@@ -17,7 +17,7 @@ font_name = "Sans 14"
 greeting_msg = "Welcome back!"
 
 [widget.clock]
-# minimal theme showed HH:mm big + weekday/date small; regreet has one
+# the old greeter showed HH:mm big + weekday/date small; regreet has one
 # label, so combine
 format = "%H:%M  ·  %a, %b %-d"
 

@@ -2,7 +2,6 @@
 Operation = Upgrade
 Type = Package
 Target = sddm
-Target = qt5-*
 Target = qt6-*
 Target = qt7-*
 

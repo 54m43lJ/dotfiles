@@ -1,6 +1,7 @@
 #!/bin/bash
-# SDDM display manager + themes (sugar-dark requires Qt6, minimal works
-# on both Qt5 and Qt6 so it can serve as the fallback).
+# SDDM display manager + sugar-dark (Qt6). There is no custom fallback
+# theme: if sugar-dark cannot render, theme-check clears Current= and SDDM
+# uses its embedded Qt6 theme. No Qt5 runtime is installed or required.
 # The greeter runs on cage (see greeter.conf): the X11 greeter hits a
 # cold-boot EDID failure on the DP-3 link and kwin_wayland has its own RA24
 # scanout-format trap on RDNA4. Cage avoids both with the smallest possible
@@ -11,18 +12,13 @@ install_module() {
     # qt6-wayland provides the Qt Wayland platform plugin the greeter needs;
     # sddm does not depend on it directly. qt6-svg renders sugar-dark's
     # SVG icons (user, power buttons).
-    #
-    # Do not add Qt5 runtime packages just for the minimal fallback. The
-    # theme is source-compatible with Qt5/Qt6, but forcing Qt5 would invert
-    # the compatibility goal once Qt5 is retired; the machine decides which
-    # greeter runtimes it keeps installed.
     local SDDM_PKGS=(
         sddm cage qt6-wayland qt6-svg
     )
     pac_ins "${SDDM_PKGS[@]}"
 
+    # Remove the retired minimal theme from older deploys.
     sudo rm -rf /usr/share/sddm/themes/minimal /usr/share/sddm/themes/sugar-dark
-    sudo cp -r "$WD/sddm/minimal" /usr/share/sddm/themes/minimal
     sudo cp -r "$WD/sddm/sugar-dark" /usr/share/sddm/themes/sugar-dark
     sudo mkdir -p /etc/sddm.conf.d/
     sudo cp "$WD/sddm/theme.conf" /etc/sddm.conf.d/
@@ -33,12 +29,11 @@ install_module() {
     sudo install -m644 "$WD/sddm/theme-fallback.hook" /usr/share/libalpm/hooks/theme-fallback.hook
     # sddm-test-theme [theme]: nested-window greeter for UI testing.
     sudo install -m755 "$WD/sddm/test-theme.sh" /usr/local/bin/sddm-test-theme
-    # Static + per-greeter guard for the minimal fallback contract.
-    sudo install -m755 "$WD/sddm/check-minimal-compat.sh" /usr/local/bin/sddm-check-minimal
+    # Remove the retired minimal compatibility checker from older deploys.
+    sudo rm -f /usr/local/bin/sddm-check-minimal
 
     # The alpm hook only runs on upgrades; validate once now so a fresh
     # deploy never sits on a theme this machine cannot render.
-    sudo /usr/local/bin/sddm-check-minimal || true
     sudo /usr/local/bin/theme-check.sh || true
 
     sudo systemctl enable sddm

@@ -1,6 +1,6 @@
-/* ReGreet styling — dark palette tokens from palette/README.md, modeled
-   on the sddm/minimal theme: translucent dark panels, gold hairlines,
-   surface inputs, purple accents. Project rule: NO italics anywhere.
+/* ReGreet styling — dark palette tokens from palette/README.md: translucent
+   dark panels, gold hairlines, surface inputs, purple accents. Project
+   rule: NO italics anywhere.
 
    regreet 0.5 builds its UI with relm4 templates, which never call
    set_widget_name — CSS #id selectors match NOTHING. Everything here

@@ -1,7 +1,7 @@
 #!/bin/bash
 # greetd + regreet greeter inside the cage kiosk compositor.
 # ARCHIVED ALTERNATIVE: not registered in main.sh MODULES (the restyled
-# regreet look didn't pan out; SDDM + minimal theme stays the default
+# regreet look didn't pan out; SDDM + sugar-dark stays the default
 # greeter). Run manually if ever wanted; see sddm/ for the active setup.
 
 install_module() {
