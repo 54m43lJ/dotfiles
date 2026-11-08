@@ -214,6 +214,16 @@ hl.config({
     },
 })
 
+-- The panel is on a 4K60 8-bit HDMI link. Hyprland's auto-HDR would switch
+-- fullscreen HDR video to WCG/HDR, which this link cannot represent and
+-- which visibly distorts colors. No HDR is used here: stay in SDR and let
+-- the app tone-map instead.
+hl.config({
+    render = {
+        cm_auto_hdr = 0,
+    },
+})
+
 -- ============================================
 -- Input
 -- ============================================
