@@ -101,7 +101,7 @@ Item {
             }
 
             background: Rectangle {
-                radius: 10
+                radius: 10 * root.uiScale
                 color: root.palette.window
                 layer.enabled: true
                 layer.effect: MultiEffect {
@@ -169,7 +169,7 @@ Item {
             color: "transparent"
             border.color: root.palette.text
             border.width: parent.activeFocus ? 2 : 1
-            radius: config.RoundCorners || 0
+            radius: Math.min(root.cornerRadius, height / 2)
         }
         Keys.onReturnPressed: {
             if (username.text != "" && password.text != "")

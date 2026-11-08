@@ -42,6 +42,12 @@ Pane {
     font.pointSize: config.FontSize !== "" ? config.FontSize : Math.max(1, parseInt(height / 80))
     focus: true
 
+    // Keep the theme's proportions when the greeter runs at a larger logical
+    // size (e.g. 4K without HiDPI scaling), where the fixed RoundCorners value
+    // would otherwise turn the pill-shaped fields into rounded rectangles.
+    readonly property real uiScale: height / 1080
+    readonly property real cornerRadius: (config.RoundCorners || 0) * uiScale
+
     property bool leftleft: config.HaveFormBackground == "true" &&
                             config.PartialBlur == "true" &&
                             config.FormPosition == "left" &&

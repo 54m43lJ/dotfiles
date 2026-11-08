@@ -73,7 +73,7 @@ Column {
                 }
                 highlighted: parent.highlightedIndex === index
                 background: Rectangle {
-		    radius: config.RoundCorners / 2
+		    radius: root.cornerRadius / 2
                     color: selectUser.highlightedIndex === index ? root.palette.highlight : "transparent"
                 }
             }
@@ -114,7 +114,7 @@ Column {
                 }
 
                 background: Rectangle {
-                    radius: config.RoundCorners
+                    radius: root.cornerRadius
                     color: "#444"
                     layer.enabled: true
                     layer.effect: MultiEffect {
@@ -182,7 +182,7 @@ Column {
                 color: "transparent"
                 border.color: root.palette.text
                 border.width: parent.activeFocus ? 2 : 1
-                radius: config.RoundCorners || 0
+                radius: Math.min(root.cornerRadius, height / 2)
             }
             Keys.onReturnPressed: submitLogin()
             KeyNavigation.down: password
@@ -230,7 +230,7 @@ Column {
                 color: "transparent"
                 border.color: root.palette.text
                 border.width: parent.activeFocus ? 2 : 1
-                radius: config.RoundCorners || 0
+                radius: Math.min(root.cornerRadius, height / 2)
             }
             Keys.onReturnPressed: submitLogin()
             KeyNavigation.down: revealSecret

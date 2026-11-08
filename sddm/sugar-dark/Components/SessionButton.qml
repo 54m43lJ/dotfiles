@@ -56,7 +56,7 @@ Item {
             }
             highlighted: parent.highlightedIndex === index
             background: Rectangle {
-                radius: config.RoundCorners * 0.5
+                radius: root.cornerRadius * 0.5
                 color: selectSession.highlightedIndex === index ? root.palette.highlight : "transparent"
             }
         }
@@ -76,7 +76,7 @@ Item {
         }
 
         background: Rectangle {
-            radius: config.RoundCorners
+            radius: root.cornerRadius
             color: "transparent"
             border.width: parent.visualFocus ? 1 : 0
             border.color: "transparent"
@@ -103,7 +103,7 @@ Item {
             }
 
             background: Rectangle {
-                radius: config.RoundCorners
+                radius: root.cornerRadius
                 color: "#444"
                 layer.enabled: true
                 layer.effect: MultiEffect {
