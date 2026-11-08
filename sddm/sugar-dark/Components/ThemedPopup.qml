@@ -2,9 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 
-// Shared dropdown shell: rounded panel, soft shadow and a height reveal.
-// Grow-up popups keep their bottom edge pinned to the trigger by animating y
-// together with height.
+// Shared dropdown shell: rounded panel, soft shadow and a slide-in reveal.
+// growUp chooses whether the menu slides up from below or down from above.
 Popup {
     id: root
 
@@ -15,8 +14,9 @@ Popup {
     property bool growUp: false
     property int expandDuration: 200
     property int collapseDuration: 140
+    property int slideDistance: 16
 
-    padding: 10
+    padding: 4
 
     background: Rectangle {
         radius: root.cornerRadius
@@ -34,22 +34,15 @@ Popup {
     enter: Transition {
         ParallelAnimation {
             NumberAnimation {
-                property: "height"
-                from: 0
-                to: root.implicitHeight
-                duration: root.expandDuration
-                easing.type: Easing.OutCubic
-            }
-            NumberAnimation {
                 property: "opacity"
                 from: 0
                 to: 1
-                duration: root.expandDuration
+                duration: root.expandDuration * 0.6
                 easing.type: Easing.OutCubic
             }
             NumberAnimation {
                 property: "y"
-                from: root.growUp ? root.y + root.implicitHeight : root.y
+                from: root.growUp ? root.y + root.slideDistance : root.y - root.slideDistance
                 to: root.y
                 duration: root.expandDuration
                 easing.type: Easing.OutCubic
@@ -60,13 +53,6 @@ Popup {
     exit: Transition {
         ParallelAnimation {
             NumberAnimation {
-                property: "height"
-                from: root.height
-                to: 0
-                duration: root.collapseDuration
-                easing.type: Easing.InCubic
-            }
-            NumberAnimation {
                 property: "opacity"
                 from: 1
                 to: 0
@@ -76,7 +62,7 @@ Popup {
             NumberAnimation {
                 property: "y"
                 from: root.y
-                to: root.growUp ? root.y + root.implicitHeight : root.y
+                to: root.growUp ? root.y + root.slideDistance : root.y - root.slideDistance
                 duration: root.collapseDuration
                 easing.type: Easing.InCubic
             }

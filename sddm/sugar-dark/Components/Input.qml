@@ -65,6 +65,10 @@ Column {
             delegate: ItemDelegate {
                 width: parent.width
                 anchors.horizontalCenter: parent.horizontalCenter
+                topPadding: 4
+                bottomPadding: 4
+                leftPadding: 8
+                rightPadding: 8
                 contentItem: Text {
 		    text: model.realName != "" ? model.realName : model.name
                     font.pointSize: root.font.pointSize * 0.8
@@ -127,14 +131,15 @@ Column {
             popup: ThemedPopup {
                 y: parent.height + 8
                 rightMargin: config.ForceRightToLeft == "true" ? root.padding + usernameField.width / 2 : undefined
-                width: usernameField.width
+                width: usernameField.width * 0.55
+                x: (usernameField.width - width) / 2
                 implicitHeight: contentItem.implicitHeight
                 cornerRadius: root.cornerRadius
                 borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
 
                 contentItem: ListView {
                     clip: true
-                    implicitHeight: contentHeight + 20
+                    implicitHeight: contentHeight + 8
                     model: selectUser.popup.visible ? selectUser.delegateModel : null
                     currentIndex: selectUser.highlightedIndex
                     ScrollIndicator.vertical: ScrollIndicator { }

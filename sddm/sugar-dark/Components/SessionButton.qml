@@ -51,6 +51,10 @@ Item {
         delegate: ItemDelegate {
             width: parent.width
             anchors.horizontalCenter: parent.horizontalCenter
+            topPadding: 4
+            bottomPadding: 4
+            leftPadding: 8
+            rightPadding: 8
             contentItem: Text {
                 text: model.name
                 font.pointSize: root.font.pointSize * 0.8
@@ -106,10 +110,10 @@ Item {
 
         popup: ThemedPopup {
             id: popupHandler
-            x: root.font.pointSize * 2 - displayedItem.implicitWidth * 0.1
+            x: (selectSession.width - width) / 2
             y: -contentItem.implicitHeight - 10
             rightMargin: config.ForceRightToLeft == "true" ? root.padding + sessionButton.width * 0.6 : undefined
-            width: sessionButton.width * 0.55
+            width: Math.max(root.font.pointSize * 10, selectSession.width * 0.8)
             implicitHeight: contentItem.implicitHeight
             cornerRadius: root.cornerRadius
             borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
@@ -117,7 +121,7 @@ Item {
 
             contentItem: ListView {
                 clip: true
-                implicitHeight: contentHeight + 20
+                implicitHeight: contentHeight + 8
                 model: selectSession.popup.visible ? selectSession.delegateModel : null
                 currentIndex: selectSession.highlightedIndex
                 ScrollIndicator.vertical: ScrollIndicator { }
