@@ -16,8 +16,14 @@ Popup {
     property int expandDuration: 200
     property int collapseDuration: 140
     property int slideDistance: 16
+    property real anchorY: 0
 
     padding: 0
+
+    // y is animated for the slide, which breaks its binding. Reset it to the
+    // caller's anchor before every show so repeated open/close cycles do not
+    // drift upward.
+    onAboutToShow: y = anchorY
 
     background: Rectangle {
         radius: root.cornerRadius

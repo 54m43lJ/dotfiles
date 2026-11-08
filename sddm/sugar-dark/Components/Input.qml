@@ -130,7 +130,7 @@ Column {
             }
 
             popup: ThemedPopup {
-                y: parent.height + 8
+                anchorY: parent.height + 8
                 rightMargin: config.ForceRightToLeft == "true" ? root.padding + usernameField.width / 2 : undefined
                 width: usernameField.width
                 x: 0

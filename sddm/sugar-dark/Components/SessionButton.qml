@@ -122,7 +122,7 @@ Item {
         popup: ThemedPopup {
             id: popupHandler
             x: (selectSession.width - width) / 2
-            y: -contentItem.implicitHeight - 10
+            anchorY: -contentItem.implicitHeight - 10
             rightMargin: config.ForceRightToLeft == "true" ? root.padding + sessionButton.width * 0.6 : undefined
             width: selectSession.width
             implicitHeight: contentItem.implicitHeight
