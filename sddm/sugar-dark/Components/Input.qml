@@ -26,8 +26,13 @@ Column {
     id: inputContainer
     Layout.fillWidth: true
 
-    property Item exposeLogin: loginButton
+    property Item exposeLogin: submitButton
     property bool failed
+
+    function submitLogin() {
+        if (username.text != "" && password.text != "")
+            sddm.login(username.text, password.text, sessionSelect.selectedSession)
+    }
 
     // USERNAME INPUT
     Item {
@@ -179,7 +184,7 @@ Column {
                 border.width: parent.activeFocus ? 2 : 1
                 radius: config.RoundCorners || 0
             }
-            Keys.onReturnPressed: loginButton.clicked()
+            Keys.onReturnPressed: submitLogin()
             KeyNavigation.down: password
             z: 1
 
@@ -227,8 +232,76 @@ Column {
                 border.width: parent.activeFocus ? 2 : 1
                 radius: config.RoundCorners || 0
             }
-            Keys.onReturnPressed: loginButton.clicked()
+            Keys.onReturnPressed: submitLogin()
             KeyNavigation.down: revealSecret
+        }
+
+        Button {
+            id: submitButton
+            width: password.height * 0.8
+            height: width
+            anchors.right: password.right
+            anchors.rightMargin: password.height * 0.2
+            anchors.verticalCenter: password.verticalCenter
+            enabled: username.text != "" && password.text != ""
+            hoverEnabled: true
+            z: 2
+            onClicked: submitLogin()
+
+            contentItem: Text {
+                text: "→"
+                font.family: root.font.family
+                font.pointSize: root.font.pointSize * 1.5
+                font.weight: Font.DemiBold
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                color: root.palette.text
+                opacity: submitButton.enabled ? 1 : 0.3
+            }
+
+            background: Rectangle {
+                radius: height / 2
+                color: "transparent"
+            }
+
+            states: [
+                State {
+                    name: "pressed"
+                    when: submitButton.down
+                    PropertyChanges {
+                        target: submitButton.contentItem
+                        color: Qt.darker(root.palette.highlight, 1.1)
+                        opacity: 1
+                    }
+                },
+                State {
+                    name: "hovered"
+                    when: submitButton.hovered
+                    PropertyChanges {
+                        target: submitButton.contentItem
+                        color: root.palette.highlight
+                        opacity: 1
+                    }
+                },
+                State {
+                    name: "focused"
+                    when: submitButton.visualFocus
+                    PropertyChanges {
+                        target: submitButton.contentItem
+                        color: root.palette.highlight
+                        opacity: 1
+                    }
+                }
+            ]
+
+            transitions: [
+                Transition {
+                    PropertyAnimation {
+                        properties: "color, opacity"
+                        duration: 150
+                    }
+                }
+            ]
         }
 
         states: [
@@ -302,7 +375,7 @@ Column {
             }
 
             Keys.onReturnPressed: toggle()
-            KeyNavigation.down: loginButton
+            KeyNavigation.down: submitButton
 
             background: Rectangle {
                 color: "transparent"
@@ -430,117 +503,6 @@ Column {
                     }
                 }
             ]
-        }
-    }
-
-    // LOGIN BUTTON
-    Item {
-        id: login
-        height: root.font.pointSize * 3
-        width: parent.width / 2
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        Button {
-            id: loginButton
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: config.TranslateLogin || textConstants.login
-            height: root.font.pointSize * 3
-            implicitWidth: parent.width
-            enabled: username.text != "" && password.text != "" ? true : false
-            hoverEnabled: true
-
-            contentItem: Text {
-                text: parent.text
-                color: "#444"
-                font.pointSize: root.font.pointSize
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                opacity: 0.5
-            }
-
-            background: Rectangle {
-                id: buttonBackground
-                color: "white"
-                opacity: 0.2
-                radius: config.RoundCorners || 0
-            }
-
-            states: [
-                State {
-                    name: "pressed"
-                    when: loginButton.down
-                    PropertyChanges {
-                        target: buttonBackground
-                        color: Qt.darker(root.palette.highlight, 1.1)
-                        opacity: 1
-                    }
-                    PropertyChanges {
-                        target: loginButton.contentItem
-                        color: "#444"
-                    }
-                },
-                State {
-                    name: "hovered"
-                    when: loginButton.hovered
-                    PropertyChanges {
-                        target: buttonBackground
-                        color: root.palette.highlight
-                        opacity: 1
-                    }
-                    PropertyChanges {
-                        target: loginButton.contentItem
-                        opacity: 1
-                        color: "#444"
-                    }
-                },
-                State {
-                    name: "focused"
-                    when: loginButton.visualFocus
-                    PropertyChanges {
-                        target: buttonBackground
-                        color: root.palette.highlight
-                        opacity: 1
-                    }
-                    PropertyChanges {
-                        target: loginButton.contentItem
-                        opacity: 1
-                        color: "#444"
-                    }
-                },
-                State {
-                    name: "enabled"
-                    when: loginButton.enabled
-                    PropertyChanges {
-                        target: buttonBackground;
-                        color: root.palette.text;
-                        opacity: 1
-                    }
-                    PropertyChanges {
-                        target: loginButton.contentItem;
-                        opacity: 1
-                    }
-                }
-            ]
-
-            transitions: [
-                Transition {
-                    from: ""; to: "enabled"
-                    PropertyAnimation {
-                        properties: "opacity, color";
-                        duration: 500
-                    }
-                },
-                Transition {
-                    from: "enabled"; to: ""
-                    PropertyAnimation {
-                        properties: "opacity, color";
-                        duration: 300
-                    }
-                }
-            ]
-
-            Keys.onReturnPressed: clicked()
-            onClicked: sddm.login(username.text, password.text, sessionSelect.selectedSession)
         }
     }
 

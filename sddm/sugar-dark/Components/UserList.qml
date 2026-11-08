@@ -171,7 +171,10 @@ Item {
             border.width: parent.activeFocus ? 2 : 1
             radius: config.RoundCorners || 0
         }
-        Keys.onReturnPressed: loginButton.clicked()
+        Keys.onReturnPressed: {
+            if (username.text != "" && password.text != "")
+                sddm.login(username.text, password.text, sessionSelect.selectedSession)
+        }
         KeyNavigation.down: password
         z: 1
 
