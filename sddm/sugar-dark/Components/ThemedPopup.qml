@@ -2,8 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
 
-// Shared dropdown shell: rounded panel, soft shadow and a pure slide-in reveal.
-// growUp chooses whether the menu slides up from below or down from above.
+// Shared dropdown shell: rounded panel, soft shadow and a slide-expand reveal.
+// The menu grows by height and slides into place; there is no fade.
+// growUp chooses whether the menu expands upward or downward.
 Popup {
     id: root
 
@@ -34,8 +35,15 @@ Popup {
     enter: Transition {
         ParallelAnimation {
             NumberAnimation {
+                property: "height"
+                from: 0
+                to: root.implicitHeight
+                duration: root.expandDuration
+                easing.type: Easing.OutCubic
+            }
+            NumberAnimation {
                 property: "y"
-                from: root.growUp ? root.y + root.slideDistance : root.y - root.slideDistance
+                from: root.growUp ? root.y + root.implicitHeight + root.slideDistance : root.y - root.slideDistance
                 to: root.y
                 duration: root.expandDuration
                 easing.type: Easing.OutCubic
@@ -46,9 +54,16 @@ Popup {
     exit: Transition {
         ParallelAnimation {
             NumberAnimation {
+                property: "height"
+                from: root.height
+                to: 0
+                duration: root.collapseDuration
+                easing.type: Easing.InCubic
+            }
+            NumberAnimation {
                 property: "y"
                 from: root.y
-                to: root.growUp ? root.y + root.slideDistance : root.y - root.slideDistance
+                to: root.growUp ? root.y + root.implicitHeight + root.slideDistance : root.y - root.slideDistance
                 duration: root.collapseDuration
                 easing.type: Easing.InCubic
             }
