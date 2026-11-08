@@ -50,6 +50,22 @@ And as if that wouldn't still be enough you can translate every single button an
 
 Please read the [Sugar Wiki on Github](https://github.com/MarianArlt/sddm-sugar-light/wiki/Before-you-begin) for a detailed description of every variable available, what it does and the values it accepts. The `theme.conf` itself is also very well commented for you to get right at it.
 
+### Dotfiles palette
+
+This copy is themed from `palette/README.md` (dark mode), the project-wide
+read-only palette. `theme.conf` exposes the subset used here in `[Palette]`;
+`Main.qml` maps it to `root.color*` and components consume those tokens. The
+login-specific mapping is documented in `LOGIN_UI.md`.
+
+- `surface`: panel/menu background
+- `fg`: body text
+- `muted`: borders/icons and secondary small text (date, Session, Caps Lock)
+- `purple-light`: accent text and selection fill
+- `purple`: accent borders/focus outlines
+- `cream`: brightest text (clock time)
+- `gold`: dropdown shadow only
+- `red`: login errors
+
 ### Legal Notice
 
 Copyright (C) 2018 Marian Arlt.  

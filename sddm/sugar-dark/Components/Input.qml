@@ -68,7 +68,7 @@ Column {
                 active: !userDropdown.opened &&
                         (usernameHover.hovered || username.activeFocus || selectUser.activeFocus)
                 pressed: usernameTriggerMouse.pressed
-                fillColor: root.colorPurple
+                fillColor: root.colorPurpleLight
                 activeOpacity: 0.12
                 pressedOpacity: 0.2
             }
@@ -151,9 +151,9 @@ Column {
             cornerRadius: root.cornerRadius
             fillColor: root.colorSurface
             textColor: root.colorFg
-            highlightedTextColor: root.colorCream
-            highlightColor: root.colorPurple
-            borderColor: selectUser.active ? root.colorPurpleLight : root.colorMuted
+            highlightedTextColor: root.colorPurpleLight
+            highlightColor: root.colorPurpleLight
+            borderColor: selectUser.active ? root.colorPurple : root.colorMuted
             borderWidth: selectUser.active ? 2 : 1
             shadowColor: root.colorShadow
             restoreFocusItem: username
@@ -229,7 +229,7 @@ Column {
                     radius: height / 2
                     active: submitButton.hovered || submitButton.visualFocus
                     pressed: submitButton.down
-                    fillColor: root.colorPurple
+                    fillColor: root.colorPurpleLight
                     activeOpacity: 0.16
                     pressedOpacity: 0.26
                 }
@@ -281,7 +281,7 @@ Column {
                 when: password.activeFocus
                 PropertyChanges {
                     target: password.background
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
                 PropertyChanges {
                     target: password
@@ -351,7 +351,7 @@ Column {
             background: Rectangle {
                 color: "transparent"
                 border.width: parent.visualFocus ? 1 : 0
-                border.color: parent.visualFocus ? root.colorPurpleLight : "transparent"
+                border.color: parent.visualFocus ? root.colorPurple : "transparent"
                 height: parent.visualFocus ? 2 : 0
                 width: (indicator.width + indicatorLabel.contentWidth + indicatorLabel.anchors.leftMargin + 2)
                 anchors.top: indicatorLabel.bottom
@@ -375,11 +375,11 @@ Column {
                 }
                 PropertyChanges {
                     target: indicator
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
                 PropertyChanges {
                     target: revealSecret.background
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
             },
             State {
@@ -391,7 +391,7 @@ Column {
                 }
                 PropertyChanges {
                     target: indicator
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
                 PropertyChanges {
                     target: dot
@@ -399,7 +399,7 @@ Column {
                 }
                 PropertyChanges {
                     target: revealSecret.background
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
             },
             State {
@@ -411,7 +411,7 @@ Column {
                 }
                 PropertyChanges {
                     target: indicator
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
                 PropertyChanges {
                     target: dot
@@ -419,7 +419,7 @@ Column {
                 }
                 PropertyChanges {
                     target: revealSecret.background
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
             }
         ]

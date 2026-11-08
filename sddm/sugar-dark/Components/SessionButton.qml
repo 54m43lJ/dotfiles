@@ -58,7 +58,7 @@ Item {
             active: !sessionDropdown.opened &&
                     (sessionMouse.containsMouse || selectSession.activeFocus)
             pressed: sessionMouse.pressed
-            fillColor: root.colorPurple
+            fillColor: root.colorPurpleLight
             activeOpacity: 0.12
             pressedOpacity: 0.2
         }
@@ -102,9 +102,9 @@ Item {
         cornerRadius: root.cornerRadius
         fillColor: root.colorSurface
         textColor: root.colorFg
-        highlightedTextColor: root.colorCream
-        highlightColor: root.colorPurple
-        borderColor: selectSession.active ? root.colorPurpleLight : root.colorMuted
+        highlightedTextColor: root.colorPurpleLight
+        highlightColor: root.colorPurpleLight
+        borderColor: selectSession.active ? root.colorPurple : root.colorMuted
         borderWidth: selectSession.active ? 2 : 1
         shadowColor: root.colorShadow
         restoreFocusItem: selectSession

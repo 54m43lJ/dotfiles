@@ -61,7 +61,7 @@ Item {
             }
             highlighted: parent.highlightedIndex === index
             background: Rectangle {
-                color: selectUser.highlightedIndex === index ? root.colorPurple : "transparent"
+                color: selectUser.highlightedIndex === index ? root.colorPurpleLight : "transparent"
             }
         }
 
@@ -184,7 +184,7 @@ Item {
                 when: username.activeFocus
                 PropertyChanges {
                     target: username.background
-                    border.color: root.colorPurpleLight
+                    border.color: root.colorPurple
                 }
                 PropertyChanges {
                     target: username

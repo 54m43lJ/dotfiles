@@ -158,11 +158,11 @@ Pane {
                     radius: Math.min(root.cornerRadius, height / 2)
                     active: vkb.hovered || vkb.visualFocus
                     pressed: vkb.down
-                    fillColor: root.colorPurple
+                    fillColor: root.colorPurpleLight
                     activeOpacity: 0.12
                     pressedOpacity: 0.2
-                    border.width: vkb.visualFocus ? 1 : 0
-                    border.color: root.colorPurpleLight
+                    border.width: vkb.visualFocus ? 2 : 0
+                    border.color: root.colorPurple
                 }
             }
         }

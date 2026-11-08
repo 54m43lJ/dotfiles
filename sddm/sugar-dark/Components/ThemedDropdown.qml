@@ -41,15 +41,15 @@ Item {
 
     // Color API. The component does not know about the theme palette: every
     // color is injected by the consumer (fillColor = surface, borderColor =
-    // purple-light/muted, textColor = fg, highlightedTextColor = cream,
-    // highlightColor = purple, shadowColor = gold alpha).
+    // purple, textColor = fg, highlightedTextColor = purple-light,
+    // highlightColor = purple-light, shadowColor = gold alpha).
     property color fillColor: "#3E3542"
     property color borderColor: "#B0B4BC"
     property int borderWidth: 1
     property color shadowColor: "#8C9D7E4D"
     property color textColor: "#D6CAB6"
-    property color highlightedTextColor: textColor
-    property color highlightColor: "#89338E"
+    property color highlightedTextColor: "#E593E7"
+    property color highlightColor: "#E593E7"
     property real hoverOpacity: 0.14
     property real cornerRadius: 30
     property real rowHeight: 40

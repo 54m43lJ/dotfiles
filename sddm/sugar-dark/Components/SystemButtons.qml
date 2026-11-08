@@ -55,11 +55,11 @@ RowLayout {
                     radius: Math.min(root.cornerRadius, height / 2)
                     active: icon.hovered || icon.visualFocus
                     pressed: icon.down
-                    fillColor: root.colorPurple
+                    fillColor: root.colorPurpleLight
                     activeOpacity: 0.12
                     pressedOpacity: 0.2
-                    border.width: icon.visualFocus ? 1 : 0
-                    border.color: root.colorPurpleLight
+                    border.width: icon.visualFocus ? 2 : 0
+                    border.color: root.colorPurple
                 }
             }
             Keys.onReturnPressed: clicked()
@@ -80,7 +80,7 @@ RowLayout {
                     }
                     PropertyChanges {
                         target: parent.children[index].background
-                        border.color: root.colorPurpleLight
+                        border.color: root.colorPurple
                     }
                 },
                 State {
@@ -92,7 +92,7 @@ RowLayout {
                     }
                     PropertyChanges {
                         target: parent.children[index].background
-                        border.color: root.colorPurpleLight
+                        border.color: root.colorPurple
                     }
                 },
                 State {
@@ -104,7 +104,7 @@ RowLayout {
                     }
                     PropertyChanges {
                         target: parent.children[index].background
-                        border.color: root.colorPurpleLight
+                        border.color: root.colorPurple
                     }
                 }
             ]

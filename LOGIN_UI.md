@@ -28,6 +28,8 @@ y 方向百分比相对高度。hyprlock 的配置使用 surface 像素，换算
 
 颜色统一取 `palette/README.md` 的 **dark** mode；SDDM 侧同时落在
 `theme.conf` 的 `[Palette]` 段。登录界面不再维护独立颜色。
+`palette/README.md` 是只读参考；登录界面的 token 使用方式记录在本文和
+`sddm/sugar-dark/README.md`。
 
 | 令牌 | 值 |
 | --- | --- |
@@ -36,13 +38,15 @@ y 方向百分比相对高度。hyprlock 的配置使用 surface 像素，换算
 | 面板底色 | `surface #3E3542`，alpha `0.6` |
 | 主文字 | `fg #D6CAB6` |
 | 边框/图标/次要文字 | `muted #B0B4BC` |
-| 强调文字/焦点 | `purple-light #E593E7` |
-| 悬停/选中填充 | `purple #89338E` |
+| 强调文字/选中填充 | `purple-light #E593E7` |
+| 边框/焦点描边 | `purple #89338E` |
 | 高亮文字/装饰亮线 | `cream #FFF7E4` |
 | 弹层阴影 | `gold #9D7E4D`，alpha `0.55` |
 
 普通文字统一 `fg`；日期、`Session:` 标签和 Caps Lock 提示用 `muted`，时间用 `cream`，
-激活/焦点文字用 `purple-light`，错误用 `red`。`gold` 只用于弹层阴影，不再作为文字颜色。
+强调文字和选中项填充用 `purple-light`；边框/焦点描边用 `purple`。错误用 `red`。
+`gold` 只用于弹层阴影，不再作为文字颜色。
+hyprlock 密码框边框与用户名框共用 `muted`；`purple` 用于 SDDM 的焦点描边。
 | 错误/危险 | `red #CC2A47` |
 | 字体 | `Noto Sans` |
 | 图标字体 | `Noto Sans Nerd Font`，用户图标 `U+F007` |
@@ -61,11 +65,20 @@ y 方向百分比相对高度。hyprlock 的配置使用 surface 像素，换算
 | 用户框 | 面板中心 | (80%, 46.4%) | 20% × 3.7% | — | 下拉框胶囊；`muted` 描边 1U；无箭头；内部文本框透明无边框 |
 | 用户图标 | 用户框左侧 | (72%, 46.4%) | 16U × 16U | — | `muted`，激活时 `purple-light` |
 | 用户名 | 面板中心 | (80%, 46.4%) | — | 13pt | `fg`，聚焦时 `purple-light` |
-| 密码框 | 面板中心 | (80%, 51.8%) | 20% × 3.7% | — | `purple-light` 描边 2U，胶囊，透明底 |
+| 密码框 | 面板中心 | (80%, 51.8%) | 20% × 3.7% | — | `purple` 描边 2U，胶囊，透明底；聚焦文字 `purple-light` |
 | 提交箭头 | 密码框右端 | (89%, 51.8%) | 约 23U × 12U | 19.5pt | `→`，`fg`；点击提交 |
 | 会话标签 | 面板左下 | 中心 y 96.5%；值胶囊左缘 70% | — | 11.5pt | `muted` 静态 `Session:` 标签在胶囊左侧；值胶囊内只显示值；无箭头 |
 
 界面上没有独立的 Login 按钮，也没有 Welcome 标题。
+
+描边粗细（字段、按钮、面板边框，除非另注）：
+
+- 未聚焦：1U
+- 聚焦：2U
+- 没有焦点态：1U
+
+由此 SDDM 用户框未聚焦 1U、聚焦 2U；密码框聚焦 2U。hyprlock 所有边框统一 1U
+（`$border = 2` @4K@2x）。复选框 focus underline 等纯指示线不适用本条。
 
 ## 4. 组件推导指导
 
@@ -93,6 +106,9 @@ y 方向百分比相对高度。hyprlock 的配置使用 surface 像素，换算
   1080p@1x 下为 1。
 - 胶囊用 `rounding = -1`；描边/边框按 `U * surfaceScale` 推导。
 - 图标是字体字形，选一个字号让字形视觉高度接近 16U 即可。
+- 用户名框和密码框共用 `muted` 和同一个 `$border = 2`（1U @4K@2x）；hyprlock 所有
+  边框统一 1U。文字/dots 用 `purple-light`，check 指示保持 `purple-light`。不使用
+  `fade_on_empty`。
 
 ## 5. 交互样式（仅 SDDM）
 
@@ -100,7 +116,7 @@ hyprlock 没有悬停状态、按钮或下拉框，以下规则只适用于 gree
 
 | 项目 | 规则 |
 | --- | --- |
-| 悬停高亮 | 半透明 `purple` 填充，内缩 2–4U，默认 150ms `OutCubic` 淡入；高亮行文字用 `cream`；不使用渐变 |
+| 悬停高亮 | 半透明 `purple-light` 填充，内缩 2–4U，默认 150ms `OutCubic` 淡入；高亮行文字用 `purple-light`；不使用渐变 |
 | 入口与菜单 | 入口和菜单共用同一个面板、边框和底色；入口是面板在触发边的一行，不再有独立边框或间距 |
 | 下拉展开 | 只动画菜单部分的高度 0→内容高度，入口行保持原位；内容同时沿展开方向滑入 16U；不做纵向缩放；展开 200ms，收起 140ms |
 | 展开方向 | 向下展开时固定面板上缘向下长；向上展开时固定面板下缘向上长，y 绑定到动画高度 |
@@ -115,7 +131,8 @@ hyprlock 没有悬停状态、按钮或下拉框，以下规则只适用于 gree
 `y = trigger.y + trigger.height - height`，所以入口和菜单始终是同一个几何体。
 
 `ThemedDropdown` 不内置主题颜色，所有颜色通过属性注入：
-`fillColor`、`borderColor`、`textColor`、`highlightedTextColor`、`highlightColor`、`shadowColor`。
+`fillColor`（surface）、`borderColor`（purple）、`textColor`（fg）、`highlightedTextColor`（purple-light）、
+`highlightColor`（purple-light）、`shadowColor`（gold alpha）。
 SDDM 从 `theme.conf` 的 `[Palette]` 段取值，hyprlock 使用同一组 dark token。
 
 按钮、下拉触发器和菜单项共用同一套悬停高亮；用户名/会话下拉共用同一个可展开面板。
