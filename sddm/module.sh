@@ -1,5 +1,6 @@
 #!/bin/bash
-# SDDM display manager + Qt6 themes (sugar-dark, minimal).
+# SDDM display manager + themes (sugar-dark requires Qt6, minimal works
+# on both Qt5 and Qt6 so it can serve as the fallback).
 # The greeter runs on cage (see greeter.conf): the X11 greeter hits a
 # cold-boot EDID failure on the DP-3 link and kwin_wayland has its own RA24
 # scanout-format trap on RDNA4. Cage avoids both with the smallest possible

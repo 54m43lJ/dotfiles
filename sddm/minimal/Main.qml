@@ -1,9 +1,10 @@
 // Minimal SDDM greeter.
-// Qt 6 only: the metadata declares QtVersion=6 so sddm launches the
-// Qt6 greeter. Depends only on QtQuick (a hard dependency of the sddm
-// package itself), so it cannot be broken by unrelated Qt module updates.
+// Depends only on QtQuick (a hard dependency of the sddm package itself),
+// so it cannot be broken by unrelated Qt module updates.
+// Versioned import: the default greeter binary is Qt5-linked, which
+// rejects unversioned imports; 2.15 works on both Qt5 and Qt6.
 // Colors from palette/README.md (dark mode).
-import QtQuick
+import QtQuick 2.15
 
 Rectangle {
     id: root
