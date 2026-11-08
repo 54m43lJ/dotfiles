@@ -48,13 +48,19 @@ RowLayout {
             visible: modelData[2]
             hoverEnabled: true
             palette.buttonText: root.palette.text
-            background: Rectangle {
-                height: 2
-                color: "transparent"
-                width: parent.width
-                border.width: parent.visualFocus ? 1 : 0
-                border.color: "transparent"
-                anchors.top: parent.bottom
+            background: Item {
+                HoverFill {
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    radius: Math.min(root.cornerRadius, height / 2)
+                    active: icon.hovered || icon.visualFocus
+                    pressed: icon.down
+                    fillColor: root.palette.highlight
+                    activeOpacity: 0.12
+                    pressedOpacity: 0.2
+                    border.width: icon.visualFocus ? 1 : 0
+                    border.color: root.palette.highlight
+                }
             }
             Keys.onReturnPressed: clicked()
             onClicked: {

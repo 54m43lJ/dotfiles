@@ -42,14 +42,16 @@ Column {
         width: parent.width * (root.fieldWidthPercent / 100)
         anchors.horizontalCenter: parent.horizontalCenter
 
-        ComboBox {
+        HoverHandler { id: usernameHover }
 
+        ComboBox {
             id: selectUser
 
-            width: parent.height
-            height: parent.height
             anchors.left: parent.left
-            z: 2
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            height: root.font.pointSize * root.fieldHeightFactor
+            z: 1
 
             model: userModel
             currentIndex: model.lastIndex
@@ -67,43 +69,68 @@ Column {
 		    text: model.realName != "" ? model.realName : model.name
                     font.pointSize: root.font.pointSize * 0.8
                     font.capitalization: Font.Capitalize
-                    color: selectUser.highlightedIndex === index ? "#444" : root.palette.highlight
+                    width: parent.width
+                    color: root.palette.text
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
+                    elide: Text.ElideRight
                 }
                 highlighted: parent.highlightedIndex === index
-                background: Rectangle {
-		    radius: root.cornerRadius / 2
-                    color: selectUser.highlightedIndex === index ? root.palette.highlight : "transparent"
+                background: Item {
+                    HoverFill {
+                        anchors.fill: parent
+                        anchors.margins: 4
+                        radius: root.cornerRadius / 2
+                        active: selectUser.highlightedIndex === index
+                        fillColor: root.palette.highlight
+                        activeOpacity: 0.14
+                    }
                 }
             }
 
             indicator: Button {
-                    id: usernameIcon
-                    width: selectUser.height * 0.8
-                    height: parent.height
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.leftMargin: selectUser.height * 0.125
-                    icon.height: parent.height * 0.25
-                    icon.width: parent.height * 0.25
-                    enabled: false
-                    icon.color: root.palette.text
-                    icon.source: Qt.resolvedUrl("../Assets/User.svgz")
-                    background: null
+                id: usernameIcon
+                width: parent.height * 0.8
+                height: parent.height
+                anchors.left: parent.left
+                anchors.leftMargin: parent.height * 0.125
+                anchors.verticalCenter: parent.verticalCenter
+                icon.height: parent.height * 0.25
+                icon.width: parent.height * 0.25
+                enabled: false
+                icon.color: root.palette.text
+                icon.source: Qt.resolvedUrl("../Assets/User.svgz")
+                background: null
             }
 
-            background: Rectangle {
-                color: "transparent"
-                border.color: "transparent"
+            background: Item {
+                Rectangle {
+                    anchors.fill: parent
+                    radius: height / 2
+                    color: "transparent"
+                    border.width: username.activeFocus || selectUser.visualFocus ? 2 : 1
+                    border.color: username.activeFocus || selectUser.visualFocus ? root.palette.highlight : root.palette.text
+                    Behavior on border.color { ColorAnimation { duration: 150 } }
+                }
+                HoverFill {
+                    anchors.fill: parent
+                    anchors.margins: 2
+                    radius: height / 2
+                    active: selectUser.hovered || usernameHover.hovered || username.activeFocus
+                    pressed: selectUser.down
+                    fillColor: root.palette.highlight
+                    activeOpacity: 0.12
+                    pressedOpacity: 0.2
+                }
             }
 
-            popup: Popup {
-                y: parent.height - username.height / 3 + 10
+            popup: ThemedPopup {
+                y: parent.height + 8
                 rightMargin: config.ForceRightToLeft == "true" ? root.padding + usernameField.width / 2 : undefined
                 width: usernameField.width
                 implicitHeight: contentItem.implicitHeight
-                padding: 10
+                cornerRadius: root.cornerRadius
+                borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
 
                 contentItem: ListView {
                     clip: true
@@ -112,96 +139,54 @@ Column {
                     currentIndex: selectUser.highlightedIndex
                     ScrollIndicator.vertical: ScrollIndicator { }
                 }
-
-                background: Rectangle {
-                    radius: root.cornerRadius
-                    color: "#444"
-                    layer.enabled: true
-                    layer.effect: MultiEffect {
-                        shadowEnabled: true
-                        shadowColor: "#88000000"
-                        shadowBlur: 1.0
-                    }
-                }
-
-                enter: Transition {
-                    NumberAnimation { property: "opacity"; from: 0; to: 1 }
-                }
             }
-
-            states: [
-                State {
-                    name: "pressed"
-                    when: selectUser.down
-                    PropertyChanges {
-                        target: usernameIcon
-                        icon.color: Qt.lighter(root.palette.highlight, 1.1)
-                    }
-                },
-                State {
-                    name: "hovered"
-                    when: selectUser.hovered
-                    PropertyChanges {
-                        target: usernameIcon
-                        icon.color: Qt.lighter(root.palette.highlight, 1.2)
-                    }
-                },
-                State {
-                    name: "focused"
-                    when: selectUser.visualFocus
-                    PropertyChanges {
-                        target: usernameIcon
-                        icon.color: root.palette.highlight
-                    }
-                }
-            ]
-
-            transitions: [
-                Transition {
-                    PropertyAnimation {
-                        properties: "color, border.color, icon.color"
-                        duration: 150
-                    }
-                }
-            ]
-
         }
 
         TextField {
             id: username
             text: config.ForceLastUser == "true" ? selectUser.currentText : null
             font.capitalization: Font.Capitalize
-            anchors.centerIn: parent
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: root.font.pointSize * root.fieldHeightFactor * 0.9
+            anchors.rightMargin: root.font.pointSize * root.fieldHeightFactor * 0.9
+            anchors.verticalCenter: parent.verticalCenter
             height: root.font.pointSize * root.fieldHeightFactor
-            width: parent.width
             placeholderText: config.TranslateUsernamePlaceholder || textConstants.userName
             selectByMouse: true
             horizontalAlignment: TextInput.AlignHCenter
             renderType: Text.QtRendering
-            background: Rectangle {
-                color: "transparent"
-                border.color: root.palette.text
-                border.width: parent.activeFocus ? 2 : 1
-                radius: Math.min(root.cornerRadius, height / 2)
-            }
+            background: null
             Keys.onReturnPressed: submitLogin()
             KeyNavigation.down: password
-            z: 1
+            z: 2
 
             states: [
                 State {
                     name: "focused"
                     when: username.activeFocus
                     PropertyChanges {
-                        target: username.background
-                        border.color: root.palette.highlight
-                    }
-                    PropertyChanges {
                         target: username
                         color: root.palette.highlight
                     }
                 }
             ]
+        }
+
+        Item {
+            id: usernameIconArea
+
+            width: root.font.pointSize * root.fieldHeightFactor * 0.8
+            height: root.font.pointSize * root.fieldHeightFactor
+            anchors.left: parent.left
+            anchors.leftMargin: root.font.pointSize * root.fieldHeightFactor * 0.125
+            anchors.verticalCenter: parent.verticalCenter
+            z: 3
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: selectUser.popup.open()
+            }
         }
 
     }
@@ -261,9 +246,17 @@ Column {
                 opacity: submitButton.enabled ? 1 : 0.3
             }
 
-            background: Rectangle {
-                radius: height / 2
-                color: "transparent"
+            background: Item {
+                HoverFill {
+                    anchors.fill: parent
+                    anchors.margins: 2
+                    radius: height / 2
+                    active: submitButton.hovered || submitButton.visualFocus
+                    pressed: submitButton.down
+                    fillColor: root.palette.highlight
+                    activeOpacity: 0.16
+                    pressedOpacity: 0.26
+                }
             }
 
             states: [

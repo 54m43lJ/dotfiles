@@ -121,9 +121,19 @@ Pane {
                 color: parent.visualFocus ? palette.highlight : palette.text
                 font.pointSize: root.font.pointSize * 0.8
             }
-            background: Rectangle {
-                id: vkbbg
-                color: "transparent"
+            background: Item {
+                HoverFill {
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    radius: Math.min(root.cornerRadius, height / 2)
+                    active: vkb.hovered || vkb.visualFocus
+                    pressed: vkb.down
+                    fillColor: root.palette.highlight
+                    activeOpacity: 0.12
+                    pressedOpacity: 0.2
+                    border.width: vkb.visualFocus ? 1 : 0
+                    border.color: root.palette.highlight
+                }
             }
         }
 

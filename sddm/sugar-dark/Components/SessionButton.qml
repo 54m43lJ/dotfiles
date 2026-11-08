@@ -32,17 +32,21 @@ Item {
     ComboBox {
         id: selectSession
 
-        hoverEnabled: true
         anchors.left: parent.left
         anchors.leftMargin: parent.width * 0.5
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
+        anchors.bottomMargin: root.font.pointSize * 0.9
 
         model: sessionModel
         currentIndex: model.lastIndex
         textRole: "name"
+        hoverEnabled: true
 
-        padding: root.font.pointSize * 0.4
+        height: root.font.pointSize * root.fieldHeightFactor
+        leftPadding: root.font.pointSize * 2
+        rightPadding: root.font.pointSize
+        topPadding: 0
+        bottomPadding: 0
 
         delegate: ItemDelegate {
             width: parent.width
@@ -50,49 +54,66 @@ Item {
             contentItem: Text {
                 text: model.name
                 font.pointSize: root.font.pointSize * 0.8
-                color: selectSession.highlightedIndex === index ? "#444" : root.palette.highlight
+                color: root.palette.text
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
             }
             highlighted: parent.highlightedIndex === index
-            background: Rectangle {
-                radius: root.cornerRadius * 0.5
-                color: selectSession.highlightedIndex === index ? root.palette.highlight : "transparent"
+            background: Item {
+                HoverFill {
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    radius: root.cornerRadius * 0.5
+                    active: selectSession.highlightedIndex === index
+                    fillColor: root.palette.highlight
+                    activeOpacity: 0.14
+                }
             }
         }
 
-        indicator {
-            visible: false
-        }
+        indicator: Item {}
 
         contentItem: Text {
             id: displayedItem
             text: (config.TranslateSession || (textConstantSession + ":")) + " " + selectSession.currentText
-            color: root.palette.text
+            color: selectSession.visualFocus ? root.palette.highlight : root.palette.text
             verticalAlignment: Text.AlignVCenter
-            anchors.left: parent.left
-            anchors.leftMargin: root.font.pointSize * 2
+            elide: Text.ElideRight
             font.pointSize: root.font.pointSize * 0.9
+            Behavior on color { ColorAnimation { duration: 150 } }
         }
 
-        background: Rectangle {
-            radius: root.cornerRadius
-            color: "transparent"
-            border.width: parent.visualFocus ? 1 : 0
-            border.color: "transparent"
-            height: parent.visualFocus ? 2 : 0
-            width: displayedItem.implicitWidth * 1.2
-            anchors.horizontalCenter: displayedItem.horizontalCenter
+        background: Item {
+            Rectangle {
+                anchors.fill: parent
+                radius: height / 2
+                color: "transparent"
+                border.width: selectSession.visualFocus ? 2 : 1
+                border.color: selectSession.visualFocus ? root.palette.highlight : root.palette.text
+                Behavior on border.color { ColorAnimation { duration: 150 } }
+            }
+            HoverFill {
+                anchors.fill: parent
+                anchors.margins: 2
+                radius: height / 2
+                active: selectSession.hovered || selectSession.visualFocus
+                pressed: selectSession.down
+                fillColor: root.palette.highlight
+                activeOpacity: 0.12
+                pressedOpacity: 0.2
+            }
         }
 
-        popup: Popup {
+        popup: ThemedPopup {
             id: popupHandler
-            x: displayedItem.anchors.leftMargin - displayedItem.implicitWidth * 0.1
-            y: parent.height - contentItem.implicitHeight - parent.height - 10
+            x: root.font.pointSize * 2 - displayedItem.implicitWidth * 0.1
+            y: -contentItem.implicitHeight - 10
             rightMargin: config.ForceRightToLeft == "true" ? root.padding + sessionButton.width * 0.6 : undefined
-            width: sessionButton.width * 0.8
+            width: sessionButton.width * 0.55
             implicitHeight: contentItem.implicitHeight
-            padding: 10
+            cornerRadius: root.cornerRadius
+            borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
+            growUp: true
 
             contentItem: ListView {
                 clip: true
@@ -101,71 +122,7 @@ Item {
                 currentIndex: selectSession.highlightedIndex
                 ScrollIndicator.vertical: ScrollIndicator { }
             }
-
-            background: Rectangle {
-                radius: root.cornerRadius
-                color: "#444"
-                layer.enabled: true
-                layer.effect: MultiEffect {
-                    shadowEnabled: true
-                    shadowColor: "#88000000"
-                    shadowBlur: 1.0
-                }
-            }
-
-            enter: Transition {
-                NumberAnimation { property: "opacity"; from: 0; to: 1 }
-            }
         }
-
-        states: [
-            State {
-                name: "pressed"
-                when: selectSession.down
-                PropertyChanges {
-                    target: displayedItem
-                    color: Qt.darker(root.palette.highlight, 1.1)
-                }
-                PropertyChanges {
-                    target: selectSession.background
-                    color: Qt.darker(root.palette.window, 1.1)
-                }
-            },
-            State {
-                name: "hovered"
-                when: selectSession.hovered
-                PropertyChanges {
-                    target: displayedItem
-                    color: Qt.lighter(root.palette.highlight, 1.1)
-                }
-                PropertyChanges {
-                    target: selectSession.background
-                    color: root.palette.window
-                }
-            },
-            State {
-                name: "focused"
-                when: selectSession.visualFocus
-                PropertyChanges {
-                    target: displayedItem
-                    color: root.palette.highlight
-                }
-                PropertyChanges {
-                    target: selectSession.background
-                    color: root.palette.window
-                }
-            }
-        ]
-
-        transitions: [
-            Transition {
-                PropertyAnimation {
-                    properties: "color"
-                    duration: 150
-                }
-            }
-        ]
-
     }
 
 }
