@@ -32,8 +32,14 @@ From the dotfiles repository root:
 ```
 
 The script enforces the static rules above and then loads the theme with
-every installed `sddm-greeter*` binary (Qt5, Qt6, and a future
-`sddm-greeter-qt7` if present). `sddm/module.sh` runs it during deploy.
+every installed and runnable `sddm-greeter*` binary (Qt5, Qt6, and a
+future `sddm-greeter-qt7` if present). Greeters whose Qt runtime libraries
+are not installed are skipped. `sddm/module.sh` runs it during deploy.
+
+The repository does not install Qt5 runtime packages for this fallback.
+The theme is source-compatible; whether the machine keeps a Qt5 greeter
+runtime is an environment decision, not a theme requirement. Forcing Qt5
+would invert the compatibility goal once Qt5 is retired.
 
 Qt7 cannot be tested before it exists. The QML body is version-agnostic;
 the check script will automatically pick up `sddm-greeter-qt7` and report

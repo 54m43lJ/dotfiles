@@ -11,14 +11,13 @@ install_module() {
     # qt6-wayland provides the Qt Wayland platform plugin the greeter needs;
     # sddm does not depend on it directly. qt6-svg renders sugar-dark's
     # SVG icons (user, power buttons).
-    # minimal is intentionally unpinned, so SDDM runs it with the Qt5
-    # greeter by default. sddm only lists qt5-declarative as an optional
-    # dependency and does not depend on the Qt5 Wayland plugin at all;
-    # install both explicitly or the fallback cannot render on a fresh
-    # deploy. No other Qt5 modules are needed by minimal.
+    #
+    # Do not add Qt5 runtime packages just for the minimal fallback. The
+    # theme is source-compatible with Qt5/Qt6, but forcing Qt5 would invert
+    # the compatibility goal once Qt5 is retired; the machine decides which
+    # greeter runtimes it keeps installed.
     local SDDM_PKGS=(
         sddm cage qt6-wayland qt6-svg
-        qt5-declarative qt5-wayland
     )
     pac_ins "${SDDM_PKGS[@]}"
 

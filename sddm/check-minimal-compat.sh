@@ -12,8 +12,10 @@
 #   * The QML body stays on core QtQuick types available in Qt 5.15.
 #
 # Run this after editing the theme, or let sddm/module.sh run it during
-# deploy. It loads the theme with every installed sddm-greeter* binary,
-# including a future -qt7, so new Qt majors are exercised automatically.
+# deploy. It loads the theme with every installed and runnable
+# sddm-greeter* binary, including a future -qt7, so new Qt majors are
+# exercised automatically. A greeter whose Qt runtime is not installed is
+# skipped: the repo does not force a Qt5 runtime for the fallback.
 
 set -u
 
@@ -74,6 +76,10 @@ DEAD_RE='Fallback to embedded theme|Failed to load|Cannot find module|is not a t
 WAIT=10
 
 for greeter in "${greeters[@]}"; do
+    if ldd "$greeter" 2>/dev/null | grep -q 'not found'; then
+        echo "SKIP: $(basename "$greeter") (Qt runtime libraries missing)"
+        continue
+    fi
     QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software "$greeter" --test-mode \
         --theme "$THEME" >/dev/null 2>&1 &
     pid=$!
