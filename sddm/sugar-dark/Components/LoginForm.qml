@@ -34,14 +34,14 @@ ColumnLayout {
     Clock {
         id: clock
         Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
-        Layout.preferredHeight: root.height / 4
+        Layout.preferredHeight: root.height * (root.clockSlotPercent / 100)
         Layout.leftMargin: p != "0" ? a == "left" ? -p : a == "right" ? p : 0 : 0
     }
 
     Input {
         id: input
         Layout.alignment: Qt.AlignVCenter
-        Layout.preferredHeight: root.height / 10
+        Layout.preferredHeight: root.height * (root.inputSlotPercent / 100)
         Layout.leftMargin: p != "0" ? a == "left" ? -p : a == "right" ? p : 0 : 0
         Layout.topMargin: virtualKeyboardActive ? -height * 1.5 : 0
     }
@@ -49,8 +49,8 @@ ColumnLayout {
     SystemButtons {
         id: systemButtons
         Layout.alignment: Qt.AlignHCenter | Qt.AlignBottom
-        Layout.preferredHeight: root.height / 4
-        Layout.maximumHeight: root.height / 4
+        Layout.preferredHeight: root.height * (root.systemSlotPercent / 100)
+        Layout.maximumHeight: root.height * (root.systemSlotPercent / 100)
         Layout.leftMargin: p != "0" ? a == "left" ? -p : a == "right" ? p : 0 : 0
         exposedLogin: input.exposeLogin
     }

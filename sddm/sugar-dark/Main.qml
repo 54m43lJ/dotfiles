@@ -48,6 +48,18 @@ Pane {
     readonly property real uiScale: height / 1080
     readonly property real cornerRadius: (config.RoundCorners || 0) * uiScale
 
+    // Numeric layout controls. Defaults match theme.conf; see LOGIN_UI.md.
+    readonly property real formWidthPercent: Number(config.FormWidthPercent) || 40
+    readonly property real fieldWidthPercent: Number(config.FieldWidthPercent) || 50
+    readonly property real fieldRowFactor: Number(config.FieldRowFactor) || 4.5
+    readonly property real fieldHeightFactor: Number(config.FieldHeightFactor) || 3
+    readonly property real clockSlotPercent: Number(config.ClockSlotPercent) || 25
+    readonly property real inputSlotPercent: Number(config.InputSlotPercent) || 10
+    readonly property real systemSlotPercent: Number(config.SystemSlotPercent) || 25
+    readonly property real arrowSizeFactor: Number(config.ArrowSizeFactor) || 0.8
+    readonly property real arrowMarginFactor: Number(config.ArrowMarginFactor) || 0.2
+    readonly property real arrowNudgeFactor: Number(config.ArrowNudgeFactor) || 0.111
+
     property bool leftleft: config.HaveFormBackground == "true" &&
                             config.PartialBlur == "true" &&
                             config.FormPosition == "left" &&
@@ -88,7 +100,7 @@ Pane {
             id: form
 
             height: virtualKeyboard.state == "visible" ? parent.height - virtualKeyboard.implicitHeight : parent.height
-            width: parent.width * 0.4
+            width: parent.width * (formWidthPercent / 100)
             anchors.horizontalCenter: config.FormPosition == "center" ? parent.horizontalCenter : undefined
             anchors.left: config.FormPosition == "left" ? parent.left : undefined
             anchors.right: config.FormPosition == "right" ? parent.right : undefined

@@ -38,8 +38,8 @@ Column {
     Item {
         id: usernameField
 
-        height: root.font.pointSize * 4.5
-        width: parent.width / 2
+        height: root.font.pointSize * root.fieldRowFactor
+        width: parent.width * (root.fieldWidthPercent / 100)
         anchors.horizontalCenter: parent.horizontalCenter
 
         ComboBox {
@@ -172,7 +172,7 @@ Column {
             text: config.ForceLastUser == "true" ? selectUser.currentText : null
             font.capitalization: Font.Capitalize
             anchors.centerIn: parent
-            height: root.font.pointSize * 3
+            height: root.font.pointSize * root.fieldHeightFactor
             width: parent.width
             placeholderText: config.TranslateUsernamePlaceholder || textConstants.userName
             selectByMouse: true
@@ -209,14 +209,14 @@ Column {
     // PASSWORD INPUT
     Item {
         id: passwordField
-        height: root.font.pointSize * 4.5
-        width: parent.width / 2
+        height: root.font.pointSize * root.fieldRowFactor
+        width: parent.width * (root.fieldWidthPercent / 100)
         anchors.horizontalCenter: parent.horizontalCenter
 
         TextField {
             id: password
             anchors.centerIn: parent
-            height: root.font.pointSize * 3
+            height: root.font.pointSize * root.fieldHeightFactor
             width: parent.width
             focus: config.ForcePasswordFocus == "true" ? true : false
             selectByMouse: true
@@ -238,13 +238,13 @@ Column {
 
         Button {
             id: submitButton
-            width: password.height * 0.8
+            width: password.height * root.arrowSizeFactor
             height: width
             anchors.right: password.right
-            anchors.rightMargin: password.height * 0.2
+            anchors.rightMargin: password.height * root.arrowMarginFactor
             anchors.verticalCenter: password.verticalCenter
             // The arrow glyph sits slightly below the line-box centre.
-            anchors.verticalCenterOffset: -root.font.pointSize / 9
+            anchors.verticalCenterOffset: -root.font.pointSize * root.arrowNudgeFactor
             enabled: username.text != "" && password.text != ""
             hoverEnabled: true
             z: 2
@@ -335,7 +335,7 @@ Column {
     Item {
         id: secretCheckBox
         height: root.font.pointSize * 7
-        width: parent.width / 2
+        width: parent.width * (root.fieldWidthPercent / 100)
         anchors.horizontalCenter: parent.horizontalCenter
 
         CheckBox {
@@ -469,7 +469,7 @@ Column {
     // ERROR FIELD
     Item {
         height: root.font.pointSize * 2.3
-        width: parent.width / 2
+        width: parent.width * (root.fieldWidthPercent / 100)
         anchors.horizontalCenter: parent.horizontalCenter
         Label {
             id: errorMessage
