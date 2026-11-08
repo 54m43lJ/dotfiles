@@ -11,8 +11,14 @@ install_module() {
     # qt6-wayland provides the Qt Wayland platform plugin the greeter needs;
     # sddm does not depend on it directly. qt6-svg renders sugar-dark's
     # SVG icons (user, power buttons).
+    # minimal is intentionally unpinned, so SDDM runs it with the Qt5
+    # greeter by default. sddm only lists qt5-declarative as an optional
+    # dependency and does not depend on the Qt5 Wayland plugin at all;
+    # install both explicitly or the fallback cannot render on a fresh
+    # deploy. No other Qt5 modules are needed by minimal.
     local SDDM_PKGS=(
         sddm cage qt6-wayland qt6-svg
+        qt5-declarative qt5-wayland
     )
     pac_ins "${SDDM_PKGS[@]}"
 
@@ -22,15 +28,18 @@ install_module() {
     sudo mkdir -p /etc/sddm.conf.d/
     sudo cp "$WD/sddm/theme.conf" /etc/sddm.conf.d/
     sudo cp "$WD/sddm/greeter.conf" /etc/sddm.conf.d/
-    # Theme auto-fallback: after sddm/qt6 upgrades the hook re-validates the
+    # Theme auto-fallback: after sddm/Qt upgrades the hook re-validates the
     # current theme offscreen and steps down/up Current= as themes heal.
     sudo install -m755 "$WD/sddm/theme-check.sh" /usr/local/bin/
     sudo install -m644 "$WD/sddm/theme-fallback.hook" /usr/share/libalpm/hooks/theme-fallback.hook
     # sddm-test-theme [theme]: nested-window greeter for UI testing.
     sudo install -m755 "$WD/sddm/test-theme.sh" /usr/local/bin/sddm-test-theme
+    # Static + per-greeter guard for the minimal fallback contract.
+    sudo install -m755 "$WD/sddm/check-minimal-compat.sh" /usr/local/bin/sddm-check-minimal
 
     # The alpm hook only runs on upgrades; validate once now so a fresh
     # deploy never sits on a theme this machine cannot render.
+    sudo /usr/local/bin/sddm-check-minimal || true
     sudo /usr/local/bin/theme-check.sh || true
 
     sudo systemctl enable sddm

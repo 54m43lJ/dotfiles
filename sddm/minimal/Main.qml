@@ -1,8 +1,17 @@
-// Minimal SDDM greeter.
-// Depends only on QtQuick (a hard dependency of the sddm package itself),
-// so it cannot be broken by unrelated Qt module updates.
-// Versioned import: the default greeter binary is Qt5-linked, which
-// rejects unversioned imports; 2.15 works on both Qt5 and Qt6.
+// Minimal SDDM greeter — cross-version fallback. COMPATIBILITY CONTRACT:
+// This theme must keep loading on every SDDM greeter: Qt5, Qt6 and any
+// future QtN. Therefore:
+//   * metadata.desktop MUST NOT set QtVersion. SDDM then uses its default
+//     greeter (Qt5 in SDDM 0.21), which is why minimal survives when Qt6
+//     breaks.
+//   * This file may import ONLY QtQuick 2.15. Qt5 rejects unversioned
+//     imports; Qt6 still registers the 2.15 API surface. Selecting 2.15
+//     deliberately hides Qt6-only types/properties, so do not use any.
+//     Do not add Controls, Effects, GraphicalEffects, Svg,
+//     VirtualKeyboard, SddmComponents or any other add-on module.
+//   * Keep the QML body on core QtQuick types available in Qt 5.15.
+// Run sddm/check-minimal-compat.sh after editing; it loads this theme
+// with every installed sddm-greeter* (including a future -qt7).
 // Colors from palette/README.md (dark mode).
 import QtQuick 2.15
 
