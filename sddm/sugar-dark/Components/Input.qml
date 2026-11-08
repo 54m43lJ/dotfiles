@@ -243,6 +243,8 @@ Column {
             anchors.right: password.right
             anchors.rightMargin: password.height * 0.2
             anchors.verticalCenter: password.verticalCenter
+            // The arrow glyph sits slightly below the line-box centre.
+            anchors.verticalCenterOffset: -root.font.pointSize / 9
             enabled: username.text != "" && password.text != ""
             hoverEnabled: true
             z: 2
