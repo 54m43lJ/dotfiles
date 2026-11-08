@@ -29,6 +29,16 @@ Item {
     property var selectedSession: selectSession.currentIndex
     property string textConstantSession
 
+    Text {
+        id: sessionCaption
+        text: config.TranslateSession || "Session:"
+        anchors.right: selectSession.left
+        anchors.rightMargin: root.font.pointSize * 0.6
+        anchors.verticalCenter: selectSession.verticalCenter
+        font.pointSize: root.font.pointSize * 0.9
+        color: root.palette.text
+    }
+
     ComboBox {
         id: selectSession
 
@@ -43,16 +53,17 @@ Item {
         hoverEnabled: true
 
         height: root.font.pointSize * root.fieldHeightFactor
-        leftPadding: root.font.pointSize * 2
-        rightPadding: root.font.pointSize
+        leftPadding: root.font.pointSize * 0.8
+        rightPadding: root.font.pointSize * 0.8
         topPadding: 0
         bottomPadding: 0
 
         delegate: ItemDelegate {
             width: parent.width
+            height: selectSession.height
             anchors.horizontalCenter: parent.horizontalCenter
-            topPadding: 4
-            bottomPadding: 4
+            topPadding: 0
+            bottomPadding: 0
             leftPadding: 8
             rightPadding: 8
             contentItem: Text {
@@ -66,8 +77,8 @@ Item {
             background: Item {
                 HoverFill {
                     anchors.fill: parent
-                    anchors.margins: 4
-                    radius: root.cornerRadius * 0.5
+                    anchors.margins: 1
+                    radius: root.cornerRadius
                     active: selectSession.highlightedIndex === index
                     fillColor: root.palette.highlight
                     activeOpacity: 0.14
@@ -79,7 +90,7 @@ Item {
 
         contentItem: Text {
             id: displayedItem
-            text: (config.TranslateSession || (textConstantSession + ":")) + " " + selectSession.currentText
+            text: selectSession.currentText
             color: selectSession.visualFocus ? root.palette.highlight : root.palette.text
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
@@ -113,7 +124,7 @@ Item {
             x: (selectSession.width - width) / 2
             y: -contentItem.implicitHeight - 10
             rightMargin: config.ForceRightToLeft == "true" ? root.padding + sessionButton.width * 0.6 : undefined
-            width: Math.max(root.font.pointSize * 10, selectSession.width * 0.8)
+            width: selectSession.width
             implicitHeight: contentItem.implicitHeight
             cornerRadius: root.cornerRadius
             borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
@@ -121,7 +132,7 @@ Item {
 
             contentItem: ListView {
                 clip: true
-                implicitHeight: contentHeight + 8
+                implicitHeight: contentHeight
                 model: selectSession.popup.visible ? selectSession.delegateModel : null
                 currentIndex: selectSession.highlightedIndex
                 ScrollIndicator.vertical: ScrollIndicator { }

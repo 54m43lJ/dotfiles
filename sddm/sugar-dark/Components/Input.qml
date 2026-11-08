@@ -64,9 +64,10 @@ Column {
 
             delegate: ItemDelegate {
                 width: parent.width
+                height: selectUser.height
                 anchors.horizontalCenter: parent.horizontalCenter
-                topPadding: 4
-                bottomPadding: 4
+                topPadding: 0
+                bottomPadding: 0
                 leftPadding: 8
                 rightPadding: 8
                 contentItem: Text {
@@ -83,8 +84,8 @@ Column {
                 background: Item {
                     HoverFill {
                         anchors.fill: parent
-                        anchors.margins: 4
-                        radius: root.cornerRadius / 2
+                        anchors.margins: 1
+                        radius: root.cornerRadius
                         active: selectUser.highlightedIndex === index
                         fillColor: root.palette.highlight
                         activeOpacity: 0.14
@@ -131,15 +132,15 @@ Column {
             popup: ThemedPopup {
                 y: parent.height + 8
                 rightMargin: config.ForceRightToLeft == "true" ? root.padding + usernameField.width / 2 : undefined
-                width: usernameField.width * 0.55
-                x: (usernameField.width - width) / 2
+                width: usernameField.width
+                x: 0
                 implicitHeight: contentItem.implicitHeight
                 cornerRadius: root.cornerRadius
                 borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
 
                 contentItem: ListView {
                     clip: true
-                    implicitHeight: contentHeight + 8
+                    implicitHeight: contentHeight
                     model: selectUser.popup.visible ? selectUser.delegateModel : null
                     currentIndex: selectUser.highlightedIndex
                     ScrollIndicator.vertical: ScrollIndicator { }
