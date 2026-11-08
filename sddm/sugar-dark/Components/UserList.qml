@@ -55,13 +55,13 @@ Item {
                 text: model.realName != "" ? model.realName : model.name
                 font.pointSize: root.font.pointSize * 0.8
                 font.capitalization: Font.Capitalize
-                color: selectUser.highlightedIndex === index ? "white" : root.palette.window.hslLightness >= 0.8 ? root.palette.highlight : "white"
+                color: selectUser.highlightedIndex === index ? root.colorCream : root.colorFg
                 verticalAlignment: Text.AlignVCenter
                 horizontalAlignment: Text.AlignHCenter
             }
             highlighted: parent.highlightedIndex === index
             background: Rectangle {
-                color: selectUser.highlightedIndex === index ? root.palette.highlight : "transparent"
+                color: selectUser.highlightedIndex === index ? root.colorPurple : "transparent"
             }
         }
 
@@ -75,7 +75,7 @@ Item {
                 icon.height: parent.height * 0.25
                 icon.width: parent.height * 0.25
                 enabled: false
-                icon.color: root.palette.text
+                icon.color: root.colorFg
                 icon.source: Qt.resolvedUrl("../Assets/User.svgz")
                 background: null
         }
@@ -102,11 +102,11 @@ Item {
 
             background: Rectangle {
                 radius: 10 * root.uiScale
-                color: root.palette.window
+                color: root.colorSurface
                 layer.enabled: true
                 layer.effect: MultiEffect {
                     shadowEnabled: true
-                    shadowColor: "#88000000"
+                    shadowColor: root.colorShadow
                     shadowBlur: 1.0
                 }
             }
@@ -122,7 +122,7 @@ Item {
                 when: selectUser.down
                 PropertyChanges {
                     target: usernameIcon
-                    icon.color: Qt.lighter(root.palette.highlight, 1.1)
+                    icon.color: root.colorPurpleLight
                 }
             },
             State {
@@ -130,7 +130,7 @@ Item {
                 when: selectUser.hovered
                 PropertyChanges {
                     target: usernameIcon
-                    icon.color: Qt.lighter(root.palette.highlight, 1.2)
+                    icon.color: root.colorPurpleLight
                 }
             },
             State {
@@ -138,7 +138,7 @@ Item {
                 when: selectUser.visualFocus
                 PropertyChanges {
                     target: usernameIcon
-                    icon.color: root.palette.highlight
+                    icon.color: root.colorPurpleLight
                 }
             }
         ]
@@ -167,7 +167,7 @@ Item {
         renderType: Text.QtRendering
         background: Rectangle {
             color: "transparent"
-            border.color: root.palette.text
+            border.color: root.colorMuted
             border.width: parent.activeFocus ? 2 : 1
             radius: Math.min(root.cornerRadius, height / 2)
         }
@@ -184,11 +184,11 @@ Item {
                 when: username.activeFocus
                 PropertyChanges {
                     target: username.background
-                    border.color: root.palette.highlight
+                    border.color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: username
-                    color: root.palette.highlight
+                    color: root.colorPurpleLight
                 }
             }
         ]

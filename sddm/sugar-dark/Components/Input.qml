@@ -68,7 +68,7 @@ Column {
                 active: !userDropdown.opened &&
                         (usernameHover.hovered || username.activeFocus || selectUser.activeFocus)
                 pressed: usernameTriggerMouse.pressed
-                fillColor: root.palette.highlight
+                fillColor: root.colorPurple
                 activeOpacity: 0.12
                 pressedOpacity: 0.2
             }
@@ -83,7 +83,7 @@ Column {
                 icon.height: parent.height * 0.25
                 icon.width: parent.height * 0.25
                 enabled: false
-                icon.color: root.palette.text
+                icon.color: selectUser.active ? root.colorPurpleLight : root.colorMuted
                 icon.source: Qt.resolvedUrl("../Assets/User.svgz")
                 background: null
             }
@@ -110,6 +110,8 @@ Column {
             anchors.verticalCenter: parent.verticalCenter
             height: root.font.pointSize * root.fieldHeightFactor
             placeholderText: config.TranslateUsernamePlaceholder || textConstants.userName
+            placeholderTextColor: root.colorMuted
+            color: root.colorFg
             selectByMouse: true
             horizontalAlignment: TextInput.AlignHCenter
             renderType: Text.QtRendering
@@ -124,7 +126,7 @@ Column {
                     when: username.activeFocus
                     PropertyChanges {
                         target: username
-                        color: root.palette.highlight
+                        color: root.colorPurpleLight
                     }
                 }
             ]
@@ -147,10 +149,13 @@ Column {
             rowFontSize: root.font.pointSize * 0.8
             rowCapitalization: Font.Capitalize
             cornerRadius: root.cornerRadius
-            textColor: root.palette.text
-            highlightColor: root.palette.highlight
-            borderColor: selectUser.active ? root.palette.highlight : root.palette.text
+            fillColor: root.colorSurface
+            textColor: root.colorFg
+            highlightedTextColor: root.colorCream
+            highlightColor: root.colorPurple
+            borderColor: selectUser.active ? root.colorPurpleLight : root.colorMuted
             borderWidth: selectUser.active ? 2 : 1
+            shadowColor: root.colorShadow
             restoreFocusItem: username
 
             onActivated: {
@@ -176,13 +181,15 @@ Column {
             selectByMouse: true
             echoMode: revealSecret.checked ? TextInput.Normal : TextInput.Password
             placeholderText: config.TranslatePasswordPlaceholder || textConstants.password
+            placeholderTextColor: root.colorMuted
+            color: root.colorFg
             horizontalAlignment: TextInput.AlignHCenter
             passwordCharacter: "•"
             passwordMaskDelay: config.ForceHideCompletePassword == "true" ? undefined : 1000
             renderType: Text.QtRendering
             background: Rectangle {
                 color: "transparent"
-                border.color: root.palette.text
+                border.color: root.colorMuted
                 border.width: parent.activeFocus ? 2 : 1
                 radius: Math.min(root.cornerRadius, height / 2)
             }
@@ -211,7 +218,7 @@ Column {
                 font.weight: Font.DemiBold
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                color: root.palette.text
+                color: root.colorFg
                 opacity: submitButton.enabled ? 1 : 0.3
             }
 
@@ -222,7 +229,7 @@ Column {
                     radius: height / 2
                     active: submitButton.hovered || submitButton.visualFocus
                     pressed: submitButton.down
-                    fillColor: root.palette.highlight
+                    fillColor: root.colorPurple
                     activeOpacity: 0.16
                     pressedOpacity: 0.26
                 }
@@ -234,7 +241,7 @@ Column {
                     when: submitButton.down
                     PropertyChanges {
                         target: submitButton.contentItem
-                        color: Qt.darker(root.palette.highlight, 1.1)
+                        color: root.colorCream
                         opacity: 1
                     }
                 },
@@ -243,7 +250,7 @@ Column {
                     when: submitButton.hovered
                     PropertyChanges {
                         target: submitButton.contentItem
-                        color: root.palette.highlight
+                        color: root.colorPurpleLight
                         opacity: 1
                     }
                 },
@@ -252,7 +259,7 @@ Column {
                     when: submitButton.visualFocus
                     PropertyChanges {
                         target: submitButton.contentItem
-                        color: root.palette.highlight
+                        color: root.colorPurpleLight
                         opacity: 1
                     }
                 }
@@ -274,11 +281,11 @@ Column {
                 when: password.activeFocus
                 PropertyChanges {
                     target: password.background
-                    border.color: root.palette.highlight
+                    border.color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: password
-                    color: root.palette.highlight
+                    color: root.colorPurpleLight
                 }
             }
         ]
@@ -314,14 +321,14 @@ Column {
                 implicitHeight: root.font.pointSize
                 implicitWidth: root.font.pointSize
                 color: "transparent"
-                border.color: root.palette.text
+                border.color: root.colorMuted
                 border.width: parent.visualFocus ? 2 : 1
                 Rectangle {
                     id: dot
                     anchors.centerIn: parent
                     implicitHeight: parent.width - 6
                     implicitWidth: parent.width - 6
-                    color: root.palette.text
+                    color: root.colorFg
                     opacity: revealSecret.checked ? 1 : 0
                 }
             }
@@ -335,7 +342,7 @@ Column {
                 anchors.left: indicator.right
                 anchors.leftMargin: indicator.width / 2
                 font.pointSize: root.font.pointSize * 0.8
-                color: root.palette.text
+                color: root.colorFg
             }
 
             Keys.onReturnPressed: toggle()
@@ -344,7 +351,7 @@ Column {
             background: Rectangle {
                 color: "transparent"
                 border.width: parent.visualFocus ? 1 : 0
-                border.color: parent.visualFocus ? root.palette.text : "transparent"
+                border.color: parent.visualFocus ? root.colorPurpleLight : "transparent"
                 height: parent.visualFocus ? 2 : 0
                 width: (indicator.width + indicatorLabel.contentWidth + indicatorLabel.anchors.leftMargin + 2)
                 anchors.top: indicatorLabel.bottom
@@ -360,19 +367,19 @@ Column {
                 when: revealSecret.down
                 PropertyChanges {
                     target: revealSecret.contentItem
-                    color: Qt.darker(root.palette.highlight, 1.1)
+                    color: root.colorCream
                 }
                 PropertyChanges {
                     target: dot
-                    color: Qt.darker(root.palette.highlight, 1.1)
+                    color: root.colorCream
                 }
                 PropertyChanges {
                     target: indicator
-                    border.color: Qt.darker(root.palette.highlight, 1.1)
+                    border.color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: revealSecret.background
-                    border.color: Qt.darker(root.palette.highlight, 1.1)
+                    border.color: root.colorPurpleLight
                 }
             },
             State {
@@ -380,19 +387,19 @@ Column {
                 when: revealSecret.hovered
                 PropertyChanges {
                     target: indicatorLabel
-                    color: Qt.lighter(root.palette.highlight, 1.1)
+                    color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: indicator
-                    border.color: Qt.lighter(root.palette.highlight, 1.1)
+                    border.color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: dot
-                    color: Qt.lighter(root.palette.highlight, 1.1)
+                    color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: revealSecret.background
-                    border.color: Qt.lighter(root.palette.highlight, 1.1)
+                    border.color: root.colorPurpleLight
                 }
             },
             State {
@@ -400,19 +407,19 @@ Column {
                 when: revealSecret.visualFocus
                 PropertyChanges {
                     target: indicatorLabel
-                    color: root.palette.highlight
+                    color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: indicator
-                    border.color: root.palette.highlight
+                    border.color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: dot
-                    color: root.palette.highlight
+                    color: root.colorPurpleLight
                 }
                 PropertyChanges {
                     target: revealSecret.background
-                    border.color: root.palette.highlight
+                    border.color: root.colorPurpleLight
                 }
             }
         ]
@@ -439,7 +446,7 @@ Column {
             text: failed ? config.TranslateLoginFailed || textConstants.loginFailed + "!" : keyboard.capsLock ? textConstants.capslockWarning : null
             horizontalAlignment: Text.AlignHCenter
             font.pointSize: root.font.pointSize * 0.8
-            color: root.palette.text
+            color: failed ? root.colorRed : root.colorMuted
             opacity: 0
             states: [
                 State {

@@ -47,7 +47,7 @@ RowLayout {
             display: AbstractButton.TextUnderIcon
             visible: modelData[2]
             hoverEnabled: true
-            palette.buttonText: root.palette.text
+            palette.buttonText: root.colorFg
             background: Item {
                 HoverFill {
                     anchors.fill: parent
@@ -55,11 +55,11 @@ RowLayout {
                     radius: Math.min(root.cornerRadius, height / 2)
                     active: icon.hovered || icon.visualFocus
                     pressed: icon.down
-                    fillColor: root.palette.highlight
+                    fillColor: root.colorPurple
                     activeOpacity: 0.12
                     pressedOpacity: 0.2
                     border.width: icon.visualFocus ? 1 : 0
-                    border.color: root.palette.highlight
+                    border.color: root.colorPurpleLight
                 }
             }
             Keys.onReturnPressed: clicked()
@@ -76,11 +76,11 @@ RowLayout {
                     when: parent.children[index].down
                     PropertyChanges {
                         target: parent.children[index]
-                        palette.buttonText: Qt.darker(root.palette.highlight, 1.1)
+                        palette.buttonText: root.colorCream
                     }
                     PropertyChanges {
                         target: parent.children[index].background
-                        border.color: Qt.darker(root.palette.highlight, 1.1)
+                        border.color: root.colorPurpleLight
                     }
                 },
                 State {
@@ -88,11 +88,11 @@ RowLayout {
                     when: parent.children[index].hovered
                     PropertyChanges {
                         target: parent.children[index]
-                        palette.buttonText: Qt.lighter(root.palette.highlight, 1.1)
+                        palette.buttonText: root.colorPurpleLight
                     }
                     PropertyChanges {
                         target: parent.children[index].background
-                        border.color: Qt.lighter(root.palette.highlight, 1.1)
+                        border.color: root.colorPurpleLight
                     }
                 },
                 State {
@@ -100,11 +100,11 @@ RowLayout {
                     when: parent.children[index].visualFocus
                     PropertyChanges {
                         target: parent.children[index]
-                        palette.buttonText: root.palette.highlight
+                        palette.buttonText: root.colorPurpleLight
                     }
                     PropertyChanges {
                         target: parent.children[index].background
-                        border.color: root.palette.highlight
+                        border.color: root.colorPurpleLight
                     }
                 }
             ]

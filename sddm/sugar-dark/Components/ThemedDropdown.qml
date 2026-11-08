@@ -39,12 +39,17 @@ Item {
     property bool growUp: false
     property bool opened: false
 
-    property color fillColor: "#444"
-    property color borderColor: "#ffffff"
+    // Color API. The component does not know about the theme palette: every
+    // color is injected by the consumer (fillColor = surface, borderColor =
+    // purple-light/muted, textColor = fg, highlightedTextColor = cream,
+    // highlightColor = purple, shadowColor = gold alpha).
+    property color fillColor: "#3E3542"
+    property color borderColor: "#B0B4BC"
     property int borderWidth: 1
-    property color shadowColor: "#88000000"
-    property color textColor: "#ffffff"
-    property color highlightColor: "#ca33ac"
+    property color shadowColor: "#8C9D7E4D"
+    property color textColor: "#D6CAB6"
+    property color highlightedTextColor: textColor
+    property color highlightColor: "#89338E"
     property real hoverOpacity: 0.14
     property real cornerRadius: 30
     property real rowHeight: 40
@@ -138,10 +143,8 @@ Item {
         }
     }
 
-    // The content slides towards its resting position while the height opens,
-    // matching the reference's revealer/slider effect. The bounce is a vertical
-    // scale anchored at the edge that touches the trigger. Only the menu rows
-    // scale; the trigger itself stays stable.
+    // The menu content slides 16U into place while the height opens. There is
+    // no vertical scale/bounce: the panel and rows keep their natural size.
     property real listOffset: 0
 
     onOpenedChanged: {
@@ -151,7 +154,6 @@ Item {
             openAnim.restart()
         } else {
             openAnim.stop()
-            bounceTransform.yScale = 1
             closeAnim.restart()
         }
     }
@@ -173,49 +175,14 @@ Item {
     Keys.onEnterPressed: if (highlightedIndex >= 0) select(highlightedIndex)
     Keys.onSpacePressed: if (highlightedIndex >= 0) select(highlightedIndex)
 
-    ParallelAnimation {
+    NumberAnimation {
         id: openAnim
-
-        NumberAnimation {
-            target: root
-            property: "listOffset"
-            from: root.growUp ? root.slideDistance : -root.slideDistance
-            to: 0
-            duration: root.expandDuration
-            easing.type: Easing.OutCubic
-        }
-
-        SequentialAnimation {
-            NumberAnimation {
-                target: bounceTransform
-                property: "yScale"
-                from: 0
-                to: 1.2
-                duration: root.expandDuration * 0.3
-                easing.type: Easing.OutQuad
-            }
-            NumberAnimation {
-                target: bounceTransform
-                property: "yScale"
-                to: 0.85
-                duration: root.expandDuration * 0.25
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: bounceTransform
-                property: "yScale"
-                to: 1.05
-                duration: root.expandDuration * 0.25
-                easing.type: Easing.InOutQuad
-            }
-            NumberAnimation {
-                target: bounceTransform
-                property: "yScale"
-                to: 1.0
-                duration: root.expandDuration * 0.2
-                easing.type: Easing.InOutQuad
-            }
-        }
+        target: root
+        property: "listOffset"
+        from: root.growUp ? root.slideDistance : -root.slideDistance
+        to: 0
+        duration: root.expandDuration
+        easing.type: Easing.OutCubic
     }
 
     NumberAnimation {
@@ -252,7 +219,10 @@ Item {
         id: panel
         anchors.fill: parent
         radius: root.triggerHeight / 2
-        color: root.opened ? root.fillColor : "transparent"
+        // Keep the panel opaque for the whole open/close animation. Fading the
+        // fill let the warm background image show through and briefly looked
+        // like a gold flash.
+        color: (root.opened || root.revealHeight > 0) ? root.fillColor : "transparent"
         border.width: root.borderWidth
         border.color: root.borderColor
         layer.enabled: true
@@ -262,9 +232,6 @@ Item {
             shadowBlur: 1.0
         }
 
-        Behavior on color {
-            ColorAnimation { duration: 150 }
-        }
         Behavior on border.color {
             ColorAnimation { duration: 150 }
         }
@@ -286,12 +253,6 @@ Item {
             currentIndex: root.highlightedIndex
             boundsBehavior: Flickable.StopAtBounds
 
-            transform: Scale {
-                id: bounceTransform
-                origin.y: root.growUp ? list.height : 0
-                yScale: 1
-            }
-
             delegate: ItemDelegate {
                 id: row
 
@@ -309,10 +270,11 @@ Item {
                     text: root.rowText(model, index)
                     font.pointSize: root.rowFontSize
                     font.capitalization: root.rowCapitalization
-                    color: root.textColor
+                    color: root.highlightedIndex === index ? root.highlightedTextColor : root.textColor
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
                     elide: Text.ElideRight
+                    Behavior on color { ColorAnimation { duration: 150 } }
                 }
 
                 background: Item {

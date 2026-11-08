@@ -1,7 +1,7 @@
 [General]
     Background="graduation2.jpg"
-    MainColor="white"
-    AccentColor="#ca33ac"
+    # Colors: see [Palette] in theme.conf (palette/README.md dark mode).
+    # Override Palette* keys here if needed.
     PartialBlur="true"
     FormPosition="right"
     #ScaleImageCropped="false"

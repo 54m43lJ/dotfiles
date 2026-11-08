@@ -7,7 +7,7 @@ Rectangle {
 
     property bool active: false
     property bool pressed: false
-    property color fillColor: "#ca33ac"
+    property color fillColor: "#89338E"
     property real activeOpacity: 0.12
     property real pressedOpacity: 0.2
     property int fadeDuration: 150

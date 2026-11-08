@@ -16,7 +16,7 @@ Light 以 [Alabaster](https://github.com/tonsky/sublime-scheme-alabaster) 为基
 | `bg` | `#231F1F` | 主背景、窗口边框、选中底 | — |
 | `surface` | `#3E3542` | 次级浮层：通知底、弹窗、输入框底 | — |
 | `fg` | `#D6CAB6` | 正文文字、slider 轨道 | on bg 10.1:1 ✓ |
-| `muted` | `#B0B4BC` | 中性边框、图标（通知边框、电池图标） | 有意保留冷灰，与暖米正文区分 |
+| `muted` | `#B0B4BC` | 中性边框、图标、次要小号文字（日期/Session 等） | 有意保留冷灰，与暖米正文区分 |
 | `purple` | `#89338E` | accent：hover/选中填充（配 cream 字）；亮底（cream/white 面）上的文字 | 填充↔bg 2.3:1（仅填充用）；文字↔cream 底 7.2:1 ✓ |
 | `purple-light` | `#E593E7` | accent 提亮：深浮层上的文字、hover 高亮 | on surface 5.4:1 ✓，on bg 7.5:1 ✓ |
 | `gold` | `#9D7E4D` | accent：细线（栏底边）、进度填充、副标题弱文字、窗口阴影 | on bg 4.3:1（弱文字 OK，正文勉强） |
@@ -39,13 +39,21 @@ Light 以 [Alabaster](https://github.com/tonsky/sublime-scheme-alabaster) 为基
 | `highlight` | `#E9DBF2` | 选中态高亮底（对应 dark 的 `cream` 角色） | 配 `fg` 文字 15.9:1 ✓ |
 | `red` | `#AB3248` | 错误/危险（347° 樱桃红，与 dark 同族） | on bg 6.0:1 ✓ |
 
+## 使用方
+
+- SDDM `sugar-dark`：`sddm/sugar-dark/theme.conf` 的 `[Palette]` 段（dark），由
+  `Main.qml` 暴露为 `root.color*`；登录界面的具体映射见 `LOGIN_UI.md`。
+- hyprlock：`hypr/hyprlock.conf` 直接使用同一组 dark token。
+- Hyprland：`hypr/hyprland.lua` 顶部 `palette` 表使用 dark 的 `bg`/`surface`/`fg`。
+- Vicinae：`vicinae/themes/palette-light.toml` 使用 light token。
+
 ## 迁移提示
 
 Dark：
 
 - `purple` 在深底上做文字只有 2.3:1 —— 深底上的强调文字用 `purple-light` 或 `cream`。
 - `red` 偏暗，文字用途限警告级别的大字/图标；正文级错误提示建议「红填充 + cream 字」。
-- `muted` 是 dark 侧唯一冷灰，专用于边框/图标，勿用作正文。
+- `muted` 是 dark 侧唯一冷灰，用于边框/图标和次要小号文字，勿用作正文。
 
 Light：
 

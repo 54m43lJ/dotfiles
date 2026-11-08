@@ -34,7 +34,7 @@ Item {
         anchors.rightMargin: root.font.pointSize * 0.6
         anchors.verticalCenter: selectSession.verticalCenter
         font.pointSize: root.font.pointSize * 0.9
-        color: root.palette.text
+        color: root.colorMuted
     }
 
     Item {
@@ -58,7 +58,7 @@ Item {
             active: !sessionDropdown.opened &&
                     (sessionMouse.containsMouse || selectSession.activeFocus)
             pressed: sessionMouse.pressed
-            fillColor: root.palette.highlight
+            fillColor: root.colorPurple
             activeOpacity: 0.12
             pressedOpacity: 0.2
         }
@@ -67,7 +67,7 @@ Item {
             id: displayedItem
             anchors.centerIn: parent
             text: sessionDropdown.currentText
-            color: selectSession.active ? root.palette.highlight : root.palette.text
+            color: selectSession.active ? root.colorPurpleLight : root.colorFg
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
             font.pointSize: root.font.pointSize * 0.9
@@ -100,10 +100,13 @@ Item {
         rowHeight: selectSession.height
         rowFontSize: root.font.pointSize * 0.8
         cornerRadius: root.cornerRadius
-        textColor: root.palette.text
-        highlightColor: root.palette.highlight
-        borderColor: selectSession.active ? root.palette.highlight : root.palette.text
+        fillColor: root.colorSurface
+        textColor: root.colorFg
+        highlightedTextColor: root.colorCream
+        highlightColor: root.colorPurple
+        borderColor: selectSession.active ? root.colorPurpleLight : root.colorMuted
         borderWidth: selectSession.active ? 2 : 1
+        shadowColor: root.colorShadow
         restoreFocusItem: selectSession
     }
 

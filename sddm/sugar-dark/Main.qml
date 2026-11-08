@@ -32,11 +32,30 @@ Pane {
     LayoutMirroring.childrenInherit: true
 
     padding: config.ScreenPadding
+
+    // Authoritative dark palette, see palette/README.md.
+    readonly property color colorBg: config.PaletteBg || "#231F1F"
+    readonly property color colorSurface: config.PaletteSurface || "#3E3542"
+    readonly property color colorFg: config.PaletteFg || "#D6CAB6"
+    readonly property color colorMuted: config.PaletteMuted || "#B0B4BC"
+    readonly property color colorPurple: config.PalettePurple || "#89338E"
+    readonly property color colorPurpleLight: config.PalettePurpleLight || "#E593E7"
+    readonly property color colorGold: config.PaletteGold || "#9D7E4D"
+    readonly property color colorCream: config.PaletteCream || "#FFF7E4"
+    readonly property color colorRed: config.PaletteRed || "#CC2A47"
+    readonly property color colorShadow: Qt.rgba(colorGold.r, colorGold.g, colorGold.b, 0.55)
+
     palette.button: "transparent"
-    palette.highlight: config.AccentColor
-    palette.text: config.MainColor
-    palette.buttonText: config.MainColor
-    palette.window: "#444"
+    palette.window: colorSurface
+    palette.windowText: colorFg
+    palette.base: colorSurface
+    palette.alternateBase: colorBg
+    palette.text: colorFg
+    palette.buttonText: colorFg
+    palette.highlight: colorPurpleLight
+    palette.highlightedText: colorCream
+    palette.placeholderText: colorMuted
+    palette.shadow: colorShadow
 
     font.family: config.Font
     font.pointSize: config.FontSize !== "" ? config.FontSize : Math.max(1, parseInt(height / 80))
@@ -91,7 +110,7 @@ Pane {
             id: formBackground
             anchors.fill: form
             anchors.centerIn: form
-            color: "#444"
+            color: root.colorSurface
             opacity: config.PartialBlur == "true" ? 0.6 : 1
             z: 1
 
@@ -139,11 +158,11 @@ Pane {
                     radius: Math.min(root.cornerRadius, height / 2)
                     active: vkb.hovered || vkb.visualFocus
                     pressed: vkb.down
-                    fillColor: root.palette.highlight
+                    fillColor: root.colorPurple
                     activeOpacity: 0.12
                     pressedOpacity: 0.2
                     border.width: vkb.visualFocus ? 1 : 0
-                    border.color: root.palette.highlight
+                    border.color: root.colorPurpleLight
                 }
             }
         }
