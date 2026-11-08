@@ -18,15 +18,13 @@
 //
 
 import QtQuick
-import QtQuick.Controls
-import QtQuick.Effects
 
 Item {
     id: sessionButton
     height: root.font.pointSize
     width: parent.width * 0.5
 
-    property var selectedSession: selectSession.currentIndex
+    property alias selectedSession: sessionDropdown.currentIndex
     property string textConstantSession
 
     Text {
@@ -39,105 +37,74 @@ Item {
         color: root.palette.text
     }
 
-    ComboBox {
+    Item {
         id: selectSession
 
         anchors.left: parent.left
         anchors.leftMargin: parent.width * 0.5
         anchors.bottom: parent.bottom
         anchors.bottomMargin: root.font.pointSize * 0.9
-
-        model: sessionModel
-        currentIndex: model.lastIndex
-        textRole: "name"
-        hoverEnabled: true
-
         height: root.font.pointSize * root.fieldHeightFactor
-        leftPadding: root.font.pointSize * 0.8
-        rightPadding: root.font.pointSize * 0.8
-        topPadding: 0
-        bottomPadding: 0
+        width: displayedItem.implicitWidth + root.font.pointSize * 1.6
+        z: 1
 
-        delegate: ItemDelegate {
-            width: parent.width
-            height: selectSession.height
-            anchors.horizontalCenter: parent.horizontalCenter
-            topPadding: 0
-            bottomPadding: 0
-            leftPadding: 8
-            rightPadding: 8
-            contentItem: Text {
-                text: model.name
-                font.pointSize: root.font.pointSize * 0.8
-                color: root.palette.text
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
-            }
-            highlighted: parent.highlightedIndex === index
-            background: Item {
-                HoverFill {
-                    anchors.fill: parent
-                    anchors.margins: 1
-                    radius: root.cornerRadius
-                    active: selectSession.highlightedIndex === index
-                    fillColor: root.palette.highlight
-                    activeOpacity: 0.14
-                }
-            }
+        activeFocusOnTab: true
+        readonly property bool active: activeFocus || sessionDropdown.opened
+
+        HoverFill {
+            anchors.fill: parent
+            anchors.margins: 2
+            radius: height / 2
+            active: !sessionDropdown.opened &&
+                    (sessionMouse.containsMouse || selectSession.activeFocus)
+            pressed: sessionMouse.pressed
+            fillColor: root.palette.highlight
+            activeOpacity: 0.12
+            pressedOpacity: 0.2
         }
 
-        indicator: Item {}
-
-        contentItem: Text {
+        Text {
             id: displayedItem
-            text: selectSession.currentText
-            color: selectSession.visualFocus ? root.palette.highlight : root.palette.text
+            anchors.centerIn: parent
+            text: sessionDropdown.currentText
+            color: selectSession.active ? root.palette.highlight : root.palette.text
             verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
+            horizontalAlignment: Text.AlignHCenter
             font.pointSize: root.font.pointSize * 0.9
             Behavior on color { ColorAnimation { duration: 150 } }
         }
 
-        background: Item {
-            Rectangle {
-                anchors.fill: parent
-                radius: height / 2
-                color: "transparent"
-                border.width: selectSession.visualFocus ? 2 : 1
-                border.color: selectSession.visualFocus ? root.palette.highlight : root.palette.text
-                Behavior on border.color { ColorAnimation { duration: 150 } }
-            }
-            HoverFill {
-                anchors.fill: parent
-                anchors.margins: 2
-                radius: height / 2
-                active: selectSession.hovered || selectSession.visualFocus
-                pressed: selectSession.down
-                fillColor: root.palette.highlight
-                activeOpacity: 0.12
-                pressedOpacity: 0.2
-            }
+        MouseArea {
+            id: sessionMouse
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: sessionDropdown.toggle()
         }
 
-        popup: ThemedPopup {
-            id: popupHandler
-            x: (selectSession.width - width) / 2
-            anchorY: -contentItem.implicitHeight - 10
-            rightMargin: config.ForceRightToLeft == "true" ? root.padding + sessionButton.width * 0.6 : undefined
-            width: selectSession.width
-            implicitHeight: contentItem.implicitHeight
-            cornerRadius: root.cornerRadius
-            borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
-            growUp: true
+        Keys.onSpacePressed: sessionDropdown.open()
+        Keys.onReturnPressed: sessionDropdown.open()
+        Keys.onEnterPressed: sessionDropdown.open()
+    }
 
-            contentItem: ListView {
-                clip: true
-                implicitHeight: contentHeight
-                model: selectSession.popup.visible ? selectSession.delegateModel : null
-                currentIndex: selectSession.highlightedIndex
-                ScrollIndicator.vertical: ScrollIndicator { }
-            }
+    ThemedDropdown {
+        id: sessionDropdown
+
+        triggerItem: selectSession
+        model: sessionModel
+        textRole: "name"
+        valueText: function(modelData) {
+            return modelData.name
         }
+        currentIndex: sessionModel.lastIndex
+        growUp: true
+        rowHeight: selectSession.height
+        rowFontSize: root.font.pointSize * 0.8
+        cornerRadius: root.cornerRadius
+        textColor: root.palette.text
+        highlightColor: root.palette.highlight
+        borderColor: selectSession.active ? root.palette.highlight : root.palette.text
+        borderWidth: selectSession.active ? 2 : 1
+        restoreFocusItem: selectSession
     }
 
 }

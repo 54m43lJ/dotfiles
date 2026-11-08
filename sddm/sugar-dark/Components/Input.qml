@@ -20,7 +20,6 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import QtQuick.Effects
 
 Column {
     id: inputContainer
@@ -41,10 +40,16 @@ Column {
         height: root.font.pointSize * root.fieldRowFactor
         width: parent.width * (root.fieldWidthPercent / 100)
         anchors.horizontalCenter: parent.horizontalCenter
+        // The dropdown is a child of this item and must paint over the fields
+        // that follow it in the form.
+        z: 2
 
         HoverHandler { id: usernameHover }
 
-        ComboBox {
+        // The whole pill is the trigger. The text field is laid over the middle
+        // of it for editing, so clicks on the icon and side padding open the
+        // list while the center keeps editing the username.
+        Item {
             id: selectUser
 
             anchors.left: parent.left
@@ -52,48 +57,23 @@ Column {
             anchors.verticalCenter: parent.verticalCenter
             height: root.font.pointSize * root.fieldHeightFactor
             z: 1
+            activeFocusOnTab: true
 
-            model: userModel
-            currentIndex: model.lastIndex
-            textRole: "name"
-            displayText: ""
-            hoverEnabled: true
-            onActivated: {
-                username.text = currentText
+            readonly property bool active: username.activeFocus || selectUser.activeFocus || userDropdown.opened
+
+            HoverFill {
+                anchors.fill: parent
+                anchors.margins: 2
+                radius: height / 2
+                active: !userDropdown.opened &&
+                        (usernameHover.hovered || username.activeFocus || selectUser.activeFocus)
+                pressed: usernameTriggerMouse.pressed
+                fillColor: root.palette.highlight
+                activeOpacity: 0.12
+                pressedOpacity: 0.2
             }
 
-            delegate: ItemDelegate {
-                width: parent.width
-                height: selectUser.height
-                anchors.horizontalCenter: parent.horizontalCenter
-                topPadding: 0
-                bottomPadding: 0
-                leftPadding: 8
-                rightPadding: 8
-                contentItem: Text {
-		    text: model.realName != "" ? model.realName : model.name
-                    font.pointSize: root.font.pointSize * 0.8
-                    font.capitalization: Font.Capitalize
-                    width: parent.width
-                    color: root.palette.text
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                    elide: Text.ElideRight
-                }
-                highlighted: parent.highlightedIndex === index
-                background: Item {
-                    HoverFill {
-                        anchors.fill: parent
-                        anchors.margins: 1
-                        radius: root.cornerRadius
-                        active: selectUser.highlightedIndex === index
-                        fillColor: root.palette.highlight
-                        activeOpacity: 0.14
-                    }
-                }
-            }
-
-            indicator: Button {
+            Button {
                 id: usernameIcon
                 width: parent.height * 0.8
                 height: parent.height
@@ -108,49 +88,20 @@ Column {
                 background: null
             }
 
-            background: Item {
-                Rectangle {
-                    anchors.fill: parent
-                    radius: height / 2
-                    color: "transparent"
-                    border.width: username.activeFocus || selectUser.visualFocus ? 2 : 1
-                    border.color: username.activeFocus || selectUser.visualFocus ? root.palette.highlight : root.palette.text
-                    Behavior on border.color { ColorAnimation { duration: 150 } }
-                }
-                HoverFill {
-                    anchors.fill: parent
-                    anchors.margins: 2
-                    radius: height / 2
-                    active: selectUser.hovered || usernameHover.hovered || username.activeFocus
-                    pressed: selectUser.down
-                    fillColor: root.palette.highlight
-                    activeOpacity: 0.12
-                    pressedOpacity: 0.2
-                }
+            MouseArea {
+                id: usernameTriggerMouse
+                anchors.fill: parent
+                onClicked: userDropdown.toggle()
             }
 
-            popup: ThemedPopup {
-                anchorY: parent.height + 8
-                rightMargin: config.ForceRightToLeft == "true" ? root.padding + usernameField.width / 2 : undefined
-                width: usernameField.width
-                x: 0
-                implicitHeight: contentItem.implicitHeight
-                cornerRadius: root.cornerRadius
-                borderColor: Qt.rgba(root.palette.highlight.r, root.palette.highlight.g, root.palette.highlight.b, 0.35)
-
-                contentItem: ListView {
-                    clip: true
-                    implicitHeight: contentHeight
-                    model: selectUser.popup.visible ? selectUser.delegateModel : null
-                    currentIndex: selectUser.highlightedIndex
-                    ScrollIndicator.vertical: ScrollIndicator { }
-                }
-            }
+            Keys.onSpacePressed: userDropdown.open()
+            Keys.onReturnPressed: userDropdown.open()
+            Keys.onEnterPressed: userDropdown.open()
         }
 
         TextField {
             id: username
-            text: config.ForceLastUser == "true" ? selectUser.currentText : null
+            text: config.ForceLastUser == "true" ? userDropdown.currentText : ""
             font.capitalization: Font.Capitalize
             anchors.left: parent.left
             anchors.right: parent.right
@@ -179,19 +130,31 @@ Column {
             ]
         }
 
-        Item {
-            id: usernameIconArea
+        ThemedDropdown {
+            id: userDropdown
 
-            width: root.font.pointSize * root.fieldHeightFactor * 0.8
-            height: root.font.pointSize * root.fieldHeightFactor
-            anchors.left: parent.left
-            anchors.leftMargin: root.font.pointSize * root.fieldHeightFactor * 0.125
-            anchors.verticalCenter: parent.verticalCenter
-            z: 3
+            triggerItem: selectUser
+            model: userModel
+            textRole: "name"
+            rowText: function(modelData) {
+                return modelData.realName ? modelData.realName : modelData.name
+            }
+            valueText: function(modelData) {
+                return modelData.name
+            }
+            currentIndex: userModel.lastIndex
+            rowHeight: selectUser.height
+            rowFontSize: root.font.pointSize * 0.8
+            rowCapitalization: Font.Capitalize
+            cornerRadius: root.cornerRadius
+            textColor: root.palette.text
+            highlightColor: root.palette.highlight
+            borderColor: selectUser.active ? root.palette.highlight : root.palette.text
+            borderWidth: selectUser.active ? 2 : 1
+            restoreFocusItem: username
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: selectUser.popup.open()
+            onActivated: {
+                username.text = currentText
             }
         }
 

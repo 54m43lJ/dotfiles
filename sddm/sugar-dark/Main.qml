@@ -94,6 +94,17 @@ Pane {
             color: "#444"
             opacity: config.PartialBlur == "true" ? 0.6 : 1
             z: 1
+
+            // Clicking an empty part of the panel closes an open dropdown,
+            // but does not steal focus from a text field when none is open.
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    var focused = root.Window.activeFocusItem
+                    if (focused && focused.dropdownMenu)
+                        sizeHelper.forceActiveFocus()
+                }
+            }
         }
 
         LoginForm {
@@ -252,7 +263,7 @@ Pane {
 
         MouseArea {
             anchors.fill: backgroundImage
-            onClicked: parent.forceActiveFocus()
+            onClicked: sizeHelper.forceActiveFocus()
         }
     }
 }
