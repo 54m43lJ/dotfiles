@@ -17,16 +17,16 @@
 // along with Sugar Dark. If not, see <https://www.gnu.org/licenses/>.
 //
 
-import QtQuick 2.11
-import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import QtQuick.Effects
 
 Column {
     id: inputContainer
     Layout.fillWidth: true
 
-    property Control exposeLogin: loginButton
+    property Item exposeLogin: loginButton
     property bool failed
 
     // USERNAME INPUT
@@ -85,6 +85,7 @@ Column {
                     enabled: false
                     icon.color: root.palette.text
                     icon.source: Qt.resolvedUrl("../Assets/User.svgz")
+                    background: null
             }
 
             background: Rectangle {
@@ -111,14 +112,10 @@ Column {
                     radius: config.RoundCorners
                     color: "#444"
                     layer.enabled: true
-                    layer.effect: DropShadow {
-                        transparentBorder: true
-                        horizontalOffset: 0
-                        verticalOffset: 0
-                        radius: 100
-                        samples: 201
-                        cached: true
-                        color: "#88000000"
+                    layer.effect: MultiEffect {
+                        shadowEnabled: true
+                        shadowColor: "#88000000"
+                        shadowBlur: 1.0
                     }
                 }
 
@@ -405,7 +402,6 @@ Column {
             text: failed ? config.TranslateLoginFailed || textConstants.loginFailed + "!" : keyboard.capsLock ? textConstants.capslockWarning : null
             horizontalAlignment: Text.AlignHCenter
             font.pointSize: root.font.pointSize * 0.8
-            font.italic: true
             color: root.palette.text
             opacity: 0
             states: [
@@ -550,10 +546,10 @@ Column {
 
     Connections {
         target: sddm
-        onLoginSucceeded: {}
-        onLoginFailed: {
+        function onLoginSucceeded() {}
+        function onLoginFailed() {
             failed = true
-            resetError.running ? resetError.stop() && resetError.start() : resetError.start()
+            resetError.restart()
         }
     }
 

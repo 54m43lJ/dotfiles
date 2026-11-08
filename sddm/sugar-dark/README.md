@@ -14,7 +14,12 @@ Sugar comes in two flavors. This one is for the bitter sweet. You can also check
 
 ### Dependencies
 
-[`sddm >= 0.18.0`](https://github.com/sddm/sddm), [`qt5 >= 5.11.0`](http://doc.qt.io/qt-5/index.html), [`qt5-quickcontrols2 >= 5.11.0`](http://doc.qt.io/qt-5/qtquickcontrols2-index.html), [`qt5-svg >= 5.11.0`](https://doc.qt.io/qt-5/qtsvg-index.html)
+[`sddm >= 0.21.0`](https://github.com/sddm/sddm), [`qt6 >= 6.5`](https://doc.qt.io/qt-6/index.html), [`qt6-declarative`](https://doc.qt.io/qt-6/qtquick-index.html), [`qt6-svg`](https://doc.qt.io/qt-6/qtsvg-index.html)
+
+This copy is ported to Qt 6: imports are unversioned and the old
+`QtGraphicalEffects` drop shadows use `QtQuick.Effects.MultiEffect`.
+The theme metadata declares `QtVersion=6`, so SDDM launches
+`sddm-greeter-qt6` for it.
 
 *Make sure these are up to date!*
 

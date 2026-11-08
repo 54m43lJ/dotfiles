@@ -9,3 +9,4 @@ Version=0.1
 MainScript=Main.qml
 Theme-Id=minimal
 Theme-API=2.0
+QtVersion=6

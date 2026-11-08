@@ -17,17 +17,16 @@
 // along with Sugar Dark. If not, see <https://www.gnu.org/licenses/>.
 //
 
-import QtQuick 2.11
-import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
 import "Components"
 
 Pane {
     id: root
 
     height: config.ScreenHeight || Screen.height
-    width: config.ScreenWidth || Screen.ScreenWidth
+    width: config.ScreenWidth || Screen.width
 
     LayoutMirroring.enabled: config.ForceRightToLeft == "true" ? true : Qt.application.layoutDirection === Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -40,7 +39,7 @@ Pane {
     palette.window: "#444"
 
     font.family: config.Font
-    font.pointSize: config.FontSize !== "" ? config.FontSize : parseInt(height / 80)
+    font.pointSize: config.FontSize !== "" ? config.FontSize : Math.max(1, parseInt(height / 80))
     focus: true
 
     property bool leftleft: config.HaveFormBackground == "true" &&

@@ -17,9 +17,9 @@
 // along with Sugar Dark. If not, see <https://www.gnu.org/licenses/>.
 //
 
-import QtQuick 2.11
-import QtQuick.Controls 2.4
-import QtGraphicalEffects 1.0
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Effects
 
 Item {
     id: usernameField
@@ -77,6 +77,7 @@ Item {
                 enabled: false
                 icon.color: root.palette.text
                 icon.source: Qt.resolvedUrl("../Assets/User.svgz")
+                background: null
         }
 
         background: Rectangle {
@@ -103,14 +104,10 @@ Item {
                 radius: 10
                 color: root.palette.window
                 layer.enabled: true
-                layer.effect: DropShadow {
-                    transparentBorder: true
-                    horizontalOffset: 0
-                    verticalOffset: 0
-                    radius: 100
-                    samples: 201
-                    cached: true
-                    color: "#88000000"
+                layer.effect: MultiEffect {
+                    shadowEnabled: true
+                    shadowColor: "#88000000"
+                    shadowBlur: 1.0
                 }
             }
 
