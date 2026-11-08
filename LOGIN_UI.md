@@ -1,130 +1,98 @@
 # 登录界面数值规范（SDDM + hyprlock）
 
-本文是 SDDM `sugar-dark` greeter 和 hyprlock 的共同布局契约。两个界面使用同一套
-几何数值和配色，改版时先改本文，再同步两个实现：
+本文是 SDDM `sugar-dark` greeter 和 hyprlock 的**唯一数值来源**。这里只定义一套
+共享数值和标准单位；两个组件各自把这些值换算成自己的配置文件。
 
-- SDDM：`sddm/sugar-dark/Main.qml`、`Components/*.qml`、`theme.conf`
-- hyprlock：`hypr/hyprlock.conf`
+## 1. 标准单位
 
-> 两个引擎的配置格式不同，无法让同一个文件直接被两边读取。本文是数值来源，
-> 两边各自暴露了对应的命名变量/配置项；改动时必须成对更新。
+- **画布**：1920×1080 设计画布。
+- **几何位置/尺寸**：百分比（`%`），相对画布宽/高。组件直接把它当作相对实际输出
+  逻辑尺寸的锚点。
+- **字号**：`pt`，指 1080p 画布下的目标字号。
+- **细节尺寸**：`U`，指 1080p 画布下的逻辑像素（描边、圆角、图标框等）。
+- 除特别注明外，本文不写某个组件的实际配置值；组件自行取整和换算。
 
-## 1. 基准与缩放
+通用缩放规则（逻辑单位）：
 
-- 设计基准：**1920x1080 逻辑像素**，原点在左上角，x 向右，y 向下。
-- 所有百分比都相对输出逻辑尺寸；CSS 式百分比换算见各元素表格。
-- **SDDM**
-  - root 尺寸 = greeter 实际逻辑尺寸（`SizeRootObjectToView`）。
-  - 基础字号：`P = max(1, trunc(H / 80))`，`H` 为逻辑高度。
-  - 圆角缩放：`uiScale = H / 1080`，`cornerRadius = RoundCorners * uiScale`。
-  - 4K 未开 HiDPI 时 `H=2160`、`P=27`，所有 px 尺寸约为 1080p 的 2 倍。
-- **hyprlock**
-  - `size` / `position` 的百分比相对输出逻辑尺寸。
-  - `position` 的 y 是相对中心点的偏移，**正值向上**。
-  - `font_size`、`rounding`、`outline_thickness`、`border_size` 使用 surface
-    物理像素，不随 monitor scale 放大。当前数值按 **4K@2x** 调整；换 1x 输出时
-    `font_size` 减半，圆角用 `-1` 不受影响。
+```text
+logicalScale = output_logical_height / 1080
+pt           -> pt * logicalScale
+U            -> U * logicalScale
+```
+
+百分比本身已经是相对的，不乘 `logicalScale`。高宽比变化时，x 方向百分比相对宽度、
+y 方向百分比相对高度。hyprlock 的配置使用 surface 像素，换算时改用
+`surfaceScale = output_physical_height / 1080 = logicalScale * monitorScale`。
 
 ## 2. 设计令牌
 
-| 令牌 | 值 | 说明 |
-| --- | --- | --- |
-| 背景图 | `~/.config/hypr/graduation_dark.jpg` | 全屏，SDDM 用 `graduation2.jpg`（同图） |
-| 面板底色 | `#444`，alpha `0.6` | 右侧 40% 半透明面板 |
-| 主文字 | `#ffffff` | 时间、日期、用户名、会话 |
-| 强调色 | `#ca33ac` | 密码框描边、输入校验 |
-| 字体 | `Noto Sans` | 两个界面统一 |
-| 图标字体 | `Noto Sans Nerd Font` | hyprlock 用户图标 `U+F007` |
-| 字段形状 | 完整圆头（胶囊） | SDDM 用 `min(cornerRadius, h/2)`，hyprlock 用 `rounding = -1` |
+| 令牌 | 值 |
+| --- | --- |
+| 背景图 | `~/.config/hypr/graduation_dark.jpg`（SDDM 侧为同图的 `graduation2.jpg`） |
+| 面板底色 | `#444`，alpha `0.6` |
+| 主文字 | `#ffffff` |
+| 强调色 | `#ca33ac` |
+| 字体 | `Noto Sans` |
+| 图标字体 | `Noto Sans Nerd Font`，用户图标 `U+F007` |
+| 胶囊 | 完整圆头；半径 = 高度的一半 |
 
-## 3. 元素定位（1920x1080 逻辑坐标）
+## 3. 共享布局数值
 
-| 元素 | 尺寸 | 中心/锚点 | 字号/样式 | 备注 |
-| --- | --- | --- | --- | --- |
-| 背景 | 1920x1080 | 全屏 | — | 等比裁切填满 |
-| 右侧面板 | 768x1080 | x `1152..1920`，`y 0..1080` | `#444` 60% | 无圆角 |
-| 时间 | 文本 | `(1536, 196)` = `80%, 18.1%` | SDDM 39pt / hyprlock `$fsClock` | 24 小时制 |
-| 日期 | 文本 | `(1536, 239)` = `80%, 22.1%` | SDDM 13pt / hyprlock `$fsText` | `dddd, d of MMMM` |
-| 用户框 | 384x39~40 | `(1536, 501)` = `80%, 46.4%` | 白描边 1px、胶囊 | 仅装饰 |
-| 用户图标 | 约 15~20px | 左缘 `71.5%`，垂直中心 `46.4%` | `$fsIcon` | `Noto Sans Nerd Font` |
-| 用户名 | 文本 | `(1536, 501)` = `80%, 46.4%` | SDDM 13pt / hyprlock `$fsText` | SDDM 首字母大写 |
-| 密码框 | 384x39~40 | `(1536, 559)` = `80%, 51.8%` | 强调色描边 2px、胶囊 | 唯一输入 |
-| 提交箭头 | 约 31x31 | 右端 `x≈89%`，`y=51.8%` | `→`，SDDM 19.5pt / hyprlock `$fsText` | 点击提交/回车 |
-| 会话标签 | 文本 | 左缘 `71.35%`，中心 `y=96.5%` | SDDM 11.7pt / hyprlock `$fsSmall` | `Session: Hyprland` |
+坐标为中心点（除非写“左缘”），单位见上。画布 1920×1080。
 
-界面上**没有**独立的 Login 按钮，也**没有** Welcome 标题。
+| 元素 | 锚点 | 位置 | 尺寸 | 字号 | 细节 |
+| --- | --- | --- | --- | --- | --- |
+| 背景 | 全屏 | — | 100% × 100% | — | 等比裁切填满 |
+| 右侧面板 | 右缘 | x 60%–100%，y 0–100% | 40% × 100% | — | `#444` 60%，无圆角 |
+| 时间 | 面板中心 | (80%, 18.1%) | — | 38pt | `HH:mm`，24 小时制 |
+| 日期 | 面板中心 | (80%, 22.1%) | — | 13pt | `dddd, d of MMMM` |
+| 用户框 | 面板中心 | (80%, 46.4%) | 20% × 3.7% | — | 白描边 1U，胶囊，透明底 |
+| 用户图标 | 用户框左侧 | (72%, 46.4%) | 16U × 16U | — | 白色 |
+| 用户名 | 面板中心 | (80%, 46.4%) | — | 13pt | 白色 |
+| 密码框 | 面板中心 | (80%, 51.8%) | 20% × 3.7% | — | 强调色描边 2U，胶囊，透明底 |
+| 提交箭头 | 密码框右端 | (89%, 51.8%) | 约 23U × 12U | 19.5pt | `→`，点击提交 |
+| 会话标签 | 面板左下 | 左缘 71.35%，中心 y 96.5% | — | 11.5pt | `Session: <桌面>` |
 
-## 4. SDDM 数值控制
+界面上没有独立的 Login 按钮，也没有 Welcome 标题。
 
-默认值位于 `sddm/sugar-dark/theme.conf`，可在 `theme.conf.user` 覆盖。QML 中通过
-`root.<property>` 读取，未配置时回退到括号内默认值。
+## 4. 组件推导指导
 
-| 键 | 当前值 | 单位 | 作用 |
-| --- | --- | --- | --- |
-| `FormWidthPercent` | 40 | 屏幕宽度 % | 右侧表单面板宽度 |
-| `FieldWidthPercent` | 50 | 表单宽度 % | 用户名/密码框宽度（等于屏幕 20%） |
-| `FieldRowFactor` | 4.5 | 基础字号倍数 | 每个输入行的行高 |
-| `FieldHeightFactor` | 3 | 基础字号倍数 | 输入框可见高度 |
-| `ClockSlotPercent` | 25 | 屏幕高度 % | 时钟所在的布局槽高 |
-| `InputSlotPercent` | 10 | 屏幕高度 % | 输入区所在的布局槽高 |
-| `SystemSlotPercent` | 25 | 屏幕高度 % | 电源按钮布局槽高 |
-| `ArrowSizeFactor` | 0.8 | 输入框高度倍数 | 箭头按钮方框边长 |
-| `ArrowMarginFactor` | 0.2 | 输入框高度倍数 | 箭头距输入框右缘 |
-| `ArrowNudgeFactor` | 0.111 | 字号倍数 | 箭头视觉垂直微调 |
-| `RoundCorners` | 30 | px @1080 | 圆角基准，按 `H/1080` 缩放 |
+这里只讲换算方法，不重复上面的数值。
 
-派生公式（`H` 根高度，`P` 基础字号，`W` 根宽度）：
+### SDDM
 
-```text
-formWidth   = W * FormWidthPercent / 100
-fieldWidth  = formWidth * FieldWidthPercent / 100
-fieldHeight = P * FieldHeightFactor
-radius      = min(RoundCorners * H / 1080, fieldHeight / 2)
-arrowSize   = fieldHeight * ArrowSizeFactor
-arrowMargin = fieldHeight * ArrowMarginFactor
-arrowNudge  = P * ArrowNudgeFactor
-```
+- 百分比直接用于锚点和宽高比例；面板右缘对齐屏幕右缘。
+- 基础正文 13pt 是参照值，实际字号按根高度取整：
+  `base = max(1, trunc(root.height / 80))`。
+- `U` 细节按 `root.height / 1080` 缩放；圆角再按 `height / 2` 夹紧成胶囊。
+- 垂直位置由表单的 `ColumnLayout` 槽高和内容高度推导；上表的中心点是目标值，
+  实现时用槽高和间距逼近它。
+- 输入框、箭头、图标等组件内部字号/尺寸都由上表的 `pt`/`U` 推导，不在本文另列。
 
-垂直位置仍由 `ColumnLayout` 的槽高和内容高度推导，当前实测中心为：时间 18.1%、
-日期 22.1%、用户名 46.4%、密码 51.8%、会话 96.5%。调 `*SlotPercent` 会整体移动
-对应区块。
+### hyprlock
 
-## 5. hyprlock 数值控制
+- hyprlock 的 `position` 是相对中心的偏移，且 **y 正方向向上**：
+  ```text
+  position_x = center_x - 50%
+  position_y = 50% - center_y
+  ```
+- `size` 直接使用上表的百分比。
+- `font_size` 和 `U` 细节使用 surface 像素，按 `surfaceScale` 换算：4K@2x 下为 2，
+  1080p@1x 下为 1。
+- 胶囊用 `rounding = -1`；描边/边框按 `U * surfaceScale` 推导。
+- 图标是字体字形，选一个字号让字形视觉高度接近 16U 即可。
 
-全部集中在 `hypr/hyprlock.conf` 顶部。百分比相对输出；y 偏移正值向上。
+## 5. 实现入口
 
-| 变量 | 当前值 | 作用 |
-| --- | --- | --- |
-| `$panelW` | `40%` | 右侧面板宽度 |
-| `$centerX` | `30%` | 面板中心 x（屏幕中心右移 30%） |
-| `$fieldX` | `-10%` | 字段右缘距屏幕右缘（字段宽 20%） |
-| `$fieldW` / `$fieldH` | `20%` / `3.7%` | 输入框尺寸 |
-| `$timeY` | `32%` | 时间中心（`50-32=18%`） |
-| `$dateY` | `28%` | 日期中心（`22%`） |
-| `$userY` | `3.6%` | 用户框/用户名中心（`46.4%`） |
-| `$passwordY` | `-1.8%` | 密码框中心（`51.8%`） |
-| `$iconX` / `$iconY` | `71.5%` / `3.6%` | 用户图标左缘/垂直中心 |
-| `$arrowX` / `$arrowY` | `-10.5%` / `-1.8%` | 箭头右缘/垂直中心 |
-| `$sessionX` / `$sessionY` | `71.35%` / `-46.5%` | 会话标签左缘/中心（`96.5%`） |
-| `$fsClock` | 76 | 时间字号（surface 值，4K@2x） |
-| `$fsText` | 26 | 日期/用户名/密码/箭头字号 |
-| `$fsSmall` | 23 | 会话标签字号 |
-| `$fsIcon` | 16 | 用户图标字号 |
+- SDDM：`sddm/sugar-dark/theme.conf` 暴露换算后的比例/系数，`Main.qml`、
+  `Components/*.qml` 消费它们。
+- hyprlock：`hypr/hyprlock.conf` 顶部的命名变量。
+- 两边都从本文推导；改数值时先改本文，再按上面的换算更新各自的实现。
 
-`rounding = -1` 表示完整圆头，不受 scale 影响；`outline_thickness = 2`、
-`border_size = 1` 是 surface 像素。
-
-## 6. 修改流程
-
-1. 改本文的“元素定位”或“数值控制”表。
-2. SDDM：改 `theme.conf`（默认）或 `theme.conf.user`（覆盖），重启 greeter。
-3. hyprlock：改顶部变量，下次锁屏生效。
-4. 两边都跑一遍预览，确认百分比和 px 的换算没有被字号截断影响。
-
-## 7. 测试
+## 6. 测试
 
 ```bash
-# SDDM：直接跑，2x/HiDPI 下是清晰的；嵌套 cage 只用于隔离，会因缩放发糊
+# SDDM：直接跑，HiDPI 下清晰；嵌套 cage 会因缩放发糊
 sddm-greeter-qt6 --test-mode --theme ~/Documents/dotfiles/sddm/sugar-dark
 
 # hyprlock
@@ -132,9 +100,9 @@ hyprlock --no-fade-in
 # 解锁：kill -USR1 "$(pidof hyprlock)"
 ```
 
-## 8. 已知限制
+## 7. 已知限制
 
-SDDM 的垂直位置来自 `ColumnLayout`（`*SlotPercent` + 内容高度），不是每个元素
-独立的绝对 y 值。当前表格记录的是布局推导后的实测中心；如果要求“每个元素都有
-独立可调的绝对坐标”，需要把 `LoginForm.qml` 从 ColumnLayout 改成显式定位。
-hyprlock 本身就是逐元素绝对定位，不受此限制。
+- SDDM 的纵向位置由 `ColumnLayout` 推导，不是每个元素独立的绝对 y 坐标；本文给出
+  的是目标中心点。若要求逐元素绝对定位，需要把 `LoginForm.qml` 改成显式定位。
+- 两个组件没有共享的机器可读配置文件；本文是人工维护的单一来源。若以后需要自动
+  生成两边配置，可以再加一层从本文表格到配置的生成脚本。
