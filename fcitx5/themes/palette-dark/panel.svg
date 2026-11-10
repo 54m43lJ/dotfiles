@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- panel corner: radius 10, sliced with 12px margins -->
+  <rect x="0.5" y="0.5" width="63" height="63" rx="10" ry="10"
+        fill="#3E3542" stroke="#9D7E4D" stroke-width="1"/>
+</svg>

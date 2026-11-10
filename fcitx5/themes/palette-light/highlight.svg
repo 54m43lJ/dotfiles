@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="40" viewBox="0 0 80 40">
+  <!-- large rounded highlight, not a capsule: r=14 leaves 12px straight
+       vertical sides (40 - 2*14). Sliced with 20px left/right margins. -->
+  <rect width="80" height="40" rx="14" ry="14" fill="#D998D9"/>
+</svg>

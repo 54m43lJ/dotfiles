@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="36" viewBox="0 0 48 36">
+  <!-- compact menu highlight: small rounded rect, not a capsule -->
+  <rect width="48" height="36" rx="4" ry="4" fill="#E9DBF2"/>
+</svg>
